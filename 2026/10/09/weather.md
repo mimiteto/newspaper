@@ -1,18 +1,18 @@
 # Weather — Novi Iskar, 9 Oct 2026
 
-Generated 2026-10-09 18:28 EEST (Europe/Sofia). Reference: your Friday Novi Iskar forecast as of 16:30 local; sources: Open-Meteo (nowcast) + wttr.in cross-check.
+Generated 09 Oct 2026, ~22:46 Europe/Sofia (EEST, UTC+3). Forecast as of ~22:45 local for the grid point lat 42.7382, lon 23.5975 (Novi Iskar).
 
-**Temperature today.** High 24–26°C / low ~12°C; current 24.4°C.
-https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FSofia
-https://wttr.in/Novi%20Iskar
+**Temperature today.** High 24.3 °C / low 12.1 °C today (9 Oct); currently 15.8 °C (feels like 15.0 °C) as of 22:45.
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=temperature_2m_max,temperature_2m_min&timezone=Europe/Sofia
 
-**Conditions.** Overcast to partly cloudy (WMO 3 → 2), light west-to-north-west breeze ~14–15 km/h, humidity ~41%.
-https://wttr.in/Novi%20Iskar
+**Conditions.** Mostly overcast now (84 % cloud cover, WMO code 2→3) with light wind ~6 km/h; tomorrow (Sat 10 Oct) turns partly cloudy with a slightly warmer high of 25.7 °C.
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=weather_code,cloud_cover,wind_speed_10m&daily=weather_code&timezone=Europe/Sofia
+https://wttr.in/Novi+Iskar
 
-**Precipitation.** Rain chance 5–15% today (practically dry window), cumulative ~0 mm; tomorrow (Sat 10 Oct) turns wetter — rain chance ~30–45%, up to ~0.6 mm, with a high near 26 °C.
-https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_probability_max,precipitation_sum&timezone=Europe%2FSofia
-https://wttr.in/Novi%20Iskar
+**Precipitation.** Essentially dry today — 0.0–0.1 mm total, peak probability 5 %; rain moves in Sunday 11 Oct: 1.4 mm expected with probability up to 80 %, so weekend direction is dry → wet.
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max&timezone=Europe/Sofia
 
-**Air / daylight.** No active weather warnings for Sofia region tonight; sunrise ~07:40, sunset ~19:00 local.
+**Air/daylight.** Humidity 71 %, calm evening; daylight today 07:31–18:53 (~11 h 22 m, 2 min shorter than yesterday).
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=sunrise,sunset&timezone=Europe/Sofia
 
-Flags: open-meteo and wttr.in disagree slightly on the precip percentage (5% vs 13%); both agree today stays effectively dry. Check meteoblue for the evening radar overlay before an outdoor walk.
+Flags: open-meteo says "partly cloudy" (code 2) at 22:45 while wttr.in reports "Overcast" with ham radio-style +17 °C current temp — minor disagreement on cloud characterization, both agree on no rain tonight. Caveat: precip numbers are model forecasts, not gauge observations — Sunday's 80 % chance may shift by tomorrow's brief.
