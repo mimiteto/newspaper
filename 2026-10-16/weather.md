@@ -1,18 +1,19 @@
 # Weather — Novi Iskar, 16 Oct 2026
 
-Generated 15:28 Europe/Sofia (EEST, UTC+3); Open-Meteo current sync 15:15 local, wttr.in cross-check 15:25.
+Generated 16:58 Europe/Sofia (EEST, UTC+3); forecast anchored on the Open-Meteo 16:45 local sync, cross-checked against wttr.in at 16:42.
 
-**Temperature today.** High 10.0 °C / low 3.2 °C — cool afternoon, near-freezing tonight (Open-Meteo; wttr.in agrees at 10 °C now).
+**Temperature today.** High 10.0 °C / low 3.2 °C — a cool, sunless afternoon, and tomorrow night's low dips to 2.2 °C (Open-Meteo daily max/min; wttr.in reads the same 10 °C right now).
 https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FSofia
 
-**Conditions.** Overcast with shower risk — 10.0 °C at 15:15 (feels 7.5 °C), 64% RH, wind 6–9 km/h; wttr.in reports light rain (0.5 mm) around its Kurilo-adjacent grid point.
-https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&timezone=Europe%2FSofia
+**Conditions.** WMO code 3 (overcast) at 9.4 °C, feels-like 6.5 °C, 64% RH, 100% cloud cover, wind 8.4 km/h; the daily code is 80 (rain showers) and wttr.in still reports 🌦 at +10 °C, feels +9 °C, wind ↙ 9 km/h.
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,cloud_cover&timezone=Europe%2FSofia
 https://wttr.in/Novi+Iskar
 
-**Precipitation.** ~1.6 mm expected today (78% chance, WMO 80 showers); tomorrow dry (0 mm, 8%) with a cold 2.2 °C night; Sunday turns mild at 13.8 °C with only trace rain risk.
-https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max&timezone=Europe%2FSofia
+**Precipitation.** 1.60 mm today at 78% peak probability; tomorrow stays dry (0.00 mm, 8%, 10.4 °C high) before Sunday turns milder at 13.8 °C with a nominal 0.50 mm.
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max,weather_code&timezone=Europe%2FSofia
 
-**Air/daylight.** PM2.5 4.4 µg/m³ (US AQI 60, "moderate" — first above-"good" reading this run); 11 h 02 m of daylight, sunrise 07:39, sunset 18:41.
-https://air-quality-api.open-meteo.com/v1/air-quality?latitude=42.7382&longitude=23.5975&current=pm2_5,us_aqi&timezone=Europe%2FSofia
+**Air/daylight.** PM2.5 4.8 µg/m³ and PM10 5.4 µg/m³ (US AQI 59 "moderate", European AQI 24) as of 16:00 local; 11 h 02 m of daylight, sunrise 07:39, sunset 18:41 — tomorrow sets a minute earlier, at 18:40.
+https://air-quality-api.open-meteo.com/v1/air-quality?latitude=42.7382&longitude=23.5975&current=pm2_5,pm10,us_aqi,european_aqi&timezone=Europe%2FSofia
+https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=sunrise,sunset&timezone=Europe%2FSofia&forecast_days=2
 
-Flags: providers disagree on today's rain (Open-Meteo 1.6 mm showers vs wttr.in ~0.5 mm) and Open-Meteo's Sunday pair is internally odd (WMO 61 drizzle code with 5% probability) — treat Sunday's rain as negligible; tonight's 2–3 °C lows approach first-frost territory on open ground.
+Flags: the providers split on today's rain — Open-Meteo 1.60 mm at 78% versus wttr.in 0.5 mm — and wttr.in's 58% RH against Open-Meteo's 64% points to a different grid point, so treat any shower over Novi Iskar itself as local and brief; Open-Meteo's Sunday pair is internally inconsistent (WMO 61 rain code at 5% probability), so read Sunday as dry; tonight's 3.2 °C and Saturday's 2.2 °C approach first-frost territory on open ground toward the Iskar dam.
