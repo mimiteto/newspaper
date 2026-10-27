@@ -1,0 +1,17 @@
+title: Morning Brief
+description: Daily weather, holdings and Bulgaria brief — published automatically by the morning-brief lanes.
+theme: minima
+
+# Section pages (2026/10/27/weather.md and friends) ship without front matter.
+# jekyll-default-layout is enabled by every GitHub Pages build and assigns the
+# theme's page/default layout to them, and jekyll-relative-links rewrites the
+# ./weather.md style links that claim-index.sh writes into each day's index.md.
+relative_links:
+  enabled: true
+  collections: true
+
+readme_index:
+  enabled: true
+
+minima:
+  skin: classic
