@@ -7,7 +7,7 @@ https://www.focus-news.net/novini/Bylgaria/Radev-ostavya-Byudzhet-2027-za-noemvr
 https://www.bta.bg/bg/news/economy/1236945-byudzhetat-za-2027-g-shte-pokazhe-vsichki-nuzhni-instrumenti-za-rastezh-zayavi
 
 **The only Budget 2027 figure in public: €135mln for industrial zones.** Пулев told BNT on 31 October that the draft budgets a state programme for industrial parks and zones at €135mln, to be spent on zones the ministry says can attract new production, with the point being to lever private investment into them.
-https://banker.bg/2026-10-31/135-mln-evro-za-industrialni-zoni/
+https://banker.bg/2026/10/31/135-mln-evro-za-industrialni-zoni/
 https://www.bta.bg/en/news/economy/1236961-2027-draft-budget-to-provide-all-necessary-tools-for-growth-economy-minister-po
 
 **Budget-discipline caps are being deleted, not tightened.** A government ЗИД на Закона за публичните финанси repeals чл. 23 and чл. 24 ЗПФ — the provisions that hold the medium-term structural-deficit objective at 0.5% of GDP, tolerating more than 0.5% but never above 1% of GDP and only where general-government debt is under 40% of GDP with low long-term sustainability risk; the bill was tabled by МС on 26 October and the budget committee takes it on first reading the week after the runoff, which "Демократична България"'s Владислав Панев calls "два дни след балотажа".
@@ -42,12 +42,12 @@ https://dv.parliament.bg/DVWeb/showMaterialDV.jsp?idMat=247129
 https://www.3e-news.net/bg/a/view/73968/bylgarija-e-izvadena-ot-sivija-spisyk-za-prane-na-pari
 
 **Extra.** BNB's external-debt release, re-reported on 31 October: gross public-plus-private external debt of €68.8bn at end-August 2026 (53.6% of projected GDP) is +€13.9bn / +25.3% year on year, with short-term obligations of €17.75bn up 92.2% on the year.
-https://banker.bg/2026-10-30/brutniyat-vanshen-dalg-raste-68-8-mlrd-evro/
+https://banker.bg/2026/10/30/brutniyat-vanshen-dalg-raste-68-8-mlrd-evro/
 https://www.novinite.com/articles/241366/Bulgaria%27s+External+Debt+Climbs+to+%E2%82%AC68.8+Billion
 
 **Extra.** Black Sea costs are being turned into an EU-funding claim: €2bn of compensation for shipping-attack losses is being pushed for the 2028–2034 period, against a planned €22.3bn EU envelope for Bulgaria, while Sofia put emergency rules for vessels in its territorial waters in force on 31 October.
 https://www.segabg.com/hot/category-bulgaria/bulgariya-iska-es-eu2-mlrd-kompensacii-za-atakite-cherno-more
-https://banker.bg/2026-10-31/balgariya-izvanredni-pravila-za-korabite/
+https://banker.bg/2026/10/31/balgariya-izvanredni-pravila-za-korabite/
 
 **Extra.** The cooling that the ДДС and mortgage debate keeps running into: 45,312 property transactions were registered in Q3 2026 (−1.4% on Q2, −22.1% year on year), the weakest third quarter since 2019, with 129,431 for the first nine months (−19% y/y), while bankers expect average mortgage rates to rise in 2027.
 https://www.segabg.com/hot/category-economy/broyat-na-sdelkite-imoti-padna-nivata-2019-g
