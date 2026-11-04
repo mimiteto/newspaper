@@ -5,6 +5,10 @@ title: Morning Brief
 
 Published briefs, newest first.
 
+## [2026-11-04](2026/11/04/index.md)
+
+[Weather](2026/11/04/weather.md) · [Holdings](2026/11/04/stocks.md) · [Bulgaria](2026/11/04/bulgarian-finances.md)
+
 ## [2026-11-03](2026/11/03/index.md)
 
 [Weather](2026/11/03/weather.md) · [Holdings](2026/11/03/stocks.md) · [Bulgaria](2026/11/03/bulgarian-finances.md)
