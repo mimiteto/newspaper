@@ -321,9 +321,7 @@ def cmd_render(args: argparse.Namespace) -> int:
         changed.extend(_render_day(repo, date, write=args.write))
 
     root = repo / "index.md"
-    entries = [(date, True) for date in managed_days(repo)] + [(date, False) for date in legacy_days(repo)]
-    entries.sort(key=lambda entry: entry[0].flat, reverse=True)
-    root_body = render_mod.render_root_index(entries)
+    root_body = render_mod.render_root_index(_root_entries(repo))
     # Only claim the homepage when it actually changed, so "files=N" counts
     # real writes under --write and real drift under --check.
     if _read_text(root) != root_body:
@@ -429,22 +427,52 @@ def cmd_status(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_generated_check(args: argparse.Namespace) -> int:
-    """Guard for CI: a human commit must not edit files the pipeline owns.
+def _root_entries(repo: Path) -> list[tuple[DayPath, bool]]:
+    """Every brief on the site, newest first: JSON-managed and legacy alike."""
+    entries: list[tuple[DayPath, bool]] = [(date, True) for date in managed_days(repo)]
+    entries += [(date, False) for date in legacy_days(repo)]
+    entries.sort(key=lambda entry: entry[0].flat, reverse=True)
+    return entries
 
-    ``mb render --write`` commits these itself (that is the render workflow);
-    anything else touching them is a hand-edit that the next render would
-    silently erase, so say so loudly instead.
+
+def _generated_drift(repo: Path) -> set[str]:
+    """Generated paths whose bytes differ from what the pipeline renders.
+
+    This is the honest definition of "pipeline-owned": a file the next render
+    would overwrite. It is also what makes a hand-written legacy day editable
+    — nothing renders those, so nothing erases them.
     """
-    owned = [
+    drift: set[str] = set()
+    for date in managed_days(repo):
+        drift.update(_render_day(repo, date, write=False))
+    if _read_text(repo / "index.md") != render_mod.render_root_index(_root_entries(repo)):
+        drift.add("index.md")
+    return drift
+
+
+def cmd_generated_check(args: argparse.Namespace) -> int:
+    """Guard for CI: a human commit must not edit what the next render erases.
+
+    Only a *mismatch* counts. A generated file that a commit changes to exactly
+    what `mb render` produces is not a hand-edit to punish — that is how this
+    pipeline's own generated files get introduced — whereas a file that drifts
+    is one the render job will silently overwrite on the next push.
+    """
+    repo = resolve_repo(args.repo)
+    drift = _generated_drift(repo)
+    touched = [
         path
         for path in (args.paths or [])
         if Path(path).name in GENERATED_NAMES and ("/" in path or path == "index.md")
     ]
-    for path in owned:
-        print(f"  hand-edited generated file: {path}")
-    print(f"generated-check={'clean' if not owned else 'violations'} owned={len(owned)}")
-    return 1 if owned else 0
+    offenders = sorted(path for path in touched if path in drift)
+    matching = sorted(path for path in touched if path not in drift)
+    for path in matching:
+        print(f"  generated file matches the pipeline: {path}")
+    for path in offenders:
+        print(f"  hand-edited generated file (the next render overwrites it): {path}")
+    print(f"generated-check={'clean' if not offenders else 'violations'} owned={len(touched)} offenders={len(offenders)}")
+    return 1 if offenders else 0
 
 
 # --------------------------------------------------------------------- parser

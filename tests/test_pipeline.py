@@ -337,12 +337,37 @@ class VerifyCliTests(RepoTestCase):
         run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
         self.assertEqual(run_mb("--repo", str(self.repo), "verify", "--date", DATE), 1)
 
-    def test_generated_check_flags_hand_edits(self):
+    def test_generated_check_flags_a_missing_render(self):
+        """JSON without its rendered Markdown is the failure this guard exists for."""
+        draft = self.write_draft(STOCK_DRAFT)
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", draft)
         self.assertEqual(
             run_mb("--repo", str(self.repo), "generated-check", "2026/11/22/stocks.md", "2026/11/22/stocks/20-sapse.json"),
             1,
         )
+        # The data file itself is always fair game — that is what a lane pushes.
         self.assertEqual(run_mb("--repo", str(self.repo), "generated-check", "2026/11/22/stocks/20-sapse.json"), 0)
+
+    def test_generated_check_lets_through_what_render_just_wrote(self):
+        """A generated file is only a hand-edit if it differs from the render.
+
+        Otherwise the commit that introduces the pipeline's own output can never
+        pass CI, and the guard would have to be switched off exactly when it is
+        most needed.
+        """
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
+        self.assertEqual(run_mb("--repo", str(self.repo), "render", "--write"), 0)
+        self.assertEqual(run_mb("--repo", str(self.repo), "generated-check", "2026/11/22/stocks.md"), 0)
+
+        (self.repo / "2026/11/22/stocks.md").write_text("# I wrote this by hand\n", encoding="utf-8")
+        self.assertEqual(run_mb("--repo", str(self.repo), "generated-check", "2026/11/22/stocks.md"), 1)
+
+    def test_generated_check_leaves_legacy_markdown_alone(self):
+        """Nothing renders a Markdown-only day, so nothing erases editing it."""
+        legacy = self.repo / "2026/11/17"
+        legacy.mkdir(parents=True, exist_ok=True)
+        (legacy / "weather.md").write_text("# Weather — Novi Iskar, 17 Nov 2026\n", encoding="utf-8")
+        self.assertEqual(run_mb("--repo", str(self.repo), "generated-check", "2026/11/17/weather.md"), 0)
 
 
 class SubprocessTests(RepoTestCase):
