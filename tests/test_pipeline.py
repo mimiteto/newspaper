@@ -327,6 +327,63 @@ class ProseStyleTests(RepoTestCase):
         self.assertIn("(21–22 Nov 2026)", title)
 
 
+class AmbiguousVerdictTests(RepoTestCase):
+    """`ambiguous` is the decisions API saying "this one was a coin flip".
+
+    It used to be dropped on apply, which made a guess indistinguishable from a
+    confident call — in the JSON, in `verify`, and in the paper.
+    """
+
+    def _verify_output(self) -> str:
+        import contextlib
+        import io
+
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            run_mb("--repo", str(self.repo), "verify", "--date", DATE)
+        return buffer.getvalue()
+
+    def _verdicts(self, *rows: dict) -> Path:
+        payload = {"schema": "mb/verdicts@1", "decided_by": "llama.cpp/test-model", "decided_at": "now", "verdicts": list(rows)}
+        path = self.repo / "uncertain.verdicts.json"
+        path.write_text(json.dumps(payload), encoding="utf-8")
+        return path
+
+    def test_the_flag_survives_apply_and_reaches_the_paper(self):
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
+        verdicts = self._verdicts(
+            {"section": "stocks", "id": "sapse", "news_id": "ms-conference",
+             "brief": True, "price_move": True, "category": "guidance", "confidence": 0.51, "ambiguous": True, "why": "Two readings"},
+            {"section": "stocks", "id": "sapse", "news_id": "old-buyback",
+             "brief": False, "price_move": False, "category": "stale", "confidence": 0.95},
+        )
+        self.assertEqual(run_mb("--repo", str(self.repo), "decide", "--date", DATE, "--verdicts", str(verdicts), "--section", "stocks"), 0)
+
+        day = load_day(self.repo, day_path(DATE))
+        items = load_section_items(self.repo, day.date, "stocks")
+        sapse = next(item for item in items if item.id == "sapse")
+        judged = {entry.id: entry.relevance for entry in sapse.news if entry.relevance}
+        self.assertTrue(judged["ms-conference"].ambiguous)
+        self.assertFalse(judged["old-buyback"].ambiguous, "an absent flag stays confident")
+        self.assertIn("1 judged uncertain", render_section(day, "stocks", items))
+
+    def test_verify_counts_uncertain_verdicts(self):
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
+        verdicts = self._verdicts(
+            {"section": "stocks", "id": "sapse", "news_id": "ms-conference",
+             "brief": True, "price_move": False, "category": "guidance", "ambiguous": True}
+        )
+        run_mb("--repo", str(self.repo), "decide", "--date", DATE, "--verdicts", str(verdicts), "--section", "stocks")
+        self.assertIn("uncertain=1", self._verify_output())
+
+    def test_a_non_boolean_flag_is_refused(self):
+        from mb.model import Item, SectionError
+
+        with self.assertRaisesRegex(SectionError, "ambiguous"):
+            Item.from_json({"id": "x", "section": "stocks", "ticker": "X",
+                            "relevance": {"brief": True, "price_move": False, "ambiguous": "yes"}})
+
+
 class VerifyCliTests(RepoTestCase):
     def test_verify_reports_per_section_counts(self):
         run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
