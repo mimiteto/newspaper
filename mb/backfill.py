@@ -59,6 +59,10 @@ class ParsedDay:
     sections: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
     #: section -> the original file text, kept for the round-trip gate
     originals: dict[str, str] = field(default_factory=dict)
+    #: section -> the original bytes. Text comparison alone would let a CRLF or
+    #: BOM file through: Python reads both as clean UTF-8, and the render would
+    #: then rewrite every line ending of a file it claims to reproduce.
+    raw: dict[str, bytes] = field(default_factory=dict)
 
 
 def _blocks(text: str) -> list[list[str]]:
@@ -138,13 +142,15 @@ def _parse_item(block: list[str], section: str, taken: set[str], order: int) -> 
         elif _URL_RE.match(line.strip()):
             sources.append(line.strip())
         elif line.lstrip().startswith("- "):
-            # A bullet inside an item is the renderer's triaged-news line. The
-            # JSON behind it carries verdicts, confidences and news ids that the
-            # printed paper deliberately does not, so rebuilding `news[]` here
-            # would invent them. Refuse loudly instead of publishing a guess.
+            # A bullet inside an item is normally the renderer's triaged-news
+            # line: the JSON behind it carries verdicts, confidences and news ids
+            # that the printed paper deliberately does not, so rebuilding `news[]`
+            # here would invent them. Anything else that bullet could have been,
+            # the renderer cannot reproduce either — so refuse, either way.
             raise SectionError(
-                f"{section}: cannot backfill a day that already has triaged news — "
-                f"{label!r} was rendered from news verdicts that markdown does not carry"
+                f"{section}: item {label!r} contains a bullet line. Triaged news cannot be "
+                f"backfilled (its verdicts live only in JSON), and no other bullet renders back "
+                f"from item fields, so this day is not convertible as written"
             )
         else:
             text_parts.append(line)
@@ -234,6 +240,7 @@ def parse_day(repo: Path, date: DayPath) -> ParsedDay:
             raise SectionError(f"{date.nested}/{section}.md: no such file — nothing to backfill")
         text = path.read_text(encoding="utf-8")
         parsed.originals[section] = text
+        parsed.raw[section] = path.read_bytes()
         parsed.sections[section] = parse_section(text, section)
         if section == "weather":
             title = next((line for line in text.splitlines() if line.startswith("# Weather — ")), "")
@@ -261,6 +268,12 @@ def round_trip(parsed: ParsedDay) -> dict[str, str]:
         rendered = render_section(day, section, items)
         original = parsed.originals[section]
         if rendered == original:
+            # Same characters, different bytes: the file is still about to change.
+            if parsed.raw.get(section) != rendered.encode("utf-8"):
+                problems[section] = (
+                    "line endings or encoding differ from what the render writes "
+                    "(the text matches, so this is invisible in a prose diff)"
+                )
             continue
         problems[section] = _first_difference(original, rendered)
     return problems

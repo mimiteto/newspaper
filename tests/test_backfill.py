@@ -97,6 +97,16 @@ class RoundTripTests(BackfillRepoTestCase):
         )
         self.assertEqual(conditions["text"], "Mainly clear, with a late northerly, 77% humidity.")
 
+    def test_a_file_with_foreign_line_endings_is_refused(self):
+        """Text equality would pass a CRLF day and then rewrite every one of its
+        line endings while claiming to reproduce it byte for byte."""
+        path = self.directory / "weather.md"
+        path.write_bytes(path.read_text(encoding="utf-8").replace("\n", "\r\n").encode("utf-8"))
+        rc, out = self.backfill("--apply")
+        self.assertEqual(rc, 1, out)
+        self.assertIn("line endings or encoding", out)
+        self.assertFalse((self.directory / "meta.json").exists())
+
     def test_triaged_news_bullets_cannot_be_backfilled(self):
         """The printed paper hides the verdicts; rebuilding news[] would invent them."""
         from mb.backfill import parse_day
@@ -107,7 +117,7 @@ class RoundTripTests(BackfillRepoTestCase):
         text = path.read_text(encoding="utf-8")
         self.assertIn(url_line, text)
         path.write_text(text.replace(url_line, bullet + url_line), encoding="utf-8")
-        with self.assertRaisesRegex(SectionError, "cannot backfill a day that already has triaged news"):
+        with self.assertRaisesRegex(SectionError, "Triaged news cannot be"):
             parse_day(self.repo, self.date)
 
     def test_every_section_file_must_be_present(self):
