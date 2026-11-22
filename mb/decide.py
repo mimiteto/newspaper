@@ -106,17 +106,24 @@ def apply_verdicts(
     verdicts: dict[str, Any],
     *,
     write: bool = True,
+    section: str | None = None,
 ) -> dict[str, Any]:
     """Attach verdicts to the matching items. Returns a summary dict.
 
-    An unmatched ``(section,id[,news_id])`` is an error rather than a warning:
-    a silently ignored verdict means the pipeline and the classifier disagree
-    about what exists, which is exactly how a stale item ends up printed.
+    ``section`` scopes the batch to one section, which is what a publishing
+    lane wants: three lanes race on the same day, and a verdict file naming
+    another lane's sections would succeed or fail depending on whose push
+    landed first. Out-of-scope verdicts are counted as ``skipped``.
+
+    An unmatched ``(id[,news_id])`` inside the scope is an error rather than a
+    warning: a silently ignored verdict means the pipeline and the classifier
+    disagree about what exists, which is how a stale item ends up printed.
     """
+    scope = section
     decided_by = str(verdicts.get("decided_by", ""))
     decided_at = str(verdicts.get("decided_at", ""))
     items_by_section: dict[str, list[Item]] = {}
-    summary = {"applied": 0, "keep": 0, "context": 0, "drop": 0, "sections": set()}
+    summary = {"applied": 0, "keep": 0, "context": 0, "drop": 0, "skipped": 0, "sections": set()}
 
     for index, verdict in enumerate(verdicts["verdicts"]):
         if not isinstance(verdict, dict):
@@ -125,6 +132,9 @@ def apply_verdicts(
         item_id = verdict.get("id")
         if section not in SECTIONS or not isinstance(item_id, str):
             raise VerdictError(f"verdicts[{index}]: need 'section' in {SECTIONS} and a string 'id'")
+        if scope is not None and section != scope:
+            summary["skipped"] += 1
+            continue
         where = f"verdicts[{index}] {section}/{item_id}"
         if section not in items_by_section:
             items_by_section[section] = load_section_items(repo, date, section)
@@ -150,6 +160,7 @@ def apply_verdicts(
                 write_item(repo, date, item)
 
     summary["sections"] = sorted(summary["sections"])
+    summary["scope"] = scope or "all"
     return summary
 
 

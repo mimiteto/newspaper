@@ -32,6 +32,11 @@ from mb.store import (
 
 REPO_ROOT_MARKER = "_config.yml"
 
+#: meta.json fields a publisher may fill in. ``date`` and ``sections`` are
+#: deliberately absent: they identify the day, so completing a stamp from a
+#: draft must never be able to rewrite them.
+STAMP_FIELDS: tuple[str, ...] = ("location", "timezone", "started", "finished", "source")
+
 
 def resolve_repo(explicit: str | None) -> Path:
     """Repo root: --repo, else walk up from cwd looking for ``_config.yml``."""
@@ -75,15 +80,17 @@ def _ensure_day(
     try:
         day = load_day(repo, date)
     except FileNotFoundError:
-        day = Day(date=date, location=location or str((meta or {}).get("location") or "Novi Iskar"))
-    incoming: dict[str, object] = {"location": location, "started": started, "finished": finished}
-    incoming.update(meta or {})
-    for key, value in incoming.items():
-        text = str(value).strip() if value is not None else ""
-        if not text or key not in day.__dict__:
+        day = Day(date=date)
+    # CLI flags outrank the draft's meta block, and both outrank nothing: a
+    # field already on disk keeps its value unless --meta says otherwise.
+    flags = {"location": location, "started": started, "finished": finished}
+    draft = {key: value for key, value in (meta or {}).items() if key in STAMP_FIELDS}
+    for key in STAMP_FIELDS:
+        value = str(flags.get(key) or draft.get(key) or "").strip()
+        if not value:
             continue
-        if force_meta or not str(getattr(day, key, "")):
-            setattr(day, key, text)
+        if force_meta or not str(getattr(day, key, "") or ""):
+            setattr(day, key, value)
     write_day(repo, day)
     return day
 
@@ -140,9 +147,11 @@ def cmd_publish(args: argparse.Namespace) -> int:
     else:
         scratch = tempfile.TemporaryDirectory(prefix="mb-publish-")
         repo = Path(scratch.name)
-        ok, via, attempt = gitops.clone(repo, settings)
-        print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}")
+        ok, via, attempt, error = gitops.clone(repo, settings)
+        print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}"
+              + (f" error={error}" if not ok and error else ""))
         if not ok:
+            print("mb=failed reason=clone")
             return 1
         repo = repo / "repo"
 
@@ -170,8 +179,14 @@ def _publish_into(repo: Path, date: DayPath, args: argparse.Namespace, settings:
 
     if args.verdicts:
         verdicts = decide_mod.load_verdicts(Path(args.verdicts))
-        summary = decide_mod.apply_verdicts(repo, date, verdicts)
-        print(f"decide=ok applied={summary['applied']} keep={summary['keep']} context={summary['context']} drop={summary['drop']}")
+        # Scoped to this lane's section: a verdict file that also names the
+        # other two sections must not depend on whose push landed first.
+        summary = decide_mod.apply_verdicts(repo, date, verdicts, section=section)
+        skipped = f" skipped={summary['skipped']}" if summary["skipped"] else ""
+        print(
+            f"decide=ok section={section} applied={summary['applied']} "
+            f"keep={summary['keep']} context={summary['context']} drop={summary['drop']}{skipped}"
+        )
 
     if args.render:
         _render_day(repo, date, write=True)
@@ -197,11 +212,12 @@ def cmd_decide(args: argparse.Namespace) -> int:
     repo = resolve_repo(args.repo)
     date = day_path(args.date)
     verdicts = decide_mod.load_verdicts(Path(args.verdicts))
-    summary = decide_mod.apply_verdicts(repo, date, verdicts, write=not args.dry_run)
+    summary = decide_mod.apply_verdicts(repo, date, verdicts, write=not args.dry_run, section=args.section)
     prefix = "decide=dry-run" if args.dry_run else "decide=ok"
     print(
-        f"{prefix} applied={summary['applied']} keep={summary['keep']} "
-        f"context={summary['context']} drop={summary['drop']} sections={','.join(summary['sections']) or '-'}"
+        f"{prefix} scope={summary['scope']} applied={summary['applied']} keep={summary['keep']} "
+        f"context={summary['context']} drop={summary['drop']} skipped={summary['skipped']} "
+        f"sections={','.join(summary['sections']) or '-'}"
     )
     print("mb=ok")
     return 0
@@ -315,9 +331,11 @@ def cmd_finalize(args: argparse.Namespace) -> int:
     settings = gitops.GitSettings.from_env()
     scratch = tempfile.TemporaryDirectory(prefix="mb-finalize-")
     repo = Path(scratch.name)
-    ok, via, attempt = gitops.clone(repo, settings)
-    print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}")
+    ok, via, attempt, error = gitops.clone(repo, settings)
+    print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}"
+          + (f" error={error}" if not ok and error else ""))
     if not ok:
+        print("finalize=failed reason=clone")
         return 1
     repo = repo / "repo"
 
@@ -409,6 +427,7 @@ def build_parser() -> argparse.ArgumentParser:
     decide = sub.add_parser("decide", help="apply decisions-API verdicts to items on disk")
     decide.add_argument("--date", required=True)
     decide.add_argument("--verdicts", required=True)
+    decide.add_argument("--section", choices=SECTIONS, help="apply only this section's verdicts")
     decide.add_argument("--dry-run", action="store_true")
     decide.set_defaults(func=cmd_decide)
 

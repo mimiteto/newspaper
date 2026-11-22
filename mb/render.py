@@ -18,6 +18,7 @@ from mb.model import Day, Item, NewsEntry
 from mb.paths import MONTHS, DayPath
 
 MINUS = "\u2212"  # typographic minus, as the brief has always used
+ENDASH = "\u2013"  # ranges (21–22 Nov). MINUS is for numbers; ENDASH is not
 CURRENCY_SYMBOLS = {"EUR": "€", "USD": "$", "GBP": "£", "BGN": "лв"}
 
 SECTION_TITLES = {
@@ -94,7 +95,7 @@ def _news_bullet(entry: NewsEntry, *, full: bool = True) -> str:
     return f"- **[{tag}]** {body}{link}"
 
 
-def _price_line(item: Item) -> str:
+def _price_line(item: Item, *, include_as_of: bool = True) -> str:
     """``€183.68 on Xetra (SAP.DE), −1.79% 1d, −13.95% 5d`` from structured fields."""
     data = item.data
     pieces: list[str] = []
@@ -115,7 +116,7 @@ def _price_line(item: Item) -> str:
         text = fmt_pct(data.get(key))
         if text:
             pieces.append(f"{text} {label}")
-    if item.as_of:
+    if item.as_of and include_as_of:
         pieces.append(f"as of {item.as_of}")
     return ", ".join(pieces)
 
@@ -154,19 +155,38 @@ def _holdings_lines(item: Item) -> list[str]:
     return lines
 
 
+def _has_market_data(item: Item) -> bool:
+    return any(
+        item.data.get(key) is not None
+        for key in ("price", "change_abs", "change_pct_1d", "change_pct_5d", "change_pct_1m")
+    )
+
+
+def _head(label: str) -> str:
+    """``**Label.**`` — and no doubled period when the label already ends in one."""
+    if not label:
+        return ""
+    return f"**{label}**" if label.endswith((".", "!", "?", ":")) else f"**{label}.**"
+
+
 def render_item(item: Item) -> list[str]:
     """One rendered item as Markdown lines (paragraph + optional bullets/links)."""
     label = _item_label(item)
-    lead = _price_line(item)
+    market = _has_market_data(item)
+    lead = _price_line(item, include_as_of=market)
     body = item.text
-    if lead and body:
-        paragraph = f"**{label}.** {lead}. {body}"
-    elif lead:
-        paragraph = f"**{label}.** {lead}."
-    elif label:
-        paragraph = f"**{label}.** {body}"
-    else:
-        paragraph = body
+    # A holding stamps its as-of inside the market clause; a plain item puts it
+    # at the end of its prose, where it reads as a caveat and not a headline.
+    if item.as_of and not market:
+        # Drop the prose's own full stop so the stamp does not become "°C. (as of …)".
+        body = f"{body.rstrip('.')} (as of {item.as_of})" if body else f"as of {item.as_of}"
+
+    chunks = [chunk for chunk in (lead, body) if chunk]
+    if not chunks:
+        return []
+    sentence = ". ".join(chunk.rstrip(".") for chunk in chunks) + "."
+    head = _head(label)
+    paragraph = f"{head} {sentence}" if head else sentence
 
     lines = [paragraph]
 
@@ -198,10 +218,10 @@ def _window(date: DayPath, days: int = 2) -> str:
     end = dt.date(date.year, date.month, date.day)
     start = end - dt.timedelta(days=days - 1)
     if start.month == end.month and start.year == end.year:
-        return f"{start.day}{MINUS}{end.day} {MONTHS[end.month - 1]} {end.year}"
+        return f"{start.day}{ENDASH}{end.day} {MONTHS[end.month - 1]} {end.year}"
     if start.year == end.year:
-        return f"{start.day} {MONTHS[start.month - 1]}{MINUS}{end.day} {MONTHS[end.month - 1]} {end.year}"
-    return f"{start.day} {MONTHS[start.month - 1]} {start.year}{MINUS}{end.day} {MONTHS[end.month - 1]} {end.year}"
+        return f"{start.day} {MONTHS[start.month - 1]}{ENDASH}{end.day} {MONTHS[end.month - 1]} {end.year}"
+    return f"{start.day} {MONTHS[start.month - 1]} {start.year}{ENDASH}{end.day} {MONTHS[end.month - 1]} {end.year}"
 
 
 def _relevance_footer(items: Iterable[Item]) -> list[str]:
