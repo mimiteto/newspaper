@@ -49,7 +49,7 @@ _NUMBER_RE = re.compile(r"-?\d+(?:\.\d+)?")
 
 #: One top-5 index holding. Strict, like the items: `weight` instead of
 #: `weight_pct` used to render that holding with no weight at all.
-HOLDING_FIELDS: frozenset[str] = frozenset({"rank", "name", "weight_pct", "as_of"})
+HOLDING_FIELDS: frozenset[str] = frozenset({"rank", "name", "weight_pct", "weight_display", "as_of"})
 
 #: Item fields every section may use. Anything else is a schema error.
 COMMON_FIELDS: frozenset[str] = frozenset(
@@ -152,6 +152,8 @@ def _norm_holdings(value: object, where: str) -> list[Any]:
         _check_unknown(entry, HOLDING_FIELDS, f"{where} holdings[{index}]")
         if "weight_pct" in entry:
             entry = {**entry, "weight_pct": normalise_number(entry["weight_pct"], f"{where} holdings[{index}]", "weight_pct")}
+        if "weight_display" in entry and not isinstance(entry["weight_display"], str):
+            raise SectionError(f"{where} holdings[{index}]: weight_display must be a string (it is printed verbatim)")
         out.append(entry)
     return out
 

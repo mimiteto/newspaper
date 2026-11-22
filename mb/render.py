@@ -148,7 +148,13 @@ def _holdings_lines(item: Item) -> list[str]:
         weight = _num(entry.get("weight_pct"))
         as_of = str(entry.get("as_of", "")).strip()
         tail = ""
-        if weight is not None:
+        # Sources disagree on precision — stockanalysis gives 2.00%, etftrace
+        # 2.4% — and a float cannot tell those apart, so an authored figure wins
+        # over the formatted one when both are present.
+        display = str(entry.get("weight_display", "")).strip()
+        if display:
+            tail = display
+        elif weight is not None:
             tail = f"{weight:.2f}%"
         if as_of:
             tail = f"{tail} as of {as_of}" if tail else f"as of {as_of}"
@@ -163,11 +169,29 @@ def _has_market_data(item: Item) -> bool:
     )
 
 
+#: A line that already ends in one of these must not gain a full stop. The case
+#: that happened: an ETF lead-in — "Top five weights per stockanalysis.com, as of
+#: 19 Nov 2026:" — introducing its holdings, which became "…2026:.".
+TERMINATORS = (".", "!", "?", ":", ";")
+
+
+def _sentence(chunks: list[str]) -> str:
+    """Join prose chunks and end the sentence exactly once."""
+    chunks = [chunk for chunk in chunks if chunk]
+    if not chunks:
+        return ""
+    text = chunks[0].rstrip(".")
+    for chunk in chunks[1:]:
+        separator = " " if text.endswith((":", ";")) else ". "
+        text = f"{text}{separator}{chunk.rstrip('.')}"
+    return text if text.endswith(TERMINATORS) else f"{text}."
+
+
 def _head(label: str) -> str:
     """``**Label.**`` — and no doubled period when the label already ends in one."""
     if not label:
         return ""
-    return f"**{label}**" if label.endswith((".", "!", "?", ":")) else f"**{label}.**"
+    return f"**{label}**" if label.endswith(TERMINATORS) else f"**{label}.**"
 
 
 def render_item(item: Item) -> list[str]:
@@ -185,7 +209,7 @@ def render_item(item: Item) -> list[str]:
     chunks = [chunk for chunk in (lead, body) if chunk]
     if not chunks:
         return []
-    sentence = ". ".join(chunk.rstrip(".") for chunk in chunks) + "."
+    sentence = _sentence(chunks)
     head = _head(label)
     paragraph = f"{head} {sentence}" if head else sentence
 

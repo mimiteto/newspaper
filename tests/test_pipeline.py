@@ -512,9 +512,12 @@ class SubprocessTests(RepoTestCase):
 
     def test_stdlib_only(self):
         """CI runs this on a bare runner: no third-party imports anywhere in mb/."""
+        # The point is "no third-party imports": the CI runner has nothing installed.
+        # difflib and hashlib are stdlib, added with backfill.py's diff report and
+        # Cyrillic-id fallback; keeping the list explicit is what makes it a guard.
         allowed = {"__future__", "argparse", "collections", "contextlib", "dataclasses", "datetime",
-                   "enum", "fcntl", "json", "os", "pathlib", "re", "subprocess", "sys",
-                   "tempfile", "time", "typing", "zoneinfo"}
+                   "difflib", "enum", "fcntl", "hashlib", "json", "os", "pathlib", "re",
+                   "subprocess", "sys", "tempfile", "time", "typing", "zoneinfo"}
         offenders = set()
         for path in (REPO_ROOT / "mb").glob("*.py"):
             source = path.read_text(encoding="utf-8")

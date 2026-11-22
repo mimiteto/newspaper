@@ -13,6 +13,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+from mb import backfill as backfill_mod
 from mb import decide as decide_mod
 from mb import gitops
 from mb import render as render_mod
@@ -522,6 +523,81 @@ def cmd_generated_check(args: argparse.Namespace) -> int:
     return 1 if offenders else 0
 
 
+def _backfill_plan(repo: Path, date: DayPath, *, apply: bool) -> tuple[int, list[str]]:
+    """Parse a legacy day, and write it as JSON only if the render reproduces it.
+
+    This is the one place where prose a model formatted becomes data, and the
+    failure mode is a quietly reworded newspaper nobody notices because the file
+    is "generated now". So the day is refused unless every section file comes back
+    byte for byte, and a refusal writes nothing at all.
+    """
+    if date in managed_days(repo):
+        print(f"backfill=skipped reason=already-managed path={date.nested}")
+        print("  the JSON is the source of truth for this day; re-running would discard stored verdicts")
+        return 0, []
+
+    parsed = backfill_mod.parse_day(repo, date)
+    problems = backfill_mod.round_trip(parsed)
+    if problems:
+        print(f"backfill=refused path={date.nested} reason=round-trip")
+        print("  re-rendering the parsed items would change the published paper, so nothing was written:")
+        for section, diff in sorted(problems.items()):
+            print(f"  {section}: {diff}")
+        return 1, []
+
+    total = sum(len(records) for records in parsed.sections.values())
+    for section, records in sorted(parsed.sections.items()):
+        print(f"  {section}: {len(records)} items")
+    if not apply:
+        print(f"backfill=ready path={date.nested} items={total} — pass --apply to write")
+        return 0, []
+
+    written = backfill_mod.write_backfill(repo, parsed)
+    paths = sorted(str(path.relative_to(repo)) for path in written)
+    paths.append(f"{date.nested}/meta.json")
+    print(
+        f"backfill=applied date={date.iso} items={total} "
+        f"location={parsed.location!r} started={parsed.started or '—'}"
+    )
+    print("  the markdown files were not touched: the render job rewrites them from this JSON")
+    return 0, paths
+
+
+def cmd_backfill(args: argparse.Namespace) -> int:
+    """Convert a legacy Markdown day into the JSON this pipeline owns."""
+    date = day_path(args.date)
+    apply = args.apply and not args.dry_run
+
+    if args.repo:
+        rc, _ = _backfill_plan(Path(args.repo).resolve(), date, apply=apply)
+        return rc
+
+    settings = gitops.GitSettings.from_env()
+    scratch = tempfile.TemporaryDirectory(prefix="mb-backfill-")
+    repo = Path(scratch.name)
+    ok, via, attempt, error = gitops.clone(repo, settings)
+    print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}"
+          + (f" error={error}" if not ok and error else ""))
+    if not ok:
+        print("backfill=failed reason=clone")
+        return 1
+    repo = repo / "repo"
+
+    rc, paths = _backfill_plan(repo, date, apply=apply)
+    if rc or not paths:
+        return rc
+    gitops.stage(repo, paths)
+    pushed = gitops.commit_and_push(
+        repo, paths, args.message or f"feat(brief): backfill {date.iso} from markdown", settings
+    )
+    print(f"json={pushed.value} files={len(paths)}")
+    if pushed in _PUSH_FAILURES:
+        print(f"backfill=failed reason={'push-conflict' if pushed is gitops.Push.CONFLICT else 'push'}")
+        return 1
+    print("backfill=ok render=github-actions")
+    return 0
+
+
 # --------------------------------------------------------------------- parser
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="mb", description="Morning Brief JSON pipeline")
@@ -594,6 +670,16 @@ def build_parser() -> argparse.ArgumentParser:
     gen = sub.add_parser("generated-check", help="CI guard: flag hand-edits to generated files")
     gen.add_argument("paths", nargs="*")
     gen.set_defaults(func=cmd_generated_check)
+
+    backfill = sub.add_parser(
+        "backfill",
+        help="convert a legacy Markdown day to JSON, refused unless the render is byte-identical",
+    )
+    backfill.add_argument("--date", required=True)
+    backfill.add_argument("--apply", action="store_true", help="write the JSON (default: parse and report)")
+    backfill.add_argument("--dry-run", action="store_true", help="with --apply: parse and report only")
+    backfill.add_argument("--message", default="")
+    backfill.set_defaults(func=cmd_backfill)
 
     return parser
 

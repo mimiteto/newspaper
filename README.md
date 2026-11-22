@@ -136,5 +136,32 @@ box can still land while Actions is pushing generated Markdown. See `mb/gitops.p
 
 Days published before this pipeline are Markdown-only. `mb render` never touches
 their files; it only lists them on the homepage, so every historical link works.
-Backfill them by hand when you want their data queryable, and add a `meta.json`
-to hand a day over to the pipeline.
+
+To move one over, `mb backfill` parses its Markdown into JSON items:
+
+```bash
+python3 -m mb backfill --date 2026-11-22           # parse and report, write nothing
+python3 -m mb backfill --date 2026-11-22 --apply   # write the JSON (and push, without --repo)
+```
+
+It is gated, because the failure mode is a newspaper quietly reworded by a
+parser and then re-published as if it had always been generated: every section
+file is rendered back from the parsed items and compared, byte for byte, with
+what is on disk. One difference refuses the day
+(`backfill=refused reason=round-trip`, printing the first offending line) and
+nothing at all is written.
+
+What comes across: lead paragraphs as `context` items, `**Label.**` items with
+their bare source URLs, holdings lines back into `holdings[]` — including the
+figure's authored precision, so etftrace's `2.4%` stays `2.4%` rather than
+becoming `2.40%` (`weight_display` carries it) — and the `Flags:` block as
+`kind: flag` items. The old `Started`/`Finished` stamps are read back out of the
+hand-written `index.md`, and prose is carried over verbatim: rewording a legacy
+day is a deliberate edit, not something a parser does on its own.
+
+What does not: a day whose Markdown already contains triaged news bullets. Those
+were rendered from `news[]` verdicts the paper deliberately does not print, so
+rebuilding them would mean inventing decisions — the backfill refuses instead.
+
+The day's own `index.md` is the one file that changes, because it becomes a
+generated page: item counts, generated footer, no `Created by` line.
