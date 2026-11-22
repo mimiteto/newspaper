@@ -103,7 +103,8 @@ Python 3.11+, standard library only, no install step:
 python3 -m mb status                                  # days and item counts
 python3 -m mb ingest  --date 2026-11-22 --file draft.json --section stocks
 python3 -m mb decide  --date 2026-11-22 --verdicts verdicts.json
-python3 -m mb publish --date 2026-11-22 --file draft.json --verdicts verdicts.json
+python3 -m mb publish --date 2026-11-22 --dir drafts/ --verdicts verdicts.json   # whole day, one clone
+python3 -m mb publish --date 2026-11-22 --file draft.json --section stocks --verdicts verdicts.json
 python3 -m mb render  --write                         # regenerate every day + homepage
 python3 -m mb render  --check                         # CI: fail if generated files are stale
 python3 -m mb verify  --date 2026-11-22 --require-decisions
@@ -111,13 +112,19 @@ python3 -m mb finalize --date 2026-11-22              # verify + stamp finished 
 python3 -m unittest discover -s tests
 ```
 
-The pi side calls the same commands through `~/.pi/agent/scripts/morning-brief/mb-cli`,
-so the box and CI never run two dialects of the same logic.
+`publish --dir <fixture>` takes a directory of `<section>.json` drafts and
+publishes the whole day in one clone, one commit per section — that is what the
+morning-brief run does. `--only stocks` re-publishes a single section, and an
+unchanged section commits nothing (`section=noop`), so retrying is free.
+
+The pi side calls the same commands through
+`~/.pi/agent/scripts/morning-brief/mb-cli`, so the box and CI never run two
+dialects of the same logic.
 
 `publish` and `finalize` clone a fresh copy themselves (a publish decision is
 only worth what a current `origin/master` makes it): SSH first through the gcr
-ssh-agent, HTTPS fallback, advisory lock and retries, because three lanes sharing
-one GitHub identity otherwise collide. See `mb/gitops.py`.
+ssh-agent, HTTPS fallback, advisory lock and retries — because a re-run from the
+box can still land while Actions is pushing generated Markdown. See `mb/gitops.py`.
 
 ## Legacy days
 

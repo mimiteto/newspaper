@@ -137,10 +137,48 @@ def cmd_ingest(args: argparse.Namespace) -> int:
     return 0
 
 
+def _discover_drafts(directory: Path, only: list[str]) -> list[tuple[str | None, str]]:
+    """Find ``<section>.json`` (or ``<section>/items.json``) drafts to publish.
+
+    Batch mode is why one command can replace the three-lane fan-out: a JSON
+    publish is a clone plus a small commit, so running the sections in
+    sequence against a single clone is both faster and free of the push race
+    the parallel lanes needed locks, rebases and slot-claims to survive.
+    """
+    if not directory.is_dir():
+        sys.exit(f"mb=failed reason=no-such-dir {directory}")
+    found: list[tuple[str | None, str]] = []
+    for section in only or list(SECTIONS):
+        flat = directory / f"{section}.json"
+        nested = directory / section / "items.json"
+        if flat.is_file():
+            found.append((section, str(flat)))
+        elif nested.is_file():
+            found.append((section, str(nested)))
+    if not found:
+        sys.exit(f"mb=failed reason=no-drafts-in {directory} (expected <section>.json)")
+    return found
+
+
+def _only_sections(value: str) -> list[str]:
+    if not value:
+        return []
+    wanted = [part.strip() for part in value.split(",") if part.strip()]
+    bogus = sorted(set(wanted) - set(SECTIONS))
+    if bogus:
+        sys.exit(f"mb=failed reason=bad-section {', '.join(bogus)} not in {', '.join(SECTIONS)}")
+    return wanted
+
+
 def cmd_publish(args: argparse.Namespace) -> int:
     date = day_path(args.date)
     settings = gitops.GitSettings.from_env()
     scratch: tempfile.TemporaryDirectory[str] | None = None
+
+    if bool(args.file) == bool(args.dir):
+        sys.exit("mb=failed reason=choose-one pass either --file <draft> or --dir <fixture-dir>")
+    only = _only_sections(args.only)
+    drafts = _discover_drafts(Path(args.dir), only) if args.dir else [(args.section, args.file)]
 
     if args.repo:
         repo = Path(args.repo).resolve()
@@ -155,16 +193,32 @@ def cmd_publish(args: argparse.Namespace) -> int:
             return 1
         repo = repo / "repo"
 
+    rc = 0
+    totals: dict[str, int] = {}
     try:
-        rc = _publish_into(repo, date, args, settings)
+        for section, draft in drafts:
+            section_rc, count = _publish_into(repo, date, args, settings, draft_file=draft, section=section)
+            totals[section or "?"] = count
+            rc = rc or section_rc
     finally:
         if scratch is not None:
             scratch.cleanup()
+
+    print(f"publish={'ok' if rc == 0 else 'failed'} sections={len(totals)} items={sum(totals.values())} "
+          + " ".join(f"{name}={count}" for name, count in totals.items()))
     return rc
 
 
-def _publish_into(repo: Path, date: DayPath, args: argparse.Namespace, settings: gitops.GitSettings) -> int:
-    items, draft_meta = _draft_items(repo, date, args.file, args.section, merge=args.merge)
+def _publish_into(
+    repo: Path,
+    date: DayPath,
+    args: argparse.Namespace,
+    settings: gitops.GitSettings,
+    *,
+    draft_file: str,
+    section: str | None,
+) -> tuple[int, int]:
+    items, draft_meta = _draft_items(repo, date, draft_file, section, merge=args.merge)
     section = items[0].section
 
     _ensure_day(
@@ -202,10 +256,9 @@ def _publish_into(repo: Path, date: DayPath, args: argparse.Namespace, settings:
     sha = gitops.head_sha(repo, short=8)
     print(f"section={pushed.value} file={section} items={len(written)} sha={sha} path={date.nested}/{section}")
     if pushed is gitops.Push.FAILED:
-        print("mb=failed reason=push")
-        return 1
-    print("mb=ok")
-    return 0
+        print(f"mb=failed reason=push section={section}")
+        return 1, len(written)
+    return 0, len(written)
 
 
 def cmd_decide(args: argparse.Namespace) -> int:
@@ -414,7 +467,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     publish = sub.add_parser("publish", help="clone (unless --repo), ingest, commit, push")
     publish.add_argument("--date", required=True)
-    publish.add_argument("--file", required=True)
+    publish.add_argument("--file", help="one draft JSON file (single section)")
+    publish.add_argument("--dir", help="fixture dir with <section>.json drafts: publishes them all in one clone")
+    publish.add_argument("--only", default="", help="with --dir: comma-separated sections to publish")
     publish.add_argument("--section", choices=SECTIONS)
     publish.add_argument("--verdicts", help="decisions-API verdicts file to apply before pushing")
     publish.add_argument("--location", default="")
