@@ -45,6 +45,15 @@ _BULLET_RE = re.compile(r"^-\s+(?P<body>.+)$")
 _WEIGHT_RE = re.compile(r"^(?P<name>.+?)\s+—\s+(?P<weight>\d+(?:\.\d+)?)%(?:\s+as of\s+(?P<as_of>.+))?$")
 _TICKER_RE = re.compile(r"^(?P<ticker>[A-Za-z][A-Za-z0-9]{0,5})(?=$|[ —-])")
 _ZONE_RE = re.compile(r"[A-Z][a-z]+/[A-Z][a-zA-Z_]+")  # 'Europe/Sofia' in a generation stamp
+_SUBHEAD_RE = re.compile(r"^##\s+\S")
+_INLINE_FLAGS_RE = re.compile(r"^Flags:\s+(?P<body>\S.*)$")
+# An item's first line. A holding line (``**1.** Apple …``) belongs to the item
+# above it, so it is excluded and never opens a block of its own.
+_ITEM_LEAD_RE = re.compile(r"^\*\*(?!\d+\.\*\*).+?\.\*\*\s")
+
+#: The only layout changes a backfill may make, each by this name. Anything
+#: outside the list has to come back byte for byte.
+RESTYLE_RULES: tuple[str, ...] = ("headline-derived", "items-split", "sources-bare", "flags-inline")
 
 
 @dataclass
@@ -82,6 +91,33 @@ def _blocks(text: str) -> list[list[str]]:
     if current:
         out.append(current)
     return out
+
+
+def _starts_block(line: str) -> bool:
+    """Would the renderer print a blank line before this line?"""
+    return bool(_SUBHEAD_RE.match(line) or (_ITEM_LEAD_RE.match(line) and not _HOLDING_RE.match(line)))
+
+
+def _split_blocks(block: list[str]) -> list[list[str]]:
+    """Split a paragraph at item lead-ins and sub-headings.
+
+    The old papers ran several items and their source lines together with no
+    blank line between them, while the renderer separates blocks with one.
+    Splitting is the parser being accurate, not permission to restyle: every
+    item, source and order is preserved, and the blank lines the renderer adds
+    are counted and reported by :func:`restyle`.
+    """
+    parts: list[list[str]] = []
+    current: list[str] = []
+    for line in block:
+        if current and _starts_block(line):
+            parts.append(current)
+            current = [line]
+        else:
+            current.append(line)
+    if current:
+        parts.append(current)
+    return parts
 
 
 def _transliterate(value: str) -> str:
@@ -177,17 +213,54 @@ def _parse_item(block: list[str], section: str, taken: set[str], order: int) -> 
     return record
 
 
+def _inline_flags(block: list[str]) -> list[str]:
+    """``Flags: one sentence`` paragraphs — one flag each, continuations joined."""
+    out: list[str] = []
+    for line in block:
+        stripped = line.strip()
+        match = _INLINE_FLAGS_RE.match(stripped)
+        if match:
+            out.append(match.group("body"))
+        elif out:
+            out[-1] = f"{out[-1]} {stripped}"
+        else:
+            out.append(stripped)
+    return out
+
+
 def parse_section(text: str, section: str) -> list[dict[str, Any]]:
-    """One section file into item records: contexts, items (with holdings and
-    sources), then the ``Flags:`` block as flag items."""
+    """One section file into item records: contexts, sub-headings, items (with
+    holdings and sources), then the ``Flags:`` block as flag items."""
+    blocks = [part for block in _blocks(text) for part in _split_blocks(block)]
     records: list[dict[str, Any]] = []
     taken: set[str] = set()
     order = 10
     flags: list[str] = []
-    for block in _blocks(text):
+    for index, block in enumerate(blocks):
         first = block[0].strip()
         if _FLAGS_RE.match(first):
             flags.extend(match.group("body") for line in block[1:] if (match := _BULLET_RE.match(line.strip())))
+            continue
+        if index == len(blocks) - 1 and _INLINE_FLAGS_RE.match(first):
+            # The old papers' closing "Flags: …" paragraph. The renderer always
+            # prints flags last, so a final one lands on the trailing list
+            # unchanged; a flag written mid-file would MOVE, and moving a caveat
+            # around the prose it qualifies is an editorial decision, not a
+            # migration. Those are left to the gate to refuse.
+            flags.extend(_inline_flags(block))
+            continue
+        if _SUBHEAD_RE.match(first):
+            records.append(
+                {
+                    "schema": ITEM_SCHEMA,
+                    "section": section,
+                    "id": _item_id(section, first, taken),
+                    "order": order,
+                    "kind": "heading",
+                    "text": first.removeprefix("## ").strip(),
+                }
+            )
+            order += 10
             continue
         item = _parse_item(block, section, taken, order)
         if item is not None:
@@ -269,12 +342,75 @@ def parse_day(repo: Path, date: DayPath) -> ParsedDay:
     return parsed
 
 
-def round_trip(parsed: ParsedDay) -> dict[str, str]:
+def restyle(text: str, title: str) -> tuple[str, dict[str, int]]:
+    """The original file with only the declared layout normalisations applied.
+
+    Four changes, none of which loses a word, a figure or a link: a headline
+    re-derived from the date (the old ones carried a weekday nobody needs when
+    the path says ``2026/11/14``), items that ran together given the blank line
+    the renderer puts between blocks, bulleted source lines printed bare, and a
+    closing ``Flags: …`` sentence moved into the trailing list.
+
+    The counts come back with the text because the caller has to print what it is
+    about to change. A migration that restyles a published page in silence is
+    precisely what the gate exists to prevent, so ``round_trip`` compares against
+    this and nothing more permissive.
+    """
+    counts: dict[str, int] = {}
+    lines = text.splitlines()
+    if lines and lines[0].startswith("# ") and lines[0] != title:
+        counts["headline-derived"] = 1
+
+    raw = _blocks(text)
+    splits = sum(len(_split_blocks(block)) - 1 for block in raw)
+    if splits:
+        counts["items-split"] = splits
+
+    # The same block list the parser sees, so "is this the closing paragraph?"
+    # is answered identically on both sides of the gate.
+    pieces = [part for block in raw for part in _split_blocks(block)]
+    blocks: list[str] = []
+    flags: list[str] = []
+    for index, piece_block in enumerate(pieces):
+        first = piece_block[0].strip()
+        if index == len(pieces) - 1 and _INLINE_FLAGS_RE.match(first) and not _FLAGS_RE.match(first):
+            flags = _inline_flags(piece_block)
+            counts["flags-inline"] = len(flags)
+            continue
+        piece: list[str] = []
+        for line in piece_block:
+            bullet = _BULLETED_URL_RE.match(line.strip())
+            if bullet:
+                counts["sources-bare"] = counts.get("sources-bare", 0) + 1
+                piece.append(bullet.group("url"))
+                continue
+            piece.append(line.rstrip())
+        blocks.append("\n".join(piece))
+
+    if flags:
+        blocks.append("Flags:\n" + "\n".join(f"- {flag}" for flag in flags))
+    return "\n\n".join([title, *blocks]) + "\n", counts
+
+
+def restyle_report(parsed: ParsedDay) -> dict[str, dict[str, int]]:
+    """Per section, the rules a restyled conversion would apply. Sections that
+    need nothing are omitted, so an empty report means nothing is rewritten."""
+    day = load_day_from(parsed)
+    report: dict[str, dict[str, int]] = {}
+    for section, original in parsed.originals.items():
+        _, counts = restyle(original, section_title(day, section))
+        if counts:
+            report[section] = counts
+    return report
+
+
+def round_trip(parsed: ParsedDay, *, allow_restyle: bool = False) -> dict[str, str]:
     """section -> why re-rendering the parsed items would change that file.
 
-    Empty means every section file is reproduced byte for byte, which is the only
-    result a backfill may act on. A non-empty value names the legacy construct
-    responsible where one is recognisable, so a refusal says what to do about it.
+    Empty means every section file is reproduced byte for byte — or, when
+    ``allow_restyle`` is set, byte for byte against the declared normalisations
+    in :func:`restyle`. A non-empty value names the construct responsible where
+    one is recognisable, so a refusal says what to do about it.
     """
     day = load_day_from(parsed)
     problems: dict[str, str] = {}
@@ -282,6 +418,13 @@ def round_trip(parsed: ParsedDay) -> dict[str, str]:
         items = [Item.from_json(record, section=section, where=f"{section}/{record.get('id')}") for record in records]
         rendered = render_section(day, section, items)
         original = parsed.originals[section]
+        title = section_title(day, section)
+        if rendered != original and allow_restyle:
+            expected, _ = restyle(original, title)
+            # A restyled file is expected to differ from what is on disk; nothing
+            # else is, so the byte check below only governs an exact conversion.
+            if rendered == expected:
+                continue
         if rendered == original:
             # Same characters, different bytes: the file is still about to change.
             if parsed.raw.get(section) != rendered.encode("utf-8"):
@@ -290,7 +433,7 @@ def round_trip(parsed: ParsedDay) -> dict[str, str]:
                     "(the text matches, so this is invisible in a prose diff)"
                 )
             continue
-        problems[section] = _diagnose(section, original, rendered, records, section_title(day, section))
+        problems[section] = _diagnose(section, original, rendered, records, title, allow_restyle=allow_restyle)
     return problems
 
 
@@ -306,38 +449,48 @@ def load_day_from(parsed: ParsedDay) -> Day:
     )
 
 
-#: The legacy layouts that cannot come back through this renderer, matched against
-#: the original file rather than inferred from a diff.
-_SUBHEADING_RE = re.compile(r"^##\s+\S", re.MULTILINE)
-_INLINE_FLAGS_RE = re.compile(r"^Flags:\s+\S", re.MULTILINE)
-_BULLETED_SOURCE_RE = re.compile(r"^-\s+https?://", re.MULTILINE)
-_PACKED_LEAD_IN_RE = re.compile(r"\n\*\*[^*\n]+\.\*\*\s")
-
-
-def _diagnose(section: str, original: str, rendered: str, records: list[dict[str, Any]], title: str) -> str:
+def _diagnose(
+    section: str,
+    original: str,
+    rendered: str,
+    records: list[dict[str, Any]],
+    title: str,
+    *,
+    allow_restyle: bool = False,
+) -> str:
     """Name the construct that blocks the conversion.
 
     ``reason=round-trip`` plus a diff fragment makes an operator guess. Each cause
-    below is the pipeline's layout being deliberate, not the parser being nearly
-    good enough, and each is checked against the original text — so the report
-    cites evidence instead of interpreting a diff.
+    is matched against the original text rather than inferred from a diff, and
+    carries the restyle rule that would resolve it — so the refusal either names
+    the flag to pass or states plainly that no flag will do.
     """
     lines = original.splitlines()
     first = lines[0] if lines else ""
-    causes: list[str] = []
+    raw = _blocks(original)
+    blocks = [part for block in raw for part in _split_blocks(block)]
+    causes: list[tuple[str, str]] = []
+
     if first.startswith("# ") and first != title:
-        causes.append(f"the headline is authored ({first!r}) while the pipeline derives {title!r} from the date")
-    if _SUBHEADING_RE.search(original):
-        causes.append('items are grouped under a "## …" sub-heading the pipeline does not emit')
-    if _INLINE_FLAGS_RE.search(original):
-        causes.append('flags are one inline paragraph ("Flags: …"); the pipeline prints a trailing "Flags:" list')
-    if _BULLETED_SOURCE_RE.search(original):
-        causes.append('source URLs are list items ("- https://…"); the pipeline prints them bare')
-    if any(_PACKED_LEAD_IN_RE.search(str(record.get("text", ""))) for record in records):
-        causes.append("several items share one block with single newlines between them; the pipeline separates items with a blank line")
-    if causes:
-        return "; ".join(causes[:3])
-    return _first_difference(original, rendered)
+        causes.append(("headline-derived", f"the headline is authored ({first!r}) while the pipeline derives {title!r}"))
+    inline = [i for i, block in enumerate(blocks) if _INLINE_FLAGS_RE.match(block[0].strip())]
+    if inline:
+        last_only = inline == [len(blocks) - 1]
+        where = "as the closing paragraph" if last_only else "mid-file, where the pipeline cannot put them"
+        causes.append((
+            "flags-inline" if last_only else "",
+            f'flags are one inline paragraph ("Flags: …") {where}; the pipeline prints a trailing "Flags:" list',
+        ))
+    if any(_BULLETED_URL_RE.match(line.strip()) for line in lines):
+        causes.append(("sources-bare", 'source URLs are list items ("- https://…"); the pipeline prints them bare'))
+
+    if not causes:
+        return _first_difference(original, rendered)
+    report = "; ".join(text for _, text in causes[:3])
+    fixable = sorted({rule for rule, _ in causes if rule})
+    if fixable and len(fixable) == len(causes) and not allow_restyle:
+        report += f" — --allow-restyle converts this ({', '.join(fixable)})"
+    return report
 
 
 def _first_difference(before: str, after: str) -> str:
@@ -363,4 +516,13 @@ def write_backfill(repo: Path, parsed: ParsedDay) -> list[Path]:
     return written
 
 
-__all__ = ["ParsedDay", "parse_day", "parse_section", "round_trip", "write_backfill"]
+__all__ = [
+    "RESTYLE_RULES",
+    "ParsedDay",
+    "parse_day",
+    "parse_section",
+    "restyle",
+    "restyle_report",
+    "round_trip",
+    "write_backfill",
+]

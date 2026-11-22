@@ -523,44 +523,65 @@ def cmd_generated_check(args: argparse.Namespace) -> int:
     return 1 if offenders else 0
 
 
-def _backfill_plan(repo: Path, date: DayPath, *, apply: bool) -> tuple[int, list[str]]:
+def _restyle_summary(report: dict[str, dict[str, int]]) -> str:
+    """``headline-derived=2 items-split=7`` — the restyle, counted, for logs and commits."""
+    totals = {rule: sum(counts.get(rule, 0) for counts in report.values()) for rule in backfill_mod.RESTYLE_RULES}
+    return " ".join(f"{rule}={count}" for rule, count in totals.items() if count)
+
+
+def _backfill_plan(
+    repo: Path, date: DayPath, *, apply: bool, allow_restyle: bool = False
+) -> tuple[int, list[str], str]:
     """Parse a legacy day, and write it as JSON only if the render reproduces it.
 
     This is the one place where prose a model formatted becomes data, and the
     failure mode is a quietly reworded newspaper nobody notices because the file
     is "generated now". So the day is refused unless every section file comes back
-    byte for byte, and a refusal writes nothing at all.
+    byte for byte — or, with ``allow_restyle``, byte for byte against the four
+    declared layout normalisations, whose counts are printed and carried into the
+    commit message. A refusal writes nothing at all.
     """
     if date in managed_days(repo):
         print(f"backfill=skipped reason=already-managed path={date.nested}")
         print("  the JSON is the source of truth for this day; re-running would discard stored verdicts")
-        return 0, []
+        return 0, [], ""
 
     parsed = backfill_mod.parse_day(repo, date)
-    problems = backfill_mod.round_trip(parsed)
+    problems = backfill_mod.round_trip(parsed, allow_restyle=allow_restyle)
     if problems:
         print(f"backfill=refused path={date.nested} reason=round-trip")
         print("  re-rendering the parsed items would change the published paper, so nothing was written:")
         for section, diff in sorted(problems.items()):
             print(f"  {section}: {diff}")
-        return 1, []
+        return 1, [], ""
 
+    report = backfill_mod.restyle_report(parsed) if allow_restyle else {}
+    summary = _restyle_summary(report)
     total = sum(len(records) for records in parsed.sections.values())
     for section, records in sorted(parsed.sections.items()):
-        print(f"  {section}: {len(records)} items")
+        counts = report.get(section, {})
+        detail = ",".join(f"{rule}:{counts[rule]}" for rule in backfill_mod.RESTYLE_RULES if rule in counts)
+        print(f"  {section}: {len(records)} items" + (f"  restyle={detail}" if detail else ""))
     if not apply:
-        print(f"backfill=ready path={date.nested} items={total} — pass --apply to write")
-        return 0, []
+        print(
+            f"backfill=ready path={date.nested} items={total}"
+            + (f" restyle={summary.replace(' ', ',')}" if summary else "")
+            + " — pass --apply to write"
+        )
+        return 0, [], summary
 
     written = backfill_mod.write_backfill(repo, parsed)
     paths = sorted(str(path.relative_to(repo)) for path in written)
     paths.append(f"{date.nested}/meta.json")
     print(
-        f"backfill=applied date={date.iso} items={total} "
-        f"location={parsed.location!r} started={parsed.started or '—'}"
+        f"backfill=applied date={date.iso} items={total}"
+        + (f" restyle={summary.replace(' ', ',')}" if summary else "")
+        + f" location={parsed.location!r} started={parsed.started or '—'}"
     )
+    if summary:
+        print("  layout only: every word, figure and URL is carried across unchanged")
     print("  the markdown files were not touched: the render job rewrites them from this JSON")
-    return 0, paths
+    return 0, paths, summary
 
 
 def cmd_backfill(args: argparse.Namespace) -> int:
@@ -569,7 +590,7 @@ def cmd_backfill(args: argparse.Namespace) -> int:
     apply = args.apply and not args.dry_run
 
     if args.repo:
-        rc, _ = _backfill_plan(Path(args.repo).resolve(), date, apply=apply)
+        rc, _, _ = _backfill_plan(Path(args.repo).resolve(), date, apply=apply, allow_restyle=args.allow_restyle)
         return rc
 
     settings = gitops.GitSettings.from_env()
@@ -583,13 +604,20 @@ def cmd_backfill(args: argparse.Namespace) -> int:
         return 1
     repo = repo / "repo"
 
-    rc, paths = _backfill_plan(repo, date, apply=apply)
+    rc, paths, summary = _backfill_plan(repo, date, apply=apply, allow_restyle=args.allow_restyle)
     if rc or not paths:
         return rc
+    message = args.message or f"feat(brief): backfill {date.iso} from markdown"
+    if summary and not args.message:
+        # The commit that changes a published page has to say what it changed,
+        # because the JSON diff alone will not show a rewrapped headline.
+        message += (
+            f"\n\nLayout restyled by --allow-restyle: {summary}."
+            "\nProse, figures, holdings and source URLs are carried across verbatim;"
+            " the pre-migration files remain in history."
+        )
     gitops.stage(repo, paths)
-    pushed = gitops.commit_and_push(
-        repo, paths, args.message or f"feat(brief): backfill {date.iso} from markdown", settings
-    )
+    pushed = gitops.commit_and_push(repo, paths, message, settings)
     print(f"json={pushed.value} files={len(paths)}")
     if pushed in _PUSH_FAILURES:
         print(f"backfill=failed reason={'push-conflict' if pushed is gitops.Push.CONFLICT else 'push'}")
@@ -678,6 +706,13 @@ def build_parser() -> argparse.ArgumentParser:
     backfill.add_argument("--date", required=True)
     backfill.add_argument("--apply", action="store_true", help="write the JSON (default: parse and report)")
     backfill.add_argument("--dry-run", action="store_true", help="with --apply: parse and report only")
+    backfill.add_argument(
+        "--allow-restyle",
+        action="store_true",
+        help="accept the four declared layout normalisations (headline, blank lines between "
+        "items, bare source lines, inline Flags into the trailing list); each is counted and "
+        "named in the output and the commit message",
+    )
     backfill.add_argument("--message", default="")
     backfill.set_defaults(func=cmd_backfill)
 

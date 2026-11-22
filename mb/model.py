@@ -15,6 +15,8 @@ Item ``kind`` decides where a rendered item lands:
 ``item``     a normal ``**Label.** prose`` bullet in its section
 ``context``  prose right under the section title (snapshot / generation line)
 ``flag``     collected under the section's trailing ``Flags:`` block
+``heading``  an in-place ``## …`` sub-heading. The pipeline never authors one; a
+             backfilled day carries the grouping the old paper printed
 """
 
 from __future__ import annotations
@@ -29,7 +31,7 @@ from mb.paths import SECTIONS, DayPath, item_filename, parse_item_filename
 DAY_SCHEMA = "mb/day@1"
 ITEM_SCHEMA = "mb/item@1"
 
-KINDS: tuple[str, ...] = ("item", "context", "flag")
+KINDS: tuple[str, ...] = ("item", "context", "flag", "heading")
 
 #: ``currency`` is stored as an ISO code so the JSON stays queryable and the
 #: renderer decides how to print it. The symbol forms are accepted on the way in
@@ -582,7 +584,9 @@ def load_meta_bytes(raw: bytes | str, *, path: str, date: DayPath | None = None)
 
 def sort_items(items: list[Item]) -> list[Item]:
     """Stable publication order: order, then kind, then id."""
-    kind_rank = {"context": 0, "item": 1, "flag": 2}
+    # A heading travels with the items around it, so it shares their rank and
+    # lands wherever its ``order`` puts it.
+    kind_rank = {"context": 0, "heading": 1, "item": 1, "flag": 2}
     return sorted(items, key=lambda item: (item.order, kind_rank[item.kind], item.id))
 
 
