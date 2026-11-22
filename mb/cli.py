@@ -363,11 +363,15 @@ def cmd_verify(args: argparse.Namespace) -> int:
         if section == "stocks":
             news = [entry for item in items for entry in item.news]
             judged = [entry for entry in news if entry.relevance is not None]
-            suffix = f" news={len(judged)}/{len(news)}"
             unjudged = len(news) - len(judged)
-            if unjudged and args.require_decisions:
-                print(f"  {section}: {unjudged} news items without a decisions verdict")
-                failed = True
+            suffix = f" news={len(judged)}/{len(news)}"
+            if unjudged:
+                # Reported even when not enforced: a day closed with
+                # --no-require-decisions should still say so in its own output.
+                suffix += f" UNJUDGED={unjudged}"
+                if args.require_decisions:
+                    print(f"  {section}: {unjudged} news items without a decisions verdict")
+                    failed = True
         print(f"  {section:20s} items={len(kept)}/{len(items)}{suffix}")
         if not kept and not args.allow_empty:
             print(f"  {section}: EMPTY — nothing to print")
@@ -524,14 +528,24 @@ def build_parser() -> argparse.ArgumentParser:
     verify = sub.add_parser("verify", help="check a day's JSON is complete and valid")
     verify.add_argument("--date", required=True)
     verify.add_argument("--allow-empty", action="store_true")
-    verify.add_argument("--require-decisions", action="store_true", help="fail on stock news with no verdict")
+    verify.add_argument(
+        "--require-decisions",
+        action="store_true",
+        help="fail on stock news with no verdict (diagnostic here; finalize enforces it by default)",
+    )
     verify.set_defaults(func=cmd_verify)
 
     finalize = sub.add_parser("finalize", help="clone, verify, stamp finished, push meta.json")
     finalize.add_argument("--date", required=True)
     finalize.add_argument("--finished", default="")
     finalize.add_argument("--allow-empty", action="store_true")
-    finalize.add_argument("--require-decisions", action="store_true")
+    finalize.add_argument(
+        "--require-decisions",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="the day may not close with stock news nobody judged (default); "
+        "--no-require-decisions is for a run where the classifier was unavailable",
+    )
     finalize.set_defaults(func=cmd_finalize)
 
     gen = sub.add_parser("generated-check", help="CI guard: flag hand-edits to generated files")
