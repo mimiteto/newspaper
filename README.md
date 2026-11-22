@@ -148,19 +148,32 @@ python3 -m mb backfill --date 2026-11-22 --apply   # write the JSON (and push, w
 It is gated, because the failure mode is a newspaper quietly reworded by a
 parser and then re-published as if it had always been generated: every section
 file is rendered back from the parsed items and compared, byte for byte, with
-what is on disk. One difference refuses the day
-(`backfill=refused reason=round-trip`, printing the first offending line) and
-nothing at all is written.
+what is on disk. One difference refuses the day (`backfill=refused
+reason=round-trip`) and nothing at all is written — naming the construct that
+blocked it, because a diff fragment at 07:00 is not a diagnosis:
+
+```text
+  weather: flags are one inline paragraph ("Flags: …"); the pipeline prints a trailing "Flags:" list
+  stocks:  the headline is authored ('# Holdings — Sat 14 Nov 2026') while the pipeline derives '# Holdings — 14 Nov 2026'
+```
+
+Older papers predate this layout on purpose — items separated by a single newline,
+flags as one inline sentence, per-day headlines carrying the weekday, `## ETFs`
+grouping — so most legacy days refuse, and they should: converting them would
+restyle or retitle published pages. The homepage still lists them and
+`generated-check` reports them as unverified rather than pretending otherwise.
 
 What comes across: lead paragraphs as `context` items, `**Label.**` items with
-their bare source URLs, holdings lines back into `holdings[]` — including the
+their source URLs (bulleted in the old papers, bare in the pipeline's own
+output), holdings lines back into `holdings[]` — including the
 figure's authored precision, so etftrace's `2.4%` stays `2.4%` rather than
 becoming `2.40%` (`weight_display` carries it) — and the `Flags:` block as
 `kind: flag` items. The old `Started`/`Finished` stamps are read back out of the
 hand-written `index.md`, and prose is carried over verbatim: rewording a legacy
 day is a deliberate edit, not something a parser does on its own.
 
-What does not: a day whose Markdown already contains triaged news bullets. Those
+What does not: a day whose Markdown already contains triaged news bullets —
+bullets that are neither source URLs nor the pipeline's own `Flags:` list. Those
 were rendered from `news[]` verdicts the paper deliberately does not print, so
 rebuilding them would mean inventing decisions — the backfill refuses instead.
 
