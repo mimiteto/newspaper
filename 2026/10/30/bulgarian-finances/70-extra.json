@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "extra",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Extra",
+  "text": "Economist Shtero Nozharov (as published: Щерьо Ножаров) told NOVA News on 30 Oct that the government's own plan-smetka books a 7.3% deficit for 2027 without measures, so the real fight is over the structural deficit and the accrual-basis figure — whether it stays at 5% or falls to the 4.3% the government claims, which Brussels will only accept as durable structural measures.",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://www.focus-news.net/novini/Bylgaria/Ikonomist-Ne-e-realistichno-deficitut-v-byudzheta-da-se-svie-do-3-ot-dogodina-3048416"
+    }
+  ]
+}

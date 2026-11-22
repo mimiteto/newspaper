@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "work-permits-zchrb",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Work permits (ЗЧРБ)",
+  "text": "46,920 third-country nationals were granted access to the Bulgarian labour market in the first nine months of 2026, from 84 countries, of whom roughly 14,000 were registered for seasonal work of up to 90 days and just under 1,000 hold an EU Blue Card; Uzbekistan is the largest sending country at over 12,000 people, followed by Nepal and Turkey (Employment Agency data, BNR, 30 Oct).",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://bnrnews.bg/horizont/post/550426/47-hil-grazhdani-na-treti-strani-s-dostap-do-balgarskiya-pazar-na-truda"
+    }
+  ]
+}

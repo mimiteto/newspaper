@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "labour-migration-evidence",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Labour-migration evidence",
+  "text": "The Market Intelligence Research Institute (ИПИ) analysis published 29 Oct finds no clear displacement of Bulgarian workers and no downward wage pressure from third-country hiring: about 29,000 third-country nationals held a work-purpose residence permit at end-2025 (almost 5× the 2020 level) but remain under 2% of 2.9mln employed, while NSI projects the working-age population to fall from ~3.9mln now to 3.1mln by 2050.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://ime.bg/analyses/rabotnitsite-ot-treti-strani-bylgariya-tendentsii-sezonnost-i-vyzdejstvie/"
+    }
+  ]
+}

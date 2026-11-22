@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "weather",
+  "kind": "flag",
+  "text": "the two providers disagree on tomorrow's high (Open-Meteo 10.6 °C vs wttr.in 10 °C) and on sunset (17:21 vs 17:23); wttr.in's j1 feed publishes no daily precipitation total, so the 7.20 / 1.60 / 10.50 mm figures are Open-Meteo model sums from a single model run. Caveat: `precipitation_probability_max` is the highest hourly probability in the day, not the probability of measurable rain over 24 h, and the Sunday 1 November total (10.50 mm) is the least stable of the three days.",
+  "order": 901
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "the Forbes Bulgaria headline (\"близо 1 млрд. евро дефицит само за тримесечие\") mixes two different series — NSI's Q2 2026 general-government deficit of €944.4mln and the Finance Ministry's cash-basis cumulative deficit of €3.6bn to end-September — so the figures are not additive and one outlet's \"quarter\" is another's \"nine months\"; all items above are Bulgarian-language and the paraphrases and translations are mine, and outlets quote some amounts in лв and others in € (the €3.6bn and the 2.8%/7.3% ratios are as published, not converted here). Nothing published in Държавен вестник in the 29–30 Oct window touched the tracked buckets, so the pending items to watch are the ones that stalled at the тристранен съвет on 23 Oct — the €660 minimum wage from 1 January 2027 and the phased VAT registration threshold from €51,130 to €60,000 (then €70,000 in 2028, €75,000 in 2029) — both still awaiting the Council of Ministers; say the word and I will pull the draft ЗДДС amendment text and the exact threshold wording.",
+  "order": 901
+}

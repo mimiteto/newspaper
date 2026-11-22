@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "temperature",
+  "section": "weather",
+  "kind": "item",
+  "label": "Temperature",
+  "text": "A mild, saturated Friday: high 9.0 °C / low 7.8 °C for today, with 8.3 °C at the 17:15 reference hour (feels like 7.1 °C) and 0.20 mm in the 15-minute model interval ending there.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code,sunrise,sunset&timezone=Europe%2FSofia&forecast_days=3"
+    }
+  ]
+}

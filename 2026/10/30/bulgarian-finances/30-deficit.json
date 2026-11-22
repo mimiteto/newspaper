@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "deficit",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Deficit",
+  "text": "Finance Ministry execution data to end-September show a €3.6bn cumulative deficit — 2.8% of projected GDP and roughly half of the €7.2bn planned for 2026 — with revenues of €33.9bn (+11% y/y) against €37.5bn of spending, and some €520mln of the gap opening in September alone; NSI separately booked a €944.4mln general-government deficit for Q2 2026 (3.12% of GDP for the quarter).",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://forbesbulgaria.com/2026-10-30/darzhavata-otchita-blizo-1-mlrd-evro-defitsit-samo-za-trimesechie/"
+    }
+  ]
+}

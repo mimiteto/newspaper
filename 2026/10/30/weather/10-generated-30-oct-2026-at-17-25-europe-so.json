@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "generated-30-oct-2026-at-17-25-europe-so",
+  "section": "weather",
+  "kind": "context",
+  "text": "Generated 30 Oct 2026 at 17:25 Europe/Sofia (EET, UTC+2); Open-Meteo values are as of 17:15 local and the wttr.in cross-check as of 17:28 local for Novi Iskar (42.7382 / 23.5975, 670 m elevation).",
+  "order": 10
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "dkng",
+  "section": "stocks",
+  "kind": "item",
+  "label": "dkng",
+  "text": "$20.38, −0.34 (−1.67%) as of 30 Oct 2026 10:57 a.m. EDT (market open), trading the fresh ProPublica report on ramping federal and state scrutiny of DraftKings, FanDuel and other sports-betting apps; previous close $20.72, market cap $10.12bn.",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/DKNG/"
+    }
+  ]
+}

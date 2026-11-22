@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "the S&P 500 number is an intraday level taken at 11:41 a.m. ET while the Xetra ETF quotes were struck at 15:19–16:20 CET (inside the Xetra session, which closes 17:30 CET) and the US session had about 3.5 hours left, so ETF and index percentage moves are not directly comparable; holdings weights are not same-day and sit on four different dates (sxr8 27 Oct, lyp6 26 Oct, ubu7 23 Oct, vhyL 30 Sep 2026 — the vhyL weights are a month old); vhyL is shown in GBP from the LSE listing while sxr8/ubu7/lyp6 are EUR from Xetra; dfnd has no live quote (last trade 12 Dec 2025, $9.08M fund) and should be checked for a delisting/liquidation notice before it is sized.",
+  "order": 901
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "aapl",
+  "section": "stocks",
+  "kind": "item",
+  "label": "aapl",
+  "text": "$348.47, −0.44 (−0.13%) as of 30 Oct 2026 11:00 a.m. EDT (market open), holding a $5.09T market cap while sentiment on the December-ending quarter stays cautious and UBS reiterated Neutral on iPhone wait times, with 2 November flagged as the next big catalyst; previous close $348.91.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/AAPL/"
+    }
+  ]
+}

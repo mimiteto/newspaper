@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "sources-google-news-rss-bg-when-2d",
+  "section": "bulgarian-finances",
+  "kind": "context",
+  "text": "Sources: Google News RSS (bg, `when:2d`) across BTA/БГНЕС-feeding portals, plus forbesbulgaria.com, minfin.bg, focus-news.net (NOVA News), bnrnews.bg and ime.bg; cross-checked with web_search (МФ/НСТС, квоти за чужда работна ръка, Държавен вестник) — no in-window Държавен вестник hit on the tracked buckets.",
+  "order": 10
+}

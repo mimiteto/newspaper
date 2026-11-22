@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "excessive-deficit-procedure",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Excessive-deficit procedure",
+  "text": "The Finance Ministry's 29 October position confirms the draft budgetary plan went to the Commission on 15 October, that the official assessment lands on 24 November inside the European Semester autumn package, and that the EDP opened in July 2026 still frames the 2027 envelope — while insisting \"decisions on the concrete allocation of public funds remain within the state's powers\", after the Commission publicly contradicted the President's claim that Brussels is dictating the spending.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://www.minfin.bg/bg/news/2026-10-29/13556"
+    },
+    {
+      "url": "https://www.focus-news.net/novini/Bylgaria/Ikonomist-Ne-e-realistichno-deficitut-v-byudzheta-da-se-svie-do-3-ot-dogodina-3048416"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "mb/item@1",
+  "id": "ubu7",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Alphabet (GOOG)",
+      "weight_pct": 1.65,
+      "as_of": "23 Oct 2026",
+      "rank": 6
+    },
+    {
+      "name": "Broadcom",
+      "weight_pct": 1.61,
+      "as_of": "23 Oct 2026",
+      "rank": 7
+    },
+    {
+      "name": "Meta Platforms",
+      "weight_pct": 1.57,
+      "as_of": "23 Oct 2026",
+      "rank": 8
+    }
+  ],
+  "kind": "item",
+  "label": "ubu7",
+  "text": "€109.71, −1.14 (−1.03%) on Xetra as of 30 Oct 2026 16:07 CET (delayed) — the MSCI World global leg, and a much flatter book than sxr8 (1,273 holdings, top 10 only 27.06%, TER 0.06%); its top five are the same five names already weighted under sxr8, so the next distinct positions are listed with their real ranks.",
+  "order": 90,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/UBU7/holdings/"
+    }
+  ]
+}

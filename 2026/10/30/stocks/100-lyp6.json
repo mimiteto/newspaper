@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "lyp6",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "ASML Holding",
+      "weight_pct": 4.17,
+      "as_of": "26 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "Roche Holding",
+      "weight_pct": 2.26,
+      "as_of": "26 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "HSBC Holdings",
+      "weight_pct": 2.1,
+      "as_of": "26 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Shell",
+      "weight_pct": 2.0,
+      "as_of": "26 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "Novartis",
+      "weight_pct": 1.96,
+      "as_of": "26 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "lyp6",
+  "text": "€319.45, −1.10 (−0.34%) on Xetra as of 30 Oct 2026 16:11 CET (delayed) — the STOXX Europe 600 leg (613 holdings, top 10 20.53%, TER 0.07%), holding up far better than the US large-cap tape intraday.",
+  "order": 100,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/LYP6/holdings/"
+    }
+  ]
+}

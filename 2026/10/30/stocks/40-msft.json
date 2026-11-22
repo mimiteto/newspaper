@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "msft",
+  "section": "stocks",
+  "kind": "item",
+  "label": "msft",
+  "text": "$522.17, −7.97 (−1.50%) as of 30 Oct 2026 10:58 a.m. EDT (market open) — giving back part of the 4% pop from the 28 October cloud-driven earnings beat as the AI trade skidded with the wider growth tape; previous close $530.14.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/MSFT/"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "conditions",
+  "section": "weather",
+  "kind": "item",
+  "label": "Conditions",
+  "text": "Light rain (WMO code 61) at the reference hour under 100 % cloud cover, 96 % relative humidity and a 4 km/h wind; wttr.in reads the same air as light drizzle, 9 °C / feels 8 °C, 97 % humidity, and credits today with 0.0 hours of sunshine.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://wttr.in/Novi+Iskar?format=j1"
+    }
+  ]
+}

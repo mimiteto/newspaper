@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "sapse",
+  "section": "stocks",
+  "kind": "item",
+  "label": "sapse",
+  "text": "€212.75 on Xetra, +3.85 (+1.84%) as of 30 Oct 2026 15:19 CET (delayed) — the best line on the list on a red day, after Erste Group Bank lifted SAP to Buy on 30 Oct, clawing back part of the 29 Oct slide that came on ServiceNow and Fortinet results weighing on software peers; market cap €245.56bn.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SAP/"
+    }
+  ]
+}

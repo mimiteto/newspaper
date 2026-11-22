@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "market",
+  "section": "stocks",
+  "kind": "context",
+  "text": "Market snapshot: S&P 500 at 7,598.75, −121.64 (−1.58%) at 11:41:53 a.m. ET — an intraday print, not a close, with US markets still open — as the Nasdaq fell more than 2% on rotation out of tech after Amazon and Intel results, Intel headed for its worst day on Wall Street in over 50 years on weak guidance, and the VIX jumped 15.47% to 19.86 (CNBC quote feed / CNBC top news, 30 Oct 2026); Xetra quotes below were struck around 15:19–16:20 CET (delayed), US quotes around 10:20–11:10 a.m. EDT; FX: 0.89509 EUR per USD, i.e. EUR/USD ≈ 1.1172 (ECB reference rate for 30 Oct 2026), BGN pegged at 1.95583/EUR.",
+  "order": 10
+}

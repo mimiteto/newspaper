@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "budget-2027-slips",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Budget 2027 slips",
+  "text": "The draft budget misses the statutory end-of-October tabling deadline: deputy PM Atanas Peklanov said on 29–30 Oct it will most likely be presented next week, and that the deficit cannot drop to 3% of GDP next year, with Brussels' requirement being 3% only by 2029.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://www.focus-news.net/novini/Bylgaria/Ikonomist-Ne-e-realistichno-deficitut-v-byudzheta-da-se-svie-do-3-ot-dogodina-3048416"
+    }
+  ]
+}
