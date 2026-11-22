@@ -473,6 +473,21 @@ def _generated_drift(repo: Path) -> set[str]:
     return drift
 
 
+def _rendered_paths(repo: Path) -> set[str]:
+    """Every path the pipeline writes.
+
+    A generated-*named* file outside this set belongs to nobody: a legacy
+    day's ``weather.md`` has the right name but no renderer, so nothing can
+    vouch for its bytes and nothing will erase them either.
+    """
+    out: set[str] = {"index.md"}
+    for date in managed_days(repo):
+        for section in load_day(repo, date).sections:
+            out.add(f"{date.nested}/{section}.md")
+        out.add(f"{date.nested}/index.md")
+    return out
+
+
 def cmd_generated_check(args: argparse.Namespace) -> int:
     """Guard for CI: a human commit must not edit what the next render erases.
 
@@ -482,6 +497,7 @@ def cmd_generated_check(args: argparse.Namespace) -> int:
     is one the render job will silently overwrite on the next push.
     """
     repo = resolve_repo(args.repo)
+    rendered = _rendered_paths(repo)
     drift = _generated_drift(repo)
     touched = [
         path
@@ -489,12 +505,20 @@ def cmd_generated_check(args: argparse.Namespace) -> int:
         if Path(path).name in GENERATED_NAMES and ("/" in path or path == "index.md")
     ]
     offenders = sorted(path for path in touched if path in drift)
-    matching = sorted(path for path in touched if path not in drift)
-    for path in matching:
-        print(f"  generated file matches the pipeline: {path}")
+    verified = sorted(path for path in touched if path in rendered and path not in drift)
+    unrendered = sorted(path for path in touched if path not in rendered)
+    for path in verified:
+        print(f"  matches the pipeline byte for byte: {path}")
+    for path in unrendered:
+        # Saying "fine" here would be a lie of omission: it is not verified,
+        # merely unprotected. The reader has to know which of the two they have.
+        print(f"  not rendered by the pipeline, so not verified either: {path}")
     for path in offenders:
         print(f"  hand-edited generated file (the next render overwrites it): {path}")
-    print(f"generated-check={'clean' if not offenders else 'violations'} owned={len(touched)} offenders={len(offenders)}")
+    print(
+        f"generated-check={'clean' if not offenders else 'violations'} "
+        f"owned={len(touched)} offenders={len(offenders)} unverified={len(unrendered)}"
+    )
     return 1 if offenders else 0
 
 
