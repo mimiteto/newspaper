@@ -22,7 +22,7 @@ from typing import Any
 
 from mb.model import ITEM_SCHEMA, Day, Item, SectionError, slugify
 from mb.paths import SECTIONS, DayPath
-from mb.render import render_section
+from mb.render import render_section, section_title
 from mb.store import day_dir, write_day
 
 #: Bulgarian labels have no ASCII slug, and a hash for every id makes the corpus
@@ -39,6 +39,7 @@ _ITEM_RE = re.compile(r"^\*\*(?P<label>.+?)\.\*\*(?:\s+(?P<text>.*))?$")
 _HOLDING_RE = re.compile(r"^\*\*(?P<rank>\d+)\.\*\*\s+(?P<rest>.+)$")
 _HEADING_RE = re.compile(r"^#\s")
 _URL_RE = re.compile(r"^https?://\S+$")
+_BULLETED_URL_RE = re.compile(r"^-\s*(?P<url>https?://\S+)\s*$")
 _FLAGS_RE = re.compile(r"^Flags:\s*$")
 _BULLET_RE = re.compile(r"^-\s+(?P<body>.+)$")
 _WEIGHT_RE = re.compile(r"^(?P<name>.+?)\s+—\s+(?P<weight>\d+(?:\.\d+)?)%(?:\s+as of\s+(?P<as_of>.+))?$")
@@ -139,18 +140,23 @@ def _parse_item(block: list[str], section: str, taken: set[str], order: int) -> 
             entry = _parse_holding(holding.group("rest"))
             entry.setdefault("rank", int(holding.group("rank")))
             holdings.append(entry)
+        elif bullet_url := _BULLETED_URL_RE.match(line.strip()):
+            # Older papers bulleted their source lines. The URL is the data, so
+            # read it as one; the bullet is layout, and it is the round-trip gate
+            # below that decides whether the printed page survives the conversion.
+            sources.append(bullet_url.group("url"))
         elif _URL_RE.match(line.strip()):
             sources.append(line.strip())
         elif line.lstrip().startswith("- "):
-            # A bullet inside an item is normally the renderer's triaged-news
-            # line: the JSON behind it carries verdicts, confidences and news ids
-            # that the printed paper deliberately does not, so rebuilding `news[]`
-            # here would invent them. Anything else that bullet could have been,
-            # the renderer cannot reproduce either — so refuse, either way.
+            # A bullet that is not a source URL is normally the renderer's
+            # triaged-news line: the JSON behind it carries verdicts, confidences
+            # and news ids that the printed paper deliberately does not, so
+            # rebuilding `news[]` here would invent them. Anything else that
+            # bullet could have been, the renderer cannot reproduce it either.
             raise SectionError(
-                f"{section}: item {label!r} contains a bullet line. Triaged news cannot be "
-                f"backfilled (its verdicts live only in JSON), and no other bullet renders back "
-                f"from item fields, so this day is not convertible as written"
+                f"{section}: item {label!r} contains a bullet that is not a source URL. A triaged "
+                f"news bullet cannot be backfilled — its verdict lives only in JSON — and no other "
+                f"bullet renders back from item fields, so this day is not convertible as written"
             )
         else:
             text_parts.append(line)
@@ -234,10 +240,18 @@ def parse_day(repo: Path, date: DayPath) -> ParsedDay:
         started=_stamp(index_text, "Started"),
         finished=_stamp(index_text, "Finished"),
     )
+    missing = [section for section in SECTIONS if not (directory / f"{section}.md").is_file()]
+    if missing:
+        # A day that printed only some sections cannot be taken over: the render
+        # writes every section in meta.json, so it would add pages the old paper
+        # never had. Better a refusal than a half-populated archive day.
+        raise SectionError(
+            f"{date.nested}: not a complete day — no "
+            f"{', '.join(f'{name}.md' for name in missing)}; "
+            f"a backfill would print placeholder sections where the paper printed nothing"
+        )
     for section in SECTIONS:
         path = directory / f"{section}.md"
-        if not path.is_file():
-            raise SectionError(f"{date.nested}/{section}.md: no such file — nothing to backfill")
         text = path.read_text(encoding="utf-8")
         parsed.originals[section] = text
         parsed.raw[section] = path.read_bytes()
@@ -256,10 +270,11 @@ def parse_day(repo: Path, date: DayPath) -> ParsedDay:
 
 
 def round_trip(parsed: ParsedDay) -> dict[str, str]:
-    """section -> first difference between the render and the original file.
+    """section -> why re-rendering the parsed items would change that file.
 
     Empty means every section file is reproduced byte for byte, which is the only
-    result a backfill may act on.
+    result a backfill may act on. A non-empty value names the legacy construct
+    responsible where one is recognisable, so a refusal says what to do about it.
     """
     day = load_day_from(parsed)
     problems: dict[str, str] = {}
@@ -275,7 +290,7 @@ def round_trip(parsed: ParsedDay) -> dict[str, str]:
                     "(the text matches, so this is invisible in a prose diff)"
                 )
             continue
-        problems[section] = _first_difference(original, rendered)
+        problems[section] = _diagnose(section, original, rendered, records, section_title(day, section))
     return problems
 
 
@@ -289,6 +304,40 @@ def load_day_from(parsed: ParsedDay) -> Day:
         finished=parsed.finished,
         source="backfill from markdown",
     )
+
+
+#: The legacy layouts that cannot come back through this renderer, matched against
+#: the original file rather than inferred from a diff.
+_SUBHEADING_RE = re.compile(r"^##\s+\S", re.MULTILINE)
+_INLINE_FLAGS_RE = re.compile(r"^Flags:\s+\S", re.MULTILINE)
+_BULLETED_SOURCE_RE = re.compile(r"^-\s+https?://", re.MULTILINE)
+_PACKED_LEAD_IN_RE = re.compile(r"\n\*\*[^*\n]+\.\*\*\s")
+
+
+def _diagnose(section: str, original: str, rendered: str, records: list[dict[str, Any]], title: str) -> str:
+    """Name the construct that blocks the conversion.
+
+    ``reason=round-trip`` plus a diff fragment makes an operator guess. Each cause
+    below is the pipeline's layout being deliberate, not the parser being nearly
+    good enough, and each is checked against the original text — so the report
+    cites evidence instead of interpreting a diff.
+    """
+    lines = original.splitlines()
+    first = lines[0] if lines else ""
+    causes: list[str] = []
+    if first.startswith("# ") and first != title:
+        causes.append(f"the headline is authored ({first!r}) while the pipeline derives {title!r} from the date")
+    if _SUBHEADING_RE.search(original):
+        causes.append('items are grouped under a "## …" sub-heading the pipeline does not emit')
+    if _INLINE_FLAGS_RE.search(original):
+        causes.append('flags are one inline paragraph ("Flags: …"); the pipeline prints a trailing "Flags:" list')
+    if _BULLETED_SOURCE_RE.search(original):
+        causes.append('source URLs are list items ("- https://…"); the pipeline prints them bare')
+    if any(_PACKED_LEAD_IN_RE.search(str(record.get("text", ""))) for record in records):
+        causes.append("several items share one block with single newlines between them; the pipeline separates items with a blank line")
+    if causes:
+        return "; ".join(causes[:3])
+    return _first_difference(original, rendered)
 
 
 def _first_difference(before: str, after: str) -> str:
