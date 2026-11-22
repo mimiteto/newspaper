@@ -115,6 +115,7 @@ python3 -m mb render  --write                         # regenerate every day + h
 python3 -m mb render  --check                         # CI: fail if generated files are stale
 python3 -m mb verify  --date 2026-11-22 --require-decisions
 python3 -m mb finalize --date 2026-11-22              # verify + stamp finished + push
+python3 -m mb backfill --date 2026-11-22              # legacy Markdown day -> JSON, byte-gated
 python3 -m unittest discover -s tests
 ```
 
