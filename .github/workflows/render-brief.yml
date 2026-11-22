@@ -93,7 +93,7 @@ jobs:
       - name: Render every JSON-managed day
         run: python3 -m mb render --write
 
-      - name: Commit
+      - name: Commit and push the rendered paper
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BOT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
@@ -101,15 +101,41 @@ jobs:
           set -eu
           git config user.name "Morning Brief Pipeline"
           git config user.email "$BOT_EMAIL"
+          PUSH_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          python3 -m mb render --write
           git add -A
           if git diff --cached --quiet; then
             echo "render=noop"
             exit 0
           fi
           git commit -q -m "chore(pipeline): render brief markdown from JSON"
-          PUSH_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push -q "$PUSH_URL" HEAD:master
-          echo "render=pushed"
+
+          # The three sections are pushed seconds apart, so master very often
+          # moves while this job is rendering. Without a retry the push is
+          # rejected, the job dies, and the day sits on master as JSON with no
+          # paper until someone notices. Re-rendering on top of whatever arrived
+          # is always safe: this commit is derived content and holds no input.
+          for attempt in 1 2 3; do
+            if git push -q "$PUSH_URL" HEAD:master; then
+              echo "render=pushed attempt=$attempt"
+              exit 0
+            fi
+            echo "render=retry attempt=$attempt reason=non-fast-forward"
+            git fetch -q "$PUSH_URL" master
+            if ! git rebase -q FETCH_HEAD; then
+              # Generated files derive from JSON, so two of them cannot
+              # disagree; a conflict here means something else is wrong.
+              echo "  rebase conflicted — reporting instead of guessing"
+              git rebase --abort
+              continue
+            fi
+            python3 -m mb render --write
+            git add -A
+            git diff --cached --quiet || git commit -q --amend --no-edit
+          done
+          echo "render=failed reason=push-race"
+          exit 1
 
       - name: Rebuild GitHub Pages
         # Pushes made with GITHUB_TOKEN do not reliably wake the legacy Pages
