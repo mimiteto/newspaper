@@ -11,6 +11,7 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import re
 import unittest
 
 from conftest_fixtures import RepoTestCase
@@ -117,15 +118,44 @@ class RoundTripTests(BackfillRepoTestCase):
         text = path.read_text(encoding="utf-8")
         self.assertIn(url_line, text)
         path.write_text(text.replace(url_line, bullet + url_line), encoding="utf-8")
-        with self.assertRaisesRegex(SectionError, "Triaged news cannot be"):
+        with self.assertRaisesRegex(SectionError, "A triaged news bullet cannot be backfilled"):
             parse_day(self.repo, self.date)
 
-    def test_every_section_file_must_be_present(self):
+    def test_a_bulleted_source_line_is_a_source_and_not_an_accusation(self):
+        """Older papers bulleted their URLs. Reading one as triaged news told the
+        operator their weather file contained decisions it never had."""
+        from mb.backfill import parse_section
+
+        records = parse_section(
+            "# Weather — Novi Iskar, 30 Oct 2026\n\n**Conditions.** Overcast.\n- https://wttr.in/Novi+Iskar?format=j1\n",
+            "weather",
+        )
+        conditions = next(record for record in records if record["id"] == "conditions")
+        self.assertEqual(conditions["sources"], ["https://wttr.in/Novi+Iskar?format=j1"])
+
+    def test_a_partial_day_is_refused_by_name(self):
+        """Rendering writes every section named in meta.json, so taking over a day
+        that printed only some of them would add pages the paper never had."""
         from mb.backfill import parse_day
 
         (self.directory / "bulgarian-finances.md").unlink()
-        with self.assertRaisesRegex(SectionError, "bulgarian-finances.md: no such file"):
+        with self.assertRaisesRegex(SectionError, r"not a complete day — no bulgarian-finances\.md"):
             parse_day(self.repo, self.date)
+
+    def test_a_refusal_names_the_legacy_construct_that_blocked_it(self):
+        """Older papers wrote one inline ``Flags: …`` paragraph where the pipeline
+        prints a trailing list. The refusal has to say that, not dump a diff."""
+        path = self.directory / "weather.md"
+        text = path.read_text(encoding="utf-8")
+        rewritten = re.sub(r"Flags:\n- ([^\n]+)", r"Flags: \1", text)
+        self.assertNotEqual(rewritten, text, "the fixture no longer has a Flags list to inline")
+        path.write_text(rewritten, encoding="utf-8")
+
+        rc, out = self.backfill("--apply")
+        self.assertEqual(rc, 1)
+        self.assertIn("inline paragraph", out)
+        self.assertIn("weather:", out)
+        self.assertFalse((self.directory / "meta.json").exists())
 
 
 class ApplyTests(BackfillRepoTestCase):
