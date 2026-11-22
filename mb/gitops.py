@@ -121,38 +121,54 @@ def clone(
     settings: GitSettings | None = None,
     *,
     quiet: bool = True,
-) -> tuple[bool, str, int]:
+) -> tuple[bool, str, int, str]:
     """Clone the brief repo into ``<destination>/repo``.
 
-    Returns ``(ok, via, attempt)``. Always starts from scratch: a publish
-    decision must be taken against a current ``origin/master``, so a reused
-    clone could mis-report "already published".
+    Returns ``(ok, via, attempt, error)`` — ``error`` is the last git stderr,
+    so ``clone=failed`` says why instead of leaving a lane to guess. Always
+    starts from scratch: a publish decision must be taken against a current
+    ``origin/master``, or it can mis-report "already published".
     """
     settings = settings or GitSettings.from_env()
     repo = destination / "repo"
     destination.mkdir(parents=True, exist_ok=True)
+    # Global git flags go AFTER the subcommand: `git --quiet clone` is not a
+    # thing, `git clone --quiet` is. Getting this wrong fails every clone with
+    # an usage error, which looks exactly like an auth failure from the outside.
     flag = ["--quiet"] if quiet else []
+    error = ""
 
     for attempt in range(1, settings.tries + 1):
         subprocess.run(["rm", "-rf", str(repo)], check=False)
         ssh_env = {**os.environ, "SSH_AUTH_SOCK": settings.ssh_agent}
         with _network_lock(settings.lock_path):
-            proc = run_git([*flag, "clone", settings.ssh_url, str(repo)], env=ssh_env)
+            proc = run_git(["clone", *flag, settings.ssh_url, str(repo)], env=ssh_env)
         if proc.returncode == 0:
-            return True, "ssh", attempt
+            return True, "ssh", attempt, ""
+        error = (proc.stderr or proc.stdout).strip()[-200:]
         subprocess.run(["rm", "-rf", str(repo)], check=False)
 
         # gh's git-credential helper serves the HTTPS remote, so this keeps
         # working while ssh-agent auth is misbehaving.
         with _network_lock(settings.lock_path):
-            proc = run_git([*flag, "clone", settings.https_url, str(repo)])
+            proc = run_git(["clone", *flag, settings.https_url, str(repo)])
         if proc.returncode == 0:
-            return True, "https", attempt
+            return True, "https", attempt, ""
+        error = (proc.stderr or proc.stdout).strip()[-200:]
         subprocess.run(["rm", "-rf", str(repo)], check=False)
         if attempt < settings.tries:
             time.sleep(settings.delay)
 
-    return False, "none", settings.tries
+    return False, "none", settings.tries, error
+
+
+def ls_remote_head(settings: GitSettings | None = None) -> str:
+    """Current remote branch sha (8), for a proof line the caller can quote."""
+    settings = settings or GitSettings.from_env()
+    proc = run_git(["ls-remote", "--heads", settings.ssh_url, settings.branch])
+    if proc.returncode != 0 or not proc.stdout.strip():
+        return ""
+    return proc.stdout.split()[0][:8]
 
 
 def head_sha(repo: Path, *, short: int = 0) -> str:

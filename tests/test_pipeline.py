@@ -126,6 +126,37 @@ class DecideTests(RepoTestCase):
             1,
         )
 
+    def test_a_lane_only_applies_its_own_sections_verdicts(self):
+        """Three lanes race on one day: a shared verdict file must not reach
+        into another lane's sections, or its success depends on who pushed first."""
+        weather = {
+            "section": "weather",
+            "items": [{"id": "temperature", "label": "Temperature today", "text": "High 12 °C."}],
+        }
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(weather, "w.json"))
+        mixed = {
+            "schema": "mb/verdicts@1",
+            "verdicts": [
+                {"section": "stocks", "id": "sapse", "news_id": "ms-conference", "brief": True, "price_move": False},
+                {"section": "weather", "id": "temperature", "brief": True, "price_move": False},
+            ],
+        }
+        self.assertEqual(
+            run_mb("--repo", str(self.repo), "decide", "--date", DATE,
+                   "--verdicts", self.write_draft(mixed, "mixed.json"), "--section", "stocks"),
+            0,
+        )
+        weather_item = load_section_items(self.repo, day_path(DATE), "weather")[0]
+        self.assertIsNone(weather_item.relevance, "the weather lane owns the weather verdicts")
+        # Same file, no scope: both sections are applied.
+        self.assertEqual(
+            run_mb("--repo", str(self.repo), "decide", "--date", DATE,
+                   "--verdicts", self.write_draft(mixed, "mixed.json")),
+            0,
+        )
+        weather_item = load_section_items(self.repo, day_path(DATE), "weather")[0]
+        self.assertIsNotNone(weather_item.relevance)
+
     def test_verdicts_survive_a_republish_of_the_same_draft(self):
         """Re-ingesting after judging must not silently un-judge the items."""
         run_mb("--repo", str(self.repo), "decide", "--date", DATE, "--verdicts", self.write_draft(VERDICTS, "v.json"))
@@ -209,6 +240,91 @@ class RenderTests(RepoTestCase):
         day = load_day(self.repo, self.date)
         body = render_section(day, "weather", [])
         self.assertEqual(body, "# Weather — Novi Iskar, 22 Nov 2026\n")
+
+
+class MetaStampTests(RepoTestCase):
+    """meta.json is written by three lanes, so filling it in must be careful.
+
+    The bug this pins down: a lane's `--started` flag was overwritten by the
+    empty `started` of the draft's own meta block, so the day published with no
+    start stamp at all. `date` is guarded too — a stamp merge that could write
+    a string over the day identity would corrupt the record.
+    """
+
+    def test_cli_flags_outrank_an_empty_draft_meta(self):
+        from mb.cli import _ensure_day
+        from mb.model import Day
+
+        draft_meta = Day(date=day_path(DATE)).to_json()  # a draft with no meta block
+        day = _ensure_day(self.repo, day_path(DATE), started="2026-11-22T06:00:00+02:00", meta=draft_meta)
+        self.assertEqual(day.started, "2026-11-22T06:00:00+02:00")
+        self.assertEqual(load_day(self.repo, day_path(DATE)).started, "2026-11-22T06:00:00+02:00")
+
+    def test_stamp_merge_never_rewrites_the_day_identity(self):
+        from mb.cli import _ensure_day
+
+        _ensure_day(self.repo, day_path(DATE), meta={"date": "1999-01-01", "sections": ["weather"], "schema": "evil"})
+        stored = json.loads((self.repo / "2026/11/22/meta.json").read_text(encoding="utf-8"))
+        self.assertEqual(stored["date"], DATE)
+        self.assertEqual(stored["sections"], ["weather", "stocks", "bulgarian-finances"])
+        self.assertEqual(stored["schema"], "mb/day@1")
+
+    def test_first_non_empty_wins_unless_forced(self):
+        from mb.cli import _ensure_day
+
+        _ensure_day(self.repo, day_path(DATE), started="2026-11-22T06:00:00+02:00")
+        _ensure_day(self.repo, day_path(DATE), started="2026-11-22T09:00:00+02:00")
+        self.assertEqual(load_day(self.repo, day_path(DATE)).started, "2026-11-22T06:00:00+02:00")
+        _ensure_day(self.repo, day_path(DATE), started="2026-11-22T09:00:00+02:00", force_meta=True)
+        self.assertEqual(load_day(self.repo, day_path(DATE)).started, "2026-11-22T09:00:00+02:00")
+
+
+class ProseStyleTests(RepoTestCase):
+    """Small typography regressions that make the paper look machine-made."""
+
+    def _render(self, item: dict) -> str:
+        from mb.cli import _ensure_day
+        from mb.ingest import ingest
+        from mb.model import Item
+
+        _ensure_day(self.repo, day_path(DATE), location="Novi Iskar")
+        day = load_day(self.repo, day_path(DATE))
+        parsed = Item.from_json({**item, "section": item.get("section", "weather")})
+        ingest(self.repo, day.date, [parsed])
+        return render_section(day, item.get("section", "weather"), [parsed])
+
+    def test_as_of_is_a_prose_suffix_when_there_is_no_market_data(self):
+        body = self._render({"id": "temperature", "label": "Temperature today", "text": "High 12.0 °C.", "as_of": "09:15 local"})
+        self.assertIn("**Temperature today.** High 12.0 °C (as of 09:15 local).", body)
+        self.assertNotIn(".** as of", body, "an as-of must not become the headline")
+
+    def test_market_items_keep_their_as_of_in_the_priced_clause(self):
+        body = self._render({"id": "aapl", "section": "stocks", "ticker": "AAPL", "price": 342.56, "currency": "USD", "as_of": "16:00 ET"})
+        self.assertIn("**AAPL.** $342.56, as of 16:00 ET.", body)
+
+    def test_label_ending_in_a_period_does_not_double_it(self):
+        body = self._render({"id": "mrz", "label": "МРЗ 660 евро от 1 януари 2027 г.", "text": "Прието."})
+        self.assertIn("**МРЗ 660 евро от 1 януари 2027 г.** Прието.", body)
+        self.assertNotIn("..", body)
+
+    def test_date_range_uses_an_en_dash(self):
+        from mb.cli import _ensure_day
+        from mb.render import section_title
+
+        # A window crossing a month boundary proves the range is formatted, not
+        # just the day string echoed back.
+        date = day_path("2026-11-01")
+        _ensure_day(self.repo, date)
+        title = section_title(load_day(self.repo, date), "bulgarian-finances")
+        self.assertIn("(31 Oct–1 Nov 2026)", title)
+
+    def test_same_month_window_is_compact(self):
+        from mb.cli import _ensure_day
+        from mb.render import section_title
+
+        _ensure_day(self.repo, day_path(DATE))
+        title = section_title(load_day(self.repo, day_path(DATE)), "bulgarian-finances")
+        self.assertIn("(21–22 Nov 2026)", title)
 
 
 class VerifyCliTests(RepoTestCase):
