@@ -1,0 +1,127 @@
+# Morning Brief
+
+Published briefs for Novi Iskar: weather, holdings, Bulgarian economic and
+labour-law news. Site: <https://mimiteto.github.io/newspaper/>
+
+## The one rule
+
+**JSON is the source of truth. Markdown is generated.**
+
+Every `.md` file in a `YYYY/MM/DD/` directory here — and the root `index.md` —
+is produced by `mb render` from the JSON next to it, by
+[`.github/workflows/render-brief.yml`](.github/workflows/render-brief.yml).
+Editing a generated file by hand is a bug: the next render overwrites it, and CI
+fails the PR that did it (`mb generated-check`).
+
+## Layout
+
+    YYYY/MM/DD/
+      meta.json                        day record: mb/day@1
+      weather/                         section directory, one per section
+        10-temperature.json            one item per file: mb/item@1
+        20-conditions.json
+      stocks/
+        10-snapshot.json               kind=context -> lead paragraph
+        20-sapse.json                  one holding (+ its news[])
+        90-timing.json                 kind=flag -> Flags: block
+      bulgarian-finances/
+        10-vat-threshold.json
+      index.md                         GENERATED day index
+      weather.md  stocks.md  bulgarian-finances.md   GENERATED sections
+
+    index.md                           GENERATED homepage (all days, newest first)
+    mb/                                the pipeline (Python, stdlib only)
+    tests/                             unit tests
+    .github/workflows/render-brief.yml the render pipeline
+
+The date directory is always nested (`2026/11/22`), never flat. `mb` normalises
+a flat `YYYY-MM-DD` argument and refuses anything else, which is why the old
+`repair-date-path.sh` no longer exists.
+
+## Item schema (`mb/item@1`)
+
+Common fields — everything else is rejected, so a typo like `soruces` fails at
+publish time instead of silently dropping a citation:
+
+| field | meaning |
+|---|---|
+| `id` | slug, unique in the section, becomes the filename |
+| `order` | sort key; omit it and `ingest` assigns 10, 20, 30… |
+| `kind` | `item` (default) · `context` (lead paragraph) · `flag` (Flags block) |
+| `label` | bold lead-in; defaults to the ticker, or `TICKER — Fund name` for an ETF |
+| `text` | prose |
+| `as_of` | what timestamp the numbers are valid for |
+| `sources` | `["https://…"]` or `[{"title": "…", "url": "…"}]` |
+| `flags` | extra caveats appended to the section's `Flags:` block |
+| `relevance` | decisions-API verdict (see below) |
+
+Per-section extras: `weather` → `metric`, `provider`;
+`bulgarian-finances` → `topic`, `bill`, `effective_date`, `amount`;
+`stocks` → `ticker`, `name`, `listing`, `currency`, `price`, `change_abs`,
+`change_pct_1d|5d|1m`, `holdings[]`, `news[]`.
+
+`stocks.holdings[]` renders the ETF top-5 list; `stocks.news[]` is the unit the
+relevance classifier judges:
+
+```json
+{
+  "id": "ms-conference",
+  "headline": "SAP says it remains on track with its 2026 plan",
+  "summary": "CFO repeated the 2026 outlook at the Morgan Stanley conference.",
+  "published": "2026-11-19",
+  "url": "https://…",
+  "source": "Investing.com",
+  "relevance": {
+    "brief": true, "price_move": true, "category": "guidance",
+    "confidence": 0.81, "verdict": "keep",
+    "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+    "decided_at": "2026-11-22T10:00:00+02:00"
+  }
+}
+```
+
+## News relevance
+
+Each news item carries two booleans from a classifier (the Decisions API, driven
+from the `mb_decide` pi tool), and one derived `verdict`:
+
+| `brief` | `price_move` | `verdict` | what the paper does |
+|---|---|---|---|
+| yes | any | `keep` | prints it in full, tagged with its category |
+| no | yes | `context` | demotes it to a headline-only line |
+| no | no | `drop` | does not print it; the JSON keeps the record |
+
+The rendered section always says what was filtered — e.g. `News triaged by the
+decisions API: 2 of 3 kept, model: …` — so a quiet day is visibly a decision,
+not an accident.
+
+## Working with it
+
+Python 3.11+, standard library only, no install step:
+
+```bash
+python3 -m mb status                                  # days and item counts
+python3 -m mb ingest  --date 2026-11-22 --file draft.json --section stocks
+python3 -m mb decide  --date 2026-11-22 --verdicts verdicts.json
+python3 -m mb publish --date 2026-11-22 --file draft.json --verdicts verdicts.json
+python3 -m mb render  --write                         # regenerate every day + homepage
+python3 -m mb render  --check                         # CI: fail if generated files are stale
+python3 -m mb verify  --date 2026-11-22 --require-decisions
+python3 -m mb finalize --date 2026-11-22              # verify + stamp finished + push
+python3 -m unittest discover -s tests
+```
+
+The pi side calls the same commands through `~/.pi/agent/scripts/morning-brief/mb-cli`,
+so the box and CI never run two dialects of the same logic.
+
+`publish` and `finalize` clone a fresh copy themselves (a publish decision is
+only worth what a current `origin/master` makes it): SSH first through the gcr
+ssh-agent, HTTPS fallback, advisory lock and retries, because three lanes sharing
+one GitHub identity otherwise collide. See `mb/gitops.py`.
+
+## Legacy days
+
+Days published before this pipeline are Markdown-only. `mb render` never touches
+their files; it only lists them on the homepage, so every historical link works.
+Backfill them by hand when you want their data queryable, and add a `meta.json`
+to hand a day over to the pipeline.

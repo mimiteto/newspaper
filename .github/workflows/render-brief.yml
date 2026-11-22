@@ -1,0 +1,123 @@
+name: render-brief
+
+# JSON in, Markdown out. A lane pushes only
+# YYYY/MM/DD/<section>/NN-<id>.json (+ meta.json); this workflow renders
+# weather.md, stocks.md, bulgarian-finances.md, the day's index.md and the
+# homepage from that JSON.
+#
+# Why CI and not the model: the prose used to be assembled by each lane and
+# heredoc'd through a worker, which cost tokens, occasionally truncated a
+# file, and raced three lanes for the right to create index.md. A lane now
+# ships data and this job ships bytes — deterministically, so `render --check`
+# can prove nobody hand-edited a generated file.
+
+on:
+  push:
+    branches: [master]
+    # JSON only. The files this workflow commits are .md, so its own pushes
+    # cannot re-trigger it — and no [skip ci] is needed, which matters: a
+    # [skip ci] commit would also skip the Pages build.
+    paths:
+      - "**/*.json"
+  pull_request:
+    paths:
+      - "**/*.json"
+      - "mb/**"
+      - ".github/workflows/render-brief.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: render-brief
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Test
+        run: python3 -m unittest discover -s tests -v
+
+  check:
+    name: Generated files are current
+    needs: test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Refuse a JSON push whose Markdown is stale
+        run: python3 -m mb render --check
+      - name: Refuse hand-edits to pipeline-owned files
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -eu
+          git fetch --no-tags origin "$BASE"
+          changed=$(git diff --name-only "FETCH_HEAD"...HEAD)
+          echo "$changed"
+          # shellcheck disable=SC2086
+          python3 -m mb generated-check $changed
+
+  render:
+    name: Render the newspaper
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Render every JSON-managed day
+        run: python3 -m mb render --write
+
+      - name: Commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BOT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -eu
+          git config user.name "Morning Brief Pipeline"
+          git config user.email "$BOT_EMAIL"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "render=noop"
+            exit 0
+          fi
+          git commit -q -m "chore(pipeline): render brief markdown from JSON"
+          PUSH_URL="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push -q "$PUSH_URL" HEAD:master
+          echo "render=pushed"
+
+      - name: Rebuild GitHub Pages
+        # Pushes made with GITHUB_TOKEN do not reliably wake the legacy Pages
+        # builder, and this site is a legacy build of master. Ask for it
+        # explicitly so the homepage always shows the fresh paper.
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -eu
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"
+          echo "pages=build-requested"
