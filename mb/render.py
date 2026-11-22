@@ -14,12 +14,11 @@ from __future__ import annotations
 import datetime as dt
 from collections.abc import Iterable
 
-from mb.model import Day, Item, NewsEntry
+from mb.model import CURRENCY_CODES, Day, Item, NewsEntry
 from mb.paths import MONTHS, DayPath
 
 MINUS = "\u2212"  # typographic minus, as the brief has always used
 ENDASH = "\u2013"  # ranges (21–22 Nov). MINUS is for numbers; ENDASH is not
-CURRENCY_SYMBOLS = {"EUR": "€", "USD": "$", "GBP": "£", "BGN": "лв"}
 
 SECTION_TITLES = {
     "weather": "Weather",
@@ -61,7 +60,9 @@ def fmt_amount(value: object, currency: str = "") -> str:
         return ""
     decimals = 2 if round(number, 2) == number else 3
     body = f"{abs(number):,.{decimals}f}"
-    symbol = CURRENCY_SYMBOLS.get((currency or "").upper(), "")
+    # The table lives in mb.model: ingest normalises `currency` to those codes,
+    # so a lookup miss here would mean data written outside the model.
+    symbol = CURRENCY_CODES.get((currency or "").strip().upper(), "")
     signed = f"{MINUS}{body}" if number < 0 else body
     return f"{symbol}{signed}" if symbol else body
 

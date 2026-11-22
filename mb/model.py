@@ -31,6 +31,26 @@ ITEM_SCHEMA = "mb/item@1"
 
 KINDS: tuple[str, ...] = ("item", "context", "flag")
 
+#: ``currency`` is stored as an ISO code so the JSON stays queryable and the
+#: renderer decides how to print it. The symbol forms are accepted on the way in
+#: because a model writing a draft will type `€` — storing what it typed would
+#: mean a price with no currency at render time.
+CURRENCY_CODES: dict[str, str] = {"EUR": "€", "USD": "$", "GBP": "£", "BGN": "лв", "CHF": "CHF", "JPY": "¥"}
+_CURRENCY_BY_SYMBOL: dict[str, str] = {"€": "EUR", "$": "USD", "£": "GBP", "лв": "BGN", "¥": "JPY"}
+
+#: Fields that must arrive as numbers: `_num()` in the renderer turns anything
+#: else into "no value", which would drop a printed figure in silence.
+NUMBER_FIELDS: tuple[str, ...] = ("price", "change_abs", "change_pct_1d", "change_pct_5d", "change_pct_1m")
+
+#: A numeric *string* is tolerated in a number field (a model quotes figures
+#: sometimes); a unit, a thousands comma or a currency symbol is not, because
+#: those belong in `currency`/`listing` and would otherwise be lost silently.
+_NUMBER_RE = re.compile(r"-?\d+(?:\.\d+)?")
+
+#: One top-5 index holding. Strict, like the items: `weight` instead of
+#: `weight_pct` used to render that holding with no weight at all.
+HOLDING_FIELDS: frozenset[str] = frozenset({"rank", "name", "weight_pct", "as_of"})
+
 #: Item fields every section may use. Anything else is a schema error.
 COMMON_FIELDS: frozenset[str] = frozenset(
     {
@@ -67,6 +87,73 @@ def _require_str(record: dict[str, Any], key: str, where: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise SectionError(f"{where}: {key!r} must be a non-empty string, got {value!r}")
     return value.strip()
+
+
+def _normalise_data(data: dict[str, Any], where: str) -> dict[str, Any]:
+    """Validate the section-specific fields, which the renderer reads blind.
+
+    Top-level item fields are already checked by `_check_unknown`; these are the
+    ones nested in `data`, where a wrong type or a near-miss key name used to
+    cost a printed figure without a word of complaint.
+    """
+    if "currency" in data:
+        data["currency"] = normalise_currency(data["currency"], where)
+    for key in NUMBER_FIELDS:
+        if key in data:
+            data[key] = normalise_number(data[key], where, key)
+    if "holdings" in data:
+        data["holdings"] = _norm_holdings(data["holdings"], where)
+    return data
+
+
+def normalise_currency(value: object, where: str) -> str:
+    """ISO code in, ISO code out — a symbol is accepted and translated."""
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    code = raw.upper()
+    if code in CURRENCY_CODES:
+        return code
+    if raw in _CURRENCY_BY_SYMBOL:
+        return _CURRENCY_BY_SYMBOL[raw]
+    raise SectionError(
+        f"{where}: currency {raw!r} is not a known code ({', '.join(sorted(CURRENCY_CODES))}) "
+        "or one of their symbols"
+    )
+
+
+def normalise_number(value: object, where: str, field: str) -> float | int | None:
+    """Accept a JSON number or a numeric string; refuse anything else.
+
+    A quoted `"price": "183.68"` is otherwise indistinguishable from a missing
+    price once the renderer has had it, and a missing price prints nothing.
+    """
+    if value is None or isinstance(value, bool):
+        raise SectionError(f"{where}: {field} must be a number, got {value!r}")
+    if isinstance(value, (int, float)):
+        return value
+    if isinstance(value, str):
+        text = value.strip().replace("\u00a0", "").replace(" ", "").rstrip("%")
+        if _NUMBER_RE.fullmatch(text):
+            return float(text)
+    raise SectionError(f"{where}: {field} must be a number, got {value!r}")
+
+
+def _norm_holdings(value: object, where: str) -> list[Any]:
+    if not isinstance(value, list):
+        raise SectionError(f"{where}: 'holdings' must be a list")
+    out: list[Any] = []
+    for index, entry in enumerate(value):
+        if isinstance(entry, str):
+            out.append(entry)
+            continue
+        if not isinstance(entry, dict):
+            raise SectionError(f"{where} holdings[{index}]: expected an object or a string")
+        _check_unknown(entry, HOLDING_FIELDS, f"{where} holdings[{index}]")
+        if "weight_pct" in entry:
+            entry = {**entry, "weight_pct": normalise_number(entry["weight_pct"], f"{where} holdings[{index}]", "weight_pct")}
+        out.append(entry)
+    return out
 
 
 def _check_unknown(record: dict[str, Any], allowed: set[str] | frozenset[str], where: str) -> None:
@@ -342,7 +429,7 @@ class Item:
             for index, entry in enumerate(news_records)
         ]
 
-        data = {key: value for key, value in record.items() if key not in COMMON_FIELDS}
+        data = _normalise_data({key: value for key, value in record.items() if key not in COMMON_FIELDS}, where)
         return cls(
             id=item_id,
             section=section_name,
@@ -495,6 +582,11 @@ __all__ = [
     "ITEM_SCHEMA",
     "KINDS",
     "COMMON_FIELDS",
+    "CURRENCY_CODES",
+    "HOLDING_FIELDS",
+    "NUMBER_FIELDS",
+    "normalise_currency",
+    "normalise_number",
     "SECTION_FIELDS",
     "VERDICTS",
     "Day",

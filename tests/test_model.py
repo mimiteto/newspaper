@@ -69,6 +69,54 @@ class ItemValidationTests(unittest.TestCase):
         self.assertEqual(item_filename(12, "x"), "12-x.json")
 
 
+class FieldNormalisationTests(unittest.TestCase):
+    """`data` fields are read blind by the renderer, so ingest checks them.
+
+    Every case here used to cost a printed figure with no complaint: a `€` in
+    `currency` is not an ISO code, so the price rendered bare; `weight` is not
+    `weight_pct`, so a holding rendered without its weight; a quoted or
+    unit-laden number became "no value".
+    """
+
+    def _stock(self, **overrides):
+        record = {"id": "sxrv", "section": "stocks", "ticker": "SXRV", "price": 789.98, "currency": "EUR"}
+        record.update(overrides)
+        return record
+
+    def test_currency_symbol_is_normalised_to_the_iso_code(self):
+        for symbol, code in (("€", "EUR"), ("$", "USD"), ("лв", "BGN")):
+            self.assertEqual(Item.from_json(self._stock(currency=symbol)).data["currency"], code)
+
+    def test_unknown_currency_is_refused(self):
+        with self.assertRaisesRegex(SectionError, "currency"):
+            Item.from_json(self._stock(currency="RUB"))
+
+    def test_a_quoted_number_is_accepted_and_coerced(self):
+        self.assertEqual(Item.from_json(self._stock(price="789.98")).data["price"], 789.98)
+
+    def test_a_number_with_a_unit_is_refused(self):
+        """`€` belongs in `currency`; in `price` it silently becomes no price."""
+        with self.assertRaisesRegex(SectionError, "price must be a number"):
+            Item.from_json(self._stock(price="789,98 €"))
+
+    def test_holdings_reject_a_near_miss_key(self):
+        with self.assertRaisesRegex(SectionError, "holdings\\[0\\].*weight"):
+            Item.from_json(self._stock(holdings=[{"rank": 1, "name": "Apple Inc", "weight": 6.55}]))
+
+    def test_holdings_accept_the_documented_shape(self):
+        item = Item.from_json(self._stock(holdings=[{"rank": 1, "name": "Apple Inc", "weight_pct": "6.55"}]))
+        self.assertEqual(item.data["holdings"][0]["weight_pct"], 6.55)
+
+    def test_a_plain_string_holding_stays_allowed(self):
+        self.assertEqual(Item.from_json(self._stock(holdings=["Apple Inc 6.55%"])).data["holdings"], ["Apple Inc 6.55%"])
+
+    def test_normalised_currency_reaches_the_render(self):
+        from mb.render import fmt_amount
+
+        item = Item.from_json(self._stock(currency="$"))
+        self.assertEqual(fmt_amount(item.data["price"], item.data["currency"]), "$789.98")
+
+
 class RelevanceTests(unittest.TestCase):
     def test_decide_rule_table(self):
         self.assertEqual(Relevance.decide(True, True), "keep")
