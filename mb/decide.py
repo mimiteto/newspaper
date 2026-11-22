@@ -65,6 +65,10 @@ def _relevance_from(verdict: dict[str, Any], *, decided_by: str, decided_at: str
         decided_by=str(verdict.get("decided_by", decided_by)),
         decided_at=str(verdict.get("decided_at", decided_at)),
         why=str(verdict.get("why", "")),
+        # The tool's honesty flag has to survive the round trip, or "the
+        # classifier wasn't sure" is indistinguishable from "the classifier was
+        # sure and wrong" once it is printed in the paper.
+        ambiguous=bool(verdict.get("ambiguous", False)),
     )
     # Re-validate through the model parser so an odd category fails here, not in CI.
     return Relevance.from_json(relevance.to_json(), where=where)

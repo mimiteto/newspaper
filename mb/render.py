@@ -227,7 +227,7 @@ def _window(date: DayPath, days: int = 2) -> str:
 
 def _relevance_footer(items: Iterable[Item]) -> list[str]:
     """Say out loud what the decisions API filtered — never hide it in a diff."""
-    total = dropped = 0
+    total = dropped = uncertain = 0
     models: set[str] = set()
     for item in items:
         entries = list(item.news)
@@ -239,12 +239,17 @@ def _relevance_footer(items: Iterable[Item]) -> list[str]:
             total += 1
             if entry.relevance.decided_by:
                 models.add(entry.relevance.decided_by)
+            if entry.relevance.ambiguous:
+                uncertain += 1
             if entry.dropped:
                 dropped += 1
     if not total:
         return []
     model = f", model: `{', '.join(sorted(models))}`" if models else ""
-    return [f"News triaged by the decisions API: {total - dropped} of {total} kept{model}."]
+    # A dropped item is a decision; an uncertain one is a question. The reader of
+    # a personal brief deserves to know the pipeline guessed on this line.
+    maybe = f", {uncertain} judged uncertain" if uncertain else ""
+    return [f"News triaged by the decisions API: {total - dropped} of {total} kept{maybe}{model}."]
 
 
 def render_section(day: Day, section: str, items: list[Item]) -> str:

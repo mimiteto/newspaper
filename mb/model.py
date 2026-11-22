@@ -215,6 +215,11 @@ class Relevance:
     decided_by: str = ""
     decided_at: str = ""
     why: str = ""
+    # The decisions API sets this when its two booleans contradicted each other
+    # or its confidence was low: the call was a coin flip. Storing it is the
+    # difference between "the pipeline filtered this" and "the pipeline guessed
+    # and you should look".
+    ambiguous: bool = False
 
     ALLOWED_CATEGORY = frozenset(
         {"guidance", "analyst", "strategic", "macro", "stale", "noise", "other"}
@@ -224,7 +229,7 @@ class Relevance:
     def from_json(cls, record: Any, where: str) -> Relevance:
         if not isinstance(record, dict):
             raise SectionError(f"{where}: 'relevance' must be an object")
-        allowed = {"brief", "price_move", "category", "confidence", "verdict", "decided_by", "decided_at", "why"}
+        allowed = {"brief", "price_move", "category", "confidence", "verdict", "decided_by", "decided_at", "why", "ambiguous"}
         _check_unknown(record, allowed, where)
         verdict = str(record.get("verdict", "keep"))
         if verdict not in VERDICTS:
@@ -237,7 +242,7 @@ class Relevance:
         confidence = record.get("confidence")
         if confidence is not None and not isinstance(confidence, (int, float)):
             raise SectionError(f"{where}: relevance.confidence must be a number")
-        for key in ("brief", "price_move"):
+        for key in ("brief", "price_move", "ambiguous"):
             if key in record and not isinstance(record[key], bool):
                 raise SectionError(f"{where}: relevance.{key} must be a boolean")
         return cls(
@@ -249,6 +254,7 @@ class Relevance:
             decided_by=str(record.get("decided_by", "")),
             decided_at=str(record.get("decided_at", "")),
             why=str(record.get("why", "")),
+            ambiguous=bool(record.get("ambiguous", False)),
         )
 
     def to_json(self) -> dict[str, Any]:
@@ -261,6 +267,7 @@ class Relevance:
             "decided_by": self.decided_by,
             "decided_at": self.decided_at,
             "why": self.why,
+            "ambiguous": self.ambiguous,
         }
 
     @staticmethod

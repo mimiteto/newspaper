@@ -380,7 +380,10 @@ def cmd_verify(args: argparse.Namespace) -> int:
             news = [entry for item in items for entry in item.news]
             judged = [entry for entry in news if entry.relevance is not None]
             unjudged = len(news) - len(judged)
+            uncertain = [entry for entry in judged if entry.relevance and entry.relevance.ambiguous]
             suffix = f" news={len(judged)}/{len(news)}"
+            if uncertain:
+                suffix += f" uncertain={len(uncertain)}"
             if unjudged:
                 # Reported even when not enforced: a day closed with
                 # --no-require-decisions should still say so in its own output.
