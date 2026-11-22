@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "msft",
+  "section": "stocks",
+  "kind": "item",
+  "label": "MSFT",
+  "text": "$484.52, −2.77% Friday, −7.51% on the week, −9.09% on the month. No company-specific catalyst Friday: it traded with the AI-capex complex, which sold off on the Anthropic IPO's failure to calm doubts about AI financing and safety plus reports of an SEC probe into Nvidia's accounting.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/MSFT/"
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/nasdaq-plunges-5-a-day-after-anthropic-debut-but-investors-still-believe-in-ai-5042641"
+    }
+  ]
+}

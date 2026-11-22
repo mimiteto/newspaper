@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "pfe",
+  "section": "stocks",
+  "kind": "item",
+  "label": "PFE",
+  "text": "$27.40, −0.51% Friday, −5.16% on the week. Busy pipeline fortnight: an exclusive licence with Starna Therapeutics for three pre-IND in-vivo CAR-T programmes in autoimmune disease (18 Nov, rights outside Greater China), and up to $1.5bn of development funding from Blackstone Life Sciences through 2028 for the GLP-1 obesity programme (11 Nov), on top of a raised full-year outlook and a new CFO announced with Q3 on 3 Nov.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/PFE/"
+    },
+    {
+      "url": "https://www.pfizer.com/news/press-release/press-release-detail/pfizer-and-blackstone-life-sciences-announce-strategic"
+    }
+  ]
+}

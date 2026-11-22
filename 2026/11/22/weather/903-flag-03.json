@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-03",
+  "section": "weather",
+  "kind": "flag",
+  "text": "The barometers look contradictory but are not measuring the same thing — 940.9 hPa from open-meteo is station pressure at the grid point's 670 m elevation, 1020 hPa from wttr.in is sea-level reduced. Do not compare them.",
+  "order": 903
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "lyp6",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "ASML Holding",
+      "weight_pct": 3.88,
+      "as_of": "12 Nov 2026",
+      "rank": 1
+    },
+    {
+      "name": "Roche Holding",
+      "weight_pct": 2.24,
+      "as_of": "12 Nov 2026",
+      "rank": 2
+    },
+    {
+      "name": "HSBC Holdings",
+      "weight_pct": 2.02,
+      "as_of": "12 Nov 2026",
+      "rank": 3
+    },
+    {
+      "name": "Novartis",
+      "weight_pct": 2.0,
+      "as_of": "12 Nov 2026",
+      "rank": 4
+    },
+    {
+      "name": "AstraZeneca",
+      "weight_pct": 1.87,
+      "as_of": "12 Nov 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "LYP6 — Amundi Core STOXX Europe 600 UCITS ETF Acc",
+  "text": "€309.15, −6.40 (−2.03%) at 17:35 CET on 20 Nov, matching the STOXX Europe 600's −2.00% (625.65). Top five weights per stockanalysis.com, as of 12 Nov 2026:",
+  "order": 100,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/LYP6/holdings/"
+    }
+  ]
+}

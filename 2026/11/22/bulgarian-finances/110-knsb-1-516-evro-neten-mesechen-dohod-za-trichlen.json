@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "knsb-1-516-evro-neten-mesechen-dohod-za-trichlen",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "КНСБ: 1 516 евро нетен месечен доход за тричленно семейство (21 ноември)",
+  "text": "The trade union's subsistence calculation puts a two-earner family with one child under 14 at €1,516 net a month, up €92 in a year, with €842 for a single working person and a required gross wage of €1,085 — below which sit about 1.5m insured persons, or 57.7% of those observed. Violeta Ivanova of КНСБ said the budget's 5% public-sector rise will not offset energy and fuel prices and demanded at least 10% for 2027 in both sectors. NSS background for the same day: food 29.3% of household spending in 2025, housing 15.4%, transport and communications 11.1%, 42.5% of people unable to cover an unexpected expense, and an average gross monthly wage of €1,438 in Q3 2026 (+10.4% year on year).",
+  "order": 110,
+  "sources": [
+    {
+      "url": "https://www.big5.bg/news/knsb-1516-evro-tryabvat-za-trichlenno-semeistvo-1100620news.html"
+    },
+    {
+      "url": "https://www.burgasnews.com/2026-11-21/1516-%d0%b5%d0%b2%d1%80%d0%be-%d1%81%d0%b0-%d0%bd%d1%83%d0%b6%d0%bd%d0%b8-%d0%bd%d0%b0-%d1%82%d1%80%d0%b8%d1%87%d0%bb%d0%b5%d0%bd%d0%bd%d0%be-%d1%81%d0%b5%d0%bc%d0%b5%d0%b9%d1%81%d1%82%d0%b2%d0%be/"
+    }
+  ]
+}

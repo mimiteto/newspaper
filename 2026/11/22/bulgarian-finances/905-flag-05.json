@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-05",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "Amounts are given in euro as reported, which is now the Bulgarian accounting currency; figures sourced in лв were not converted by me — I only used euro-denominated reporting.",
+  "order": 905
+}

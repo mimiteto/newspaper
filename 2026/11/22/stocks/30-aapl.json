@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "aapl",
+  "section": "stocks",
+  "kind": "item",
+  "label": "AAPL",
+  "text": "$342.56, −1.90% Friday, −3.85% on the week and only −0.42% over a month — the defensive anchor of the list, and Apple overtook Nvidia to become the most valuable company again as Nvidia fell to fourth.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/AAPL/"
+    },
+    {
+      "url": "https://www.cnbc.com/2026-11-20/nvidias-7-week-losing-streak-is-longest-since-2008-financial-crisis.html"
+    }
+  ]
+}

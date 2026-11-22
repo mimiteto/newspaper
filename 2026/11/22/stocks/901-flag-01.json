@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Timing: these are Friday 20 Nov closes published on a Sunday. A correction-day rebound or extension on Monday 23 Nov will move every number here, and the −3.5% to −8.6% week means the \"as of\" dates matter more than usual.",
+  "order": 901
+}

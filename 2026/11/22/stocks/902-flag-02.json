@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-02",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Weight staleness is not uniform: SXR8 19 Nov, UBU7 16 Nov, LYP6 12 Nov, VHYL 30 Sep 2026, DFND 12 Dec 2025. The LYP6 and VHYL weights predate a −2% index day, so they are position weights from a calmer tape.",
+  "order": 902
+}

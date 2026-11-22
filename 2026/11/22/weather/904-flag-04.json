@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-04",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Tomorrow's precipitation type is genuinely contested: wttr.in calls 18:00 on 23 Nov \"Moderate snow\" (0.1 mm), open-meteo keeps code 80 (rain showers) all day and does not go sub-zero until after midnight.",
+  "order": 904
+}

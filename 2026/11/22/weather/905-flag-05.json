@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-05",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Caveat: both providers cycle their models several times a day, so the 20:00–23:00 rain band and the 24 Nov cold snap (−3.7 °C overnight) are the least stable numbers here; re-check late this afternoon.",
+  "order": 905
+}

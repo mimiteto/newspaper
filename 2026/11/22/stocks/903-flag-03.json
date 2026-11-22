@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-03",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "VHYL is quoted here in GBP from the London listing because that is the line with a Friday close in the data I could reach; the watch list defines it as the USD distribution share class, so the GBP figure carries a ~1.1% GBP/USD drift relative to the USD line. Its top-5 also comes from etftrace rather than stockanalysis, since stockanalysis returns no holdings page for ETR:VHYL.",
+  "order": 903
+}

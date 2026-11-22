@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-06",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "SAPSE is Xetra 716460, quoted as SAP.DE (€183.68); the NYSE SAP ADR is a separate line and is not used here.",
+  "order": 906
+}

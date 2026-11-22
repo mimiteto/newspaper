@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-02",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Warm-side disagreement: today's high 12.0 °C (open-meteo) vs 13 °C (wttr.in); tomorrow 14.7 °C vs 12 °C.",
+  "order": 902
+}

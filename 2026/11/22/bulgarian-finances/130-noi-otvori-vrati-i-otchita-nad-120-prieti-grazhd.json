@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "noi-otvori-vrati-i-otchita-nad-120-prieti-grazhd",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "НОИ отвори врати и отчита над 120 приети граждани в София (21 ноември)",
+  "text": "The first open-door day of the „Попитай НОИ“ campaign took 9:00–12:00 at the Sofia headquarters and the institute reports more than 120 people received, with the managing director and a deputy taking questions personally; the dominant caseload was proving insurance service from enterprises that were wound up without a successor, plus early retirement, inheritance pensions and ПИК/e-services. Regional outlets (Blitz) described the queues as hundreds rather than hundreds-plus. The institute says territorial branches join from the start of 2027, so the Sofia event is the only one held so far.",
+  "order": 130,
+  "sources": [
+    {
+      "url": "https://www.nssi.bg/priemna-21-november/"
+    },
+    {
+      "url": "https://blitz.bg/obshtestvo/stotici-balgari-se-narediha-na-opashka-pred-noi-zaradi-pensiite_news1183524.html"
+    }
+  ]
+}

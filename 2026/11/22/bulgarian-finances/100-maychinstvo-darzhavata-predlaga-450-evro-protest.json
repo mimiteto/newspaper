@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "maychinstvo-darzhavata-predlaga-450-evro-protest",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Майчинство: държавата предлага 450 евро, протестиращите искат 70% от осигурителния доход",
+  "text": "The bill raises the benefit for raising a child up to age two from €398.81 to €450 from 1 Jan 2027 — the first increase since 2023 — and lifts the benefit for mothers who do not take the pregnancy/childrearing leave from 50% to 75%. The „Родители за достойно майчинство“ initiative and „Достойнство 2023“ protested outside Parliament on that demand (70% of the mother's gross insured income, plus 100% of the NOI benefit on early return to work), arguing for income-linked rather than flat amounts. Elsewhere in the social package: 9 of 12 family benefits up for €72.5m, the poverty line set at €443 for 2027 costing €114.3m, and the minimum daily unemployment benefit rising from €9.21 to €13.",
+  "order": 100,
+  "sources": [
+    {
+      "url": "https://btvnovinite.bg/bulgaria/protest-za-majchinstvoto-i-detskite-roditeli-nastojavat-za-70-ot-dohoda-prez-vtorata-godina.html"
+    },
+    {
+      "url": "https://www.bta.bg/bg/news/bulgaria/1249728-sotsialnata-komisiya-prie-na-parvo-chetene-darzhavniya-byudzhet-za-2027-g-nad-"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "sapse",
+  "section": "stocks",
+  "kind": "item",
+  "label": "SAPSE",
+  "text": "€183.68 on Xetra (SAP.DE), −1.79% Friday and −13.95% across the five sessions to 20 Nov — the sharpest weekly drawdown in the list after DraftKings. At the Morgan Stanley European TMT conference on 19 Nov, CFO Dominik Asam said SAP remains on track with its 2026 plan on strong AI-product demand, but flagged margin pressure from AI and data-tool investment, and Q3 cloud revenue growth of 26% included retroactive recognition.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/SAP.DE/"
+    },
+    {
+      "url": "https://www.investing.com/news/transcripts/sap-at-morgan-stanley-conference-ai-push-offsets-margin-pressure-93CH-5038236"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "snapshot-context-every-price-below-is-t",
+  "section": "stocks",
+  "kind": "context",
+  "text": "Snapshot context: every price below is the last close before this brief — US listings 20 Nov 2026 16:30 ET, Xetra listings 20 Nov 2026 17:35–17:36 CET, London 20 Nov — because 22 Nov is a Sunday and the venues reopen Monday 23 Nov. Friday was the capitulation session: S&P 500 6,910.39, −3.70% on the day and −8.61% on the week (worst week in more than 18 months, and now >10% off the 6 Oct record, i.e. a correction); Nasdaq −5.3% Friday and −10% on the week, its biggest weekly fall since 2020; VIX 35.89, +86% in five sessions. Europe: STOXX Europe 600 625.65 (−2.00%), DAX 24,802.78. FX caveat: EUR/USD 1.0970 at the Friday close, so euro-denominated ETF lines carry a currency overlay on top of the underlying move; Bulgaria itself quotes prices in euro, so no BGN conversion applies anywhere in this brief.",
+  "order": 10
+}

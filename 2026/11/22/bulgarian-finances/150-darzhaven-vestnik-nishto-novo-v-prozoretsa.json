@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "darzhaven-vestnik-nishto-novo-v-prozoretsa",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Държавен вестник — нищо ново в прозореца",
+  "text": "The latest State Gazette issue is No. 105 of 20 Nov 2026; official-section issues appear Tuesdays and Fridays, so nothing new was promulgated on 21–22 Nov and the next expected issue is Tuesday 24 Nov. Nothing in the 21–22 Nov window fits the ДДС/МРЗ/Кодекс на труда/ЗЧРБ buckets from the State Gazette, and no ЗЧРБ or labour-migration amendment surfaced in any source consulted this weekend.",
+  "order": 150,
+  "sources": [
+    {
+      "url": "https://bgledger.com/en/gazette/"
+    }
+  ]
+}

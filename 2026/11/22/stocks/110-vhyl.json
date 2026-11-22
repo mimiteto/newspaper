@@ -1,0 +1,51 @@
+{
+  "schema": "mb/item@1",
+  "id": "vhyl",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Samsung Electronics",
+      "weight_pct": 2.4,
+      "weight_display": "2.4%",
+      "as_of": "30 Sep 2026",
+      "rank": 1
+    },
+    {
+      "name": "JPMorgan Chase",
+      "weight_pct": 2.0,
+      "weight_display": "2.0%",
+      "as_of": "30 Sep 2026",
+      "rank": 2
+    },
+    {
+      "name": "ExxonMobil",
+      "weight_pct": 1.5,
+      "weight_display": "1.5%",
+      "as_of": "30 Sep 2026",
+      "rank": 3
+    },
+    {
+      "name": "Johnson & Johnson",
+      "weight_pct": 1.5,
+      "weight_display": "1.5%",
+      "as_of": "30 Sep 2026",
+      "rank": 4
+    },
+    {
+      "name": "AbbVie",
+      "weight_pct": 1.1,
+      "weight_display": "1.1%",
+      "as_of": "30 Sep 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "VHYL — Vanguard FTSE All-World High Dividend Yield UCITS ETF USD dist",
+  "text": "67.155 GBP on the London line, −1.21% on 20 Nov; on etftrace the USD market-price return was −4.8% over one month against +7.3% year-to-date as of 20 Nov, with a 17.8 weighted P/E and 5.5% headline yield. Top five positions per etftrace, as of 30 Sep 2026:",
+  "order": 110,
+  "sources": [
+    {
+      "url": "https://etftrace.com/fund/VHYL"
+    }
+  ]
+}

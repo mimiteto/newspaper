@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "tavanat-na-osiguritelniya-dohod-skacha-na-2-400-",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Таванът на осигурителния доход скача на 2 400 евро",
+  "text": "The maximum insured income for all insured persons rises to €2,400 from 1 Jan 2027, €2,500 from 2028 and €2,600 from 2029, while contribution rates and their employer/employee split stay at 2026 levels — except civil servants and judiciary staff, whose split is equalised to the general rule with wage compensation. Regional and business outlets (BurgasMedia and Ruse news, both 20 Nov) report employers as reserved about the ceiling step-up.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://business.dir.bg/ikonomika/kabinetat-vnese-v-parlamenta-trite-proektobyudzheta-za-2027-g"
+    },
+    {
+      "url": "https://www.24chasa.bg/bulgaria/article/23940086"
+    }
+  ]
+}

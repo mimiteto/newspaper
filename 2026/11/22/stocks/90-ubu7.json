@@ -1,0 +1,22 @@
+{
+  "schema": "mb/item@1",
+  "id": "ubu7",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Alphabet (GOOGL)",
+      "weight_pct": 1.87,
+      "as_of": "16 Nov 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "UBU7 — UBS Core MSCI World UCITS ETF dis",
+  "text": "€103.49, −3.41 (−3.19%) at 17:35 CET on 20 Nov; a global rather than US-only sleeve, so it fell slightly less than the pure S&P line. Remaining top-five weight per stockanalysis.com, as of 16 Nov 2026:",
+  "order": 90,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/UBU7/holdings/"
+    }
+  ]
+}

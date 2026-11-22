@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "extra-bnb-etsb-tryabva-da-e-gotova-za-novo-povis",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Extra — БНБ: ЕЦБ трябва да е готова за ново повишение (21 ноември)",
+  "text": "BNB Governor Dimitar Radev, an ECB Governing Council member, speaking at the London School of Economics' European Economic and Finance Centre, said the December meeting will bring updated projections and data to judge whether energy-cost pass-through, negotiated wages and inflation expectations show more persistent pressure — and that if they do, the ECB must be ready to tighten again, with no prior commitment. He cited October flash HICP of 4% in the eurozone against 6% in Bulgaria with euro-area core at 2.5%, September's 25 bp hike and October's hold leaving the deposit facility at 2.5%, professional forecasters lifting 2027 expectations to 2.6% headline / 2.5% core, and an average new Bulgarian housing-loan rate of about 2.4% versus roughly 3.6% on the ECB's euro-area composite — while stressing „не бива да обясняваме цялата разлика между инфлацията в България и в еврозоната с цените на енергията“.",
+  "order": 140,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/economy/1251706-etsb-tryabva-da-e-gotova-za-novo-povishenie-na-lihvite-ako-inflatsionniyat-nati"
+    },
+    {
+      "url": "https://bnrnews.bg/main/post/561520/upravitelyat-na-bnb-etsb-shte-napravi-nova-otsenka-na-lihvite-prez-dekemvri"
+    }
+  ]
+}

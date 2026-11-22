@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "dkng",
+  "section": "stocks",
+  "kind": "item",
+  "label": "DKNG",
+  "text": "$15.80, −6.06% Friday and −16.36% across the five sessions, −23.04% over a month. The prediction-markets bet is still the story: 2026 adjusted EBITDA guided to $175–275m after $650–700m of Predictions investment, core revenue guidance cut to $6.35–6.55bn, and downgrades from UBS, Stifel and JPMorgan (\"increasingly difficult to recommend\").",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/DKNG/"
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/draftkings-hit-with-downgrades-as-prediction-market-losses-cloud-outlook-5012658"
+    }
+  ]
+}

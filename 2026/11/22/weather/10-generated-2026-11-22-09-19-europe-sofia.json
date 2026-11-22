@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "generated-2026-11-22-09-19-europe-sofia",
+  "section": "weather",
+  "kind": "context",
+  "text": "Generated 2026-11-22 09:19 Europe/Sofia (UTC+02:00); the forecast is as of 09:15 local (open-meteo current block) and the cross-check observation is stamped 07:19 UTC / 09:19 local (wttr.in).",
+  "order": 10
+}

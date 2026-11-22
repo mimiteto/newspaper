@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Evening rain is a single-provider signal: open-meteo tags today with daily code 61 (light rain) and 0.7 mm, while wttr.in's hourly table shows 0.0 mm in every slot today and only a 16% chance at 21:00.",
+  "order": 901
+}

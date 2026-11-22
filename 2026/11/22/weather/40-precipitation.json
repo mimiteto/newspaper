@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "precipitation",
+  "section": "weather",
+  "kind": "item",
+  "label": "Precipitation",
+  "text": "Only 0.7 mm today and it is all evening: 0.1 mm at 20:00, 0.4 mm at 21:00, 0.2 mm at 22:00, on 58–68% hourly probability. Tomorrow goes much wetter and then sharply colder — 1.6 mm, peak probability 73%, high 14.7 °C collapsing to −0.4 °C overnight, with 24 Nov holding dry at 2.5 °C / −3.7 °C.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max,temperature_2m_max,temperature_2m_min&timezone=Europe%2FSofia"
+    },
+    {
+      "url": "https://wttr.in/Novi+Iskar"
+    }
+  ]
+}

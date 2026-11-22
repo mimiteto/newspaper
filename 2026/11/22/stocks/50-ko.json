@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "ko",
+  "section": "stocks",
+  "kind": "item",
+  "label": "KO",
+  "text": "$96.99, +0.94% Friday — the only gainer in the direct list — though still −2.28% on the week. Barron's flagged the richest valuation in 25 years (~$98/share against a $112 target), and a single session of roughly $176m of ETF selling interrupted a run of institutional buying; the October print remains the support (Q3 revenue +7%, organic +7%, operating margin 33.4%, guidance raised for a third straight quarter).",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/KO/"
+    },
+    {
+      "url": "https://247wallst.com/investing/2026-11-20/coca-colas-valuation-is-the-highest-in-25-years-where-does-the-stock-go-from-here/"
+    }
+  ]
+}

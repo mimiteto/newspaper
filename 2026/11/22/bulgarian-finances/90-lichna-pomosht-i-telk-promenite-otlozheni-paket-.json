@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "lichna-pomosht-i-telk-promenite-otlozheni-paket-",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Лична помощ и ТЕЛК: промените отложени, пакет подготвян (21 ноември)",
+  "text": "Labour and Social Policy Minister Natalia Efremova said on NOVA that whether the Personal Assistance Act is amended will only become clear in the first half of 2027, after broad consultation, weeks after mothers of children with disabilities and personal assistants forced the withdrawal of a previously tabled bill. She framed the package as better targeting rather than removal of rights — including whether a ТЕЛК decision should remain the sole criterion for support, tighter control over ТЕЛК decisions jointly with МВР, and automated cross-checks that will not replace medical judgement. Scale of the scheme: over 100,000 personal assistants caring for more than 85,000 people with disabilities. A separate initiative is 500 „социални таксита“ for all municipalities, in negotiation with the Commission under the Social Climate Plan, with implementation of approved investments from 2028.",
+  "order": 90,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/bulgaria/1251550-shte-ima-shiroki-konsultatsii-i-nishto-nyama-da-bade-praveno-v-ushtarb-na-maykit"
+    },
+    {
+      "url": "https://regionite.info/news/efremova-gotvyat-promeni-v-telk-i-lichnata-pomosht"
+    }
+  ]
+}

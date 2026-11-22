@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "mrz-660-evro-ot-1-yanuari-2027-g-s-6-4-poveche",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "МРЗ 660 евро от 1 януари 2027 г. — с 6,4% повече",
+  "text": "The projected minimum wage is €660 a month from 1 Jan 2027 (€680 in 2028, €710 in 2029), and the minimum insured income by economic activity and skill group is uprated by the same 6.4%; the minimum insured income for self-insured persons is set at the same €660. Budget-sector personnel costs rise 5%, teachers +7.5% (€170.5m), while the „Сигурност“ sector is excluded entirely — the single most contested line in the bill.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://www.mlsp.government.bg/ministr-efremova-nad-300-mln-evro-poveche-za-detsata-i-semeystvata-predvizhda-proektt-na-byudzhet-2027-g"
+    },
+    {
+      "url": "https://www.bgnes.bg/parlamentarnite-komisii-gledat-na-parvo-chetene-byudjet-2027"
+    }
+  ]
+}

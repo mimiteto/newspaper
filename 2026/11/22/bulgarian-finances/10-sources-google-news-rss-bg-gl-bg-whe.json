@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "sources-google-news-rss-bg-gl-bg-whe",
+  "section": "bulgarian-finances",
+  "kind": "context",
+  "text": "Sources: Google News RSS (bg/gl=BG, `when:2d`–`when:5d`) across БТА, БНР, БНТ, Investor.bg, Mediapool, Dnevnik, Fakti, BGNES, BurgasMedia, Ruse news, Focus-news, Banker, 24/7; plus direct pulls from bta.bg, bnrnews.bg, bntnews.bg, business.dir.bg, burgasmedia.com, bgledger.com/en/gazette, namrb.org, mlsp.government.bg, noi.bg and flagman.bg.",
+  "order": 10
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "podkrepa-shtampetni-ednomesechni-stachki-v-sedem",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "„Подкрепа“: щампетни едномесечни стачки в седем институции от 23 ноември",
+  "text": "The administrative-staff union's relay of one-hour effective strikes starts Monday 23 Nov at the Social Assistance Agency (10:00–11:00), then the Employment Agency (24 Nov), the Labour Inspectorate EXEC (25 Nov), the Registry Agency (26 Nov, hour TBC), the Geodesy/Cartography/Cadastre Agency (27 Nov), the National Statistical Institute (30 Nov) and the National Social Security Institute (1 Dec). Demands: a flat €350 monthly increase, restoration of the seniority supplement, and equal treatment across state administration — costed at €54m, which the union wants written into the 2027 budget.",
+  "order": 80,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/bulgaria/oficial-messages/1251094-kt-podkrepa-klyuchovi-zvena-na-administratsiyata-izlizat-na-stachka-pod-nadsl"
+    },
+    {
+      "url": "https://www.focus-news.net/novini/regioni/Sluzhitelite-na-sedem-durzhavni-institucii-v-Ruse-izlizat-na-protest-3060089"
+    }
+  ]
+}

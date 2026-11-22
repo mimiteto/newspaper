@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "sxr8",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Apple",
+      "weight_pct": 8.14,
+      "as_of": "19 Nov 2026",
+      "rank": 1
+    },
+    {
+      "name": "Microsoft",
+      "weight_pct": 5.96,
+      "as_of": "19 Nov 2026",
+      "rank": 2
+    },
+    {
+      "name": "NVIDIA",
+      "weight_pct": 5.78,
+      "as_of": "19 Nov 2026",
+      "rank": 3
+    },
+    {
+      "name": "Amazon.com",
+      "weight_pct": 4.16,
+      "as_of": "19 Nov 2026",
+      "rank": 4
+    },
+    {
+      "name": "Broadcom",
+      "weight_pct": 2.67,
+      "as_of": "19 Nov 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "SXR8 — iShares Core S&P 500 UCITS ETF Acc",
+  "text": "€694.06, −25.22 (−3.51%) at 17:36 CET on 20 Nov, i.e. it tracked an S&P 500 that fell 3.70% on the day and 8.61% on the week. Top five weights per stockanalysis.com, as of 19 Nov 2026:",
+  "order": 80,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SXR8/holdings/"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "politsayite-obyaviha-protest-za-28-noemvri-i-otr",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Полицайите обявиха протест за 28 ноември — и отреха да са уведомявани за съкращенията (21 ноември)",
+  "text": "СФСМВР chair Iliya Kuzmanov, speaking after the union's national meeting in Veliko Tarnovo, confirmed action in Sofia on Saturday 28 Nov at 12:00, jointly with the prison staff union, calling it a protest „за чест и достойнство“ rather than a pay protest — the offence, he said, is that security was dropped from the promised uniform income approach, and he argued a 5% rise would cost about €100m against a deficit discussed at €4.7bn. He also stated the federation has received no official or unofficial information on the scope, number or method of the announced cuts, and doubted a decision exists.",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/bulgaria/1251731-sluzhiteli-ot-mvr-shte-uchastvat-v-protestni-deystviya-v-sofiya-na-28-noemvri-s"
+    },
+    {
+      "url": "https://newspoint.bg/politsaite-izlizat-na-protest-na-28-noemvri-zaradi-zaplatite-v-mvr/"
+    }
+  ]
+}

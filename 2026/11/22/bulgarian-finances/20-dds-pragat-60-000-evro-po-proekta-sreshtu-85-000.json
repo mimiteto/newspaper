@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "dds-pragat-60-000-evro-po-proekta-sreshtu-85-000",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "ДДС-прагът: 60 000 евро по проекта срещу 85 000 евро по вноса на „Продължаваме промяната“",
+  "text": "The council-of-ministers bill raises the mandatory VAT registration threshold from the current €51,130 (the legacy 100 000 лв conversion) to €60,000 for 2027, €70,000 for 2028 and €75,000 for 2029; PP tabled between-first-and-second-reading amendments on 19 Nov pushing straight to €85,000 from 1 Jan 2027, the ceiling the European Commission permits, alongside softening the home-raikia ban to cover only sale rather than possession/offering.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://business.dir.bg/ikonomika/kabinetat-vnese-v-parlamenta-trite-proektobyudzheta-za-2027-g"
+    },
+    {
+      "url": "https://burgasmedia.com/news/pp-predlaga-prag-za-registraciya-po-dds-ot-85-000-evro-oshte-ot-2027-g"
+    }
+  ]
+}

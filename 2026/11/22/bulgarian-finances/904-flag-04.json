@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-04",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "Translation caveats: „максимален осигурителен доход“ is the social-security contribution ceiling, not a benefit cap; „щатна бройка“ is a budgeted post, not necessarily a person; „социални таксита“ here is the working title of a planned transport service, not a taxi subsidy; „първо четене“ is a committee-stage approval, not a law.",
+  "order": 904
+}

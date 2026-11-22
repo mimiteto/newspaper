@@ -1,0 +1,9 @@
+{
+  "schema": "mb/item@1",
+  "id": "conditions",
+  "section": "weather",
+  "kind": "item",
+  "label": "Conditions",
+  "text": "Bright and dry through the morning — open-meteo weather code 1 (mainly clear) at 09:15 with 77% humidity, wttr.in reporting \"Sunny\", +6 °C, 80% humidity and a 4 km/h wind; cloud thickens to overcast from about 15:00 and stays that way overnight.",
+  "order": 30
+}

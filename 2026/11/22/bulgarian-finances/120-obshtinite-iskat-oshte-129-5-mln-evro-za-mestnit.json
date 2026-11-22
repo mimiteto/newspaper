@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "obshtinite-iskat-oshte-129-5-mln-evro-za-mestnit",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Общините искат още 129.5 млн. евро за местните дейности",
+  "text": "НСОРБ signed the consultation protocol with the Finance Ministry with categorical disagreement (13 Nov, published 16 Nov) and repeated the demand through the weekend: restore and top up the transfer compensating the minimum-wage rise in local activities to €45.5m — it was €40.5m in 2026 and is deleted outright for 2027 — raise the general equalisation subsidy by €40m to €295.7m, winter road maintenance by €5m to €30.1m, and the capital grant by €39m to €294m. The capital grant was restored at €255m only after being zeroed in the 2 Nov draft, and even so 107 municipalities (40.4%) receive less than in 2026 while 98 get a smaller winter-maintenance transfer; the delegated-activities subsidy is budgeted at €4,626.4m against a demanded minimum of €4,913m, a 6.3% rise that leaves the health function at just +2.8%.",
+  "order": 120,
+  "sources": [
+    {
+      "url": "https://bnrnews.bg/main/post/561240/obshtinite-iskat-dopalnitelni-euro129-mln-v-byudzhetite-im-za-2027-g"
+    },
+    {
+      "url": "https://www.namrb.org/bg/aktualno/nsorb-podpisa-protokola-ot-konsultatsiite-s-ministerstvoto-na-finansite-s-kategoritchno-nesaglasie-po-parametrite-za-obshtinite-21227"
+    }
+  ]
+}

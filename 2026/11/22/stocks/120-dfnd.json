@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "dfnd",
+  "section": "stocks",
+  "kind": "item",
+  "label": "DFND — Siren DIVCON Dividend Defender ETF",
+  "text": "Fund-level only: there is no live quote to report. The last trade printed was $43.22, −0.58 (−1.32%), on 12 Dec 2025 and stockanalysis labels the fund Inactive/delisted, with its dividend page stating the fund \"has been delisted and will not pay dividends anymore\"; assets are last shown around $9.0m. Reporting this as unpriceable rather than quoting a 2025 price as current.",
+  "order": 120,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/etf/dfnd/dividend/"
+    },
+    {
+      "url": "https://etfexplorer.com/etf/DFND"
+    }
+  ]
+}

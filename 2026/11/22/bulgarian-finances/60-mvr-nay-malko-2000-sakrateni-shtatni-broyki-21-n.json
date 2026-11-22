@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "mvr-nay-malko-2000-sakrateni-shtatni-broyki-21-n",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "МВР: най-малко 2000 съкратени щатни бройки (21 ноември)",
+  "text": "MP Stefan Belchev (Прогресивна България, chair of the economic policy committee) told bTV that at least 2,000 posts are to be cut in the Interior Ministry as part of an optimisation covering roughly 5,000 public-sector posts in total, with about 2,400 outside the ministry plus further cuts in state enterprises, conceding some are vacant posts; he also said the reported ~6,000 officers holding ТЕЛК decisions need verification by the minister. This sits on top of the bill's own measure cutting МВР and security-agency personnel spending by up to 10% from 1 Jan 2027.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://www.bgnes.bg/stefan-belchev-sakrashtavame-pone-2000-rabotni-mesta-v-mvr"
+    },
+    {
+      "url": "https://banker.bg/2026-11-21/mvr-sthatni-brojki-administracziyata/"
+    }
+  ]
+}
