@@ -327,6 +327,48 @@ class ProseStyleTests(RepoTestCase):
         self.assertIn("(21–22 Nov 2026)", title)
 
 
+class IngestFailureTests(RepoTestCase):
+    """What a failed ingest must leave behind.
+
+    `ingest` prunes a section directory, so a partial failure is the one way the
+    pipeline could damage a day rather than reject a draft.
+    """
+
+    def test_a_bad_id_in_a_later_section_writes_nothing_at_all(self):
+        from mb.ingest import ingest
+        from mb.model import Item, SectionError
+
+        items = [
+            Item.from_json({"id": "temperature", "section": "weather", "text": "Mild."}),
+            Item.from_json({"id": "sapse", "section": "stocks", "ticker": "SAP.DE"}),
+            Item.from_json({"id": "sapse", "section": "stocks", "ticker": "SAP"}),
+        ]
+        with self.assertRaisesRegex(SectionError, "duplicate item ids"):
+            ingest(self.repo, day_path(DATE), items)
+        self.assertFalse((self.repo / "2026/11/22/weather").exists(), "the good section must not be half-written")
+        self.assertFalse((self.repo / "2026/11/22/stocks").exists())
+
+    def test_corrupt_stored_json_is_not_mistaken_for_no_verdicts(self):
+        """Silence here would un-judge the day and print every news line."""
+        from mb.ingest import inherit_relevance
+        from mb.model import Item, SectionError
+
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
+        corrupt = sorted((self.repo / "2026/11/22/stocks").glob("*.json"))[0]
+        corrupt.write_text("{ this is not json", encoding="utf-8")
+
+        fresh = [Item.from_json({"id": "sapse", "section": "stocks", "ticker": "SAP.DE", "price": 1.0})]
+        with self.assertRaises(SectionError):
+            inherit_relevance(self.repo, day_path(DATE), fresh)
+
+    def test_a_section_with_nothing_stored_yet_inherits_quietly(self):
+        from mb.ingest import inherit_relevance
+        from mb.model import Item
+
+        fresh = [Item.from_json({"id": "mrz", "section": "bulgarian-finances", "label": "МРЗ", "text": "x"})]
+        self.assertEqual(inherit_relevance(self.repo, day_path(DATE), fresh), 0)
+
+
 class AmbiguousVerdictTests(RepoTestCase):
     """`ambiguous` is the decisions API saying "this one was a coin flip".
 
