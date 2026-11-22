@@ -107,6 +107,16 @@ def _draft_items(
     draft_section, records, meta = load_draft(draft_path)
     chosen = section or draft_section
     if not chosen:
+        # Every stored mb/item@1 names its own section, so a bare list of such
+        # records is already a complete draft — only a draft that names two
+        # sections is genuinely ambiguous.
+        named = {str(record.get("section", "")).strip() for record in records if isinstance(record, dict)}
+        named.discard("")
+        if len(named) == 1:
+            chosen = named.pop()
+        elif len(named) > 1:
+            sys.exit(f"mb=failed reason=draft-names-multiple-sections {', '.join(sorted(named))} — split it per section")
+    if not chosen:
         sys.exit("mb=failed reason=no-section pass --section or put \"section\" in the draft")
     if chosen not in SECTIONS:
         sys.exit(f"mb=failed reason=bad-section {chosen!r} not in {SECTIONS}")
