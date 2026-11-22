@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "lyp6",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "ASML Holding",
+      "weight_pct": 4.2,
+      "as_of": "30 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "Roche Holding",
+      "weight_pct": 2.24,
+      "as_of": "30 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "HSBC Holdings",
+      "weight_pct": 2.12,
+      "as_of": "30 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Shell",
+      "weight_pct": 2.02,
+      "as_of": "30 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "Novartis",
+      "weight_pct": 1.94,
+      "as_of": "30 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "lyp6",
+  "text": "€321.05, +1.60 (+0.50%) on Xetra as of 30 Oct 2026 17:30 CET (final print) — the STOXX Europe 600 leg (613 holdings, top 10 20.55%, TER 0.07%), finishing the week on a modest recovery after the October drawdown.",
+  "order": 100,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/LYP6/holdings/"
+    }
+  ]
+}

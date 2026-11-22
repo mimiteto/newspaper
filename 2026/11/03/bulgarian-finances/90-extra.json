@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "extra",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Extra",
+  "text": "The €135mln industrial-zones line survives into the draft budget as the only published Бюджет-2027 figure; Пулев restated it on 2 November, and the file now waits on the runoff — so the euro amounts (including the €443 poverty line and €660 МРЗ) all land after the ЗПС caps have already been deleted.",
+  "order": 90,
+  "sources": [
+    {
+      "url": "https://banker.bg/2026-11-02/industrialni-zoni-byudzhet-2027/"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "all US figures are the Friday 30 October settlement, not live — this brief runs on a Sunday evening, so Monday 2 November opens against them and everything here is at least two sessions stale; Xetra prints are the final Friday quote and vhyL is the LSE Friday close in GBP while sxr8/ubu7/lyp6 are EUR from Xetra; holdings weights sit on two dates (30 Oct for the Xetra/LSE funds) and are fund-reported, not same-day; dfnd has no live quote (last trade 12 Dec 2025, $9.08M fund) and should be checked for a delisting/liquidation notice before it is sized; the S&P 500 / Nasdaq / VIX snapshot numbers are from the Friday feed and should be re-checked before trading on them.",
+  "order": 901
+}

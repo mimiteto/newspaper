@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "temperature",
+  "section": "weather",
+  "kind": "item",
+  "label": "Temperature",
+  "text": "A cool, damp Saturday evening into a raw Sunday: high 10.7 °C / low 4.6 °C for today, with 8.3 °C at the 21:00 reference hour (feels like 6.9 °C) and 0.00 mm in the 15-minute model interval ending there.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code,sunrise,sunset&timezone=Europe%2FSofia&forecast_days=3"
+    }
+  ]
+}

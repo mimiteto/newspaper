@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "kodeks-na-truda-nothing-tabled-or-promulgated-in",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Кодекс на труда — nothing tabled or promulgated in the window",
+  "text": "The bills feed shows no labour-related registration since 26 October and ДВ has issued nothing since ДВ бр. 99 of 30.10, so the only КТ-based instrument still moving is ПП № 235 under чл. 244, ал. 1, т. 1 КТ; КНСБ repeated on 3 November its demand for an across-the-board ≥10% budget-sector pay rise — a demand, not a filing.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://www.parliament.bg/feed/bills"
+    },
+    {
+      "url": "https://dv.parliament.bg/DVWeb/"
+    }
+  ]
+}

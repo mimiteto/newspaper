@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "sapse",
+  "section": "stocks",
+  "kind": "item",
+  "label": "sapse",
+  "text": "€214.10 on Xetra, +1.35 (+0.63%) as of 30 Oct 2026 17:30 CET (final print) — holding the gains from the 29 Oct Erste Group upgrade to Buy and finishing the week up 2.4% against a red software tape; market cap €247.1bn.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SAP/"
+    }
+  ]
+}

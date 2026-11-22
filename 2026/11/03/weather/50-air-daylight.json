@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "air-daylight",
+  "section": "weather",
+  "kind": "item",
+  "label": "Air & daylight",
+  "text": "US AQI 62 (moderate) at 21:00 with PM2.5 14.9 µg/m³, PM10 21.3 µg/m³, ozone 41.0 µg/m³ and NO₂ 12.6 µg/m³; the sun rose 06:59 and set 17:16, about 10 h 17 m of daylight, and tomorrow's sunset comes at 17:14.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=42.7382&longitude=23.5975&current=pm2_5,pm10,ozone,nitrogen_dioxide,us_aqi&timezone=Europe%2FSofia"
+    }
+  ]
+}

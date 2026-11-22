@@ -1,0 +1,14 @@
+{
+  "schema": "mb/day@1",
+  "date": "2026-11-03",
+  "location": "Novi Iskar",
+  "timezone": "Europe/Sofia",
+  "started": "2026-11-03T21:13:38+02:00",
+  "finished": "2026-11-03T21:31:00+02:00",
+  "sections": [
+    "weather",
+    "stocks",
+    "bulgarian-finances"
+  ],
+  "source": "backfill from markdown"
+}

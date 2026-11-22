@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "precipitation",
+  "section": "weather",
+  "kind": "item",
+  "label": "Precipitation",
+  "text": "4.10 mm booked for today at a 65 % peak probability; the direction for tomorrow is wetter — 9.70 mm at 80 % with the high easing to 9.6 °C — before a drier 1.20 mm at 35 % on Monday 9 November.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max,temperature_2m_max&timezone=Europe%2FSofia&forecast_days=3"
+    }
+  ]
+}

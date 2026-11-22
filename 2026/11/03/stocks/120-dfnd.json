@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "dfnd",
+  "section": "stocks",
+  "kind": "item",
+  "label": "dfnd",
+  "text": "Fund-level only: 43.22, −0.58 (−1.32%) is the *last recorded trade, 12 Dec 2025* — the feed marks the Siren DIVCON Dividend Defender ETF (long/short dividend-defender strategy) inactive, with $9.08M assets, 205,060 shares out, 1.75% expense ratio, beta 0.55 and a $0.48 (1.11%) distribution; no 30 Oct price is available from this source, so treat the current move as unknown rather than flat.",
+  "order": 120,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/etf/DFND/"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "sources-google-news-rss-hl-bg-when-2",
+  "section": "bulgarian-finances",
+  "kind": "context",
+  "text": "Sources: Google News RSS (hl=bg, `when:2d`) over BTA/БГНЕС/БНР-feeding portals; outlet RSS polled directly (banker.bg, segabg.com, 3e-news.net, kmeta.bg, capital.bg); `web_search` on mixed Bulgarian/English queries (минимална работна заплата 2027, ДДС праг за регистрация, Кодекс на труда промени, бюджет 2027 срок, ЗЧРБ); primary/institutional checks at dv.parliament.bg (ДВ register), parliament.bg bills feed, strategy.bg (МС act register + consultation portal), mlsp.government.bg, noi.bg, bia-bg.com (БСК social-dialogue finance tracker), fsc.bg and minfin.bg.",
+  "order": 10
+}

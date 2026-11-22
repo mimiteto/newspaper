@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "the-zps-repeal-is-now-in-force-the-0-5-1-structu",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "The ЗПС repeal is now in force: the 0.5%/1% structural-deficit caps are gone from 1 November",
+  "text": "ЗИД на ЗпС (таблед by МС on 26 October, adopted on 30 October) repealed чл. 23 and чл. 24 ЗПС — the medium-term structural-deficit objective capped at 0.5% of GDP, tolerating more than 0.5% but never above 1% of GDP where general-government debt is under 40% of GDP — which БСК and АИКБ commented on through 2 November as the constraint that had bound every medium-term forecast.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://www.parliament.bg/feed/bills"
+    },
+    {
+      "url": "https://www.bia-bg.com/dialog/view/arc/22462/"
+    }
+  ]
+}

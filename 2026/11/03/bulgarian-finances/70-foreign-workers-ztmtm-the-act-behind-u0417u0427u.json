@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "foreign-workers-ztmtm-the-act-behind-u0417u0427u",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Foreign workers (ЗТМТМ, the act behind \"u0417u0427u0420u0411\") — status, not news",
+  "text": "No quota or migration act appears in ДР or in the bills feed: the last published text remains МТСП's ЗИД на ЗТМТМ (consultation 12064-K, 8–22 January 2026), which lifts the third-country ceilings by 5 percentage points — to 25% of a firm's average headcount, 40% for SMEs — and is meant to close Commission infringement procedure № 2023/2017 on the seasonal-workers Directive 2014/36/EU.",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://www.strategy.bg/bg/public-consultations/12064"
+    },
+    {
+      "url": "https://dv.parliament.bg/DVWeb/"
+    }
+  ]
+}

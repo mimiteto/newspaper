@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "ko",
+  "section": "stocks",
+  "kind": "item",
+  "label": "ko",
+  "text": "$94.85, +0.52 (+0.55%) as of 30 Oct 2026 4:00 p.m. ET (close), still bid after the 29 October third quarter in which Coca-Cola raised its 2026 outlook; previous close $94.33.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/KO/"
+    }
+  ]
+}

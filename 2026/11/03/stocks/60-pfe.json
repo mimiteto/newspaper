@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "pfe",
+  "section": "stocks",
+  "kind": "item",
+  "label": "pfe",
+  "text": "$30.44, +0.14 (+0.46%) as of 30 Oct 2026 4:00 p.m. ET (close) — the defensive bid that followed the \"reality check\" print persists, with commentary focused on a ~6% yield whose dividend exceeds free cash flow; previous close $30.30.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/PFE/"
+    }
+  ]
+}

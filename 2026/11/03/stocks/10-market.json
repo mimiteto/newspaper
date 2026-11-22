@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "market",
+  "section": "stocks",
+  "kind": "context",
+  "text": "Market snapshot: S&P 500 at 7,612.40, +13.65 (+0.18%) at the Fri 30 Oct 2026 close of 4:00 p.m. ET — the last settlement before this brief, with US markets closed for the weekend — as the Nasdaq added 0.4% on semiconductor cover after the 29/30 October tech drawdown, the VIX eased 3.1% to 18.9 and the 10-year yielded 4.02% (CNBC quote feed / CNBC top news, 30 Oct 2026); Xetra quotes below were struck around 17:30 CET Friday (final Xetra print), US quotes are Friday closes; FX: 0.89724 EUR per USD, i.e. EUR/USD ≈ 1.1145 (ECB reference rate for 30 Oct 2026), BGN pegged at 1.95583/EUR.",
+  "order": 10
+}

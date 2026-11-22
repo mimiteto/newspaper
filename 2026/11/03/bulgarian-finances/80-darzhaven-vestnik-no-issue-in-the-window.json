@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "darzhaven-vestnik-no-issue-in-the-window",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Държавен вестник — no issue in the window",
+  "text": "ДВ бр. 99 от 30.10.2026 is still the newest issue and its official section holds weapons, waste, rail transport, КС децисия № 17/2026 and ПП № 223/26.10.2026 — no КТ, ЗДДС, ЗПС or labour-migration act, and the €660 minimum-wage ordinance is still not promulgated.",
+  "order": 80,
+  "sources": [
+    {
+      "url": "https://dv.parliament.bg/DVWeb/"
+    },
+    {
+      "url": "https://dv.parliament.bg/DVWeb/showMaterialDV.jsp?idMat=247129"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "sxr8",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "NVIDIA",
+      "weight_pct": 7.95,
+      "as_of": "30 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "Apple",
+      "weight_pct": 7.58,
+      "as_of": "30 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "Microsoft",
+      "weight_pct": 5.94,
+      "as_of": "30 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Amazon.com",
+      "weight_pct": 3.71,
+      "as_of": "30 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "Alphabet (GOOGL)",
+      "weight_pct": 2.84,
+      "as_of": "30 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "sxr8",
+  "text": "€739.85, +3.25 (+0.44%) on Xetra as of 30 Oct 2026 17:30 CET (final print) — the S&P 500 leg of the book, tracking an index that closed +0.18%; 512 holdings, top 10 = 38.11%, TER 0.07%.",
+  "order": 80,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SXR8/holdings/"
+    }
+  ]
+}

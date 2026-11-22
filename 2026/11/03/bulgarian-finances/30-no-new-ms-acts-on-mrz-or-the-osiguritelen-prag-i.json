@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "no-new-ms-acts-on-mrz-or-the-osiguritelen-prag-i",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "No new МС acts on МРЗ or the осигурителен праг in the window",
+  "text": "ПП № 235 of 29 October (€660 минимум from 1 January 2027) remains the operative text; the МС act register shows nothing newer on minimum wage or the social-insurance ceiling in the 2–3 November window, and ДВ has published no issue since ДВ бр. 99 of 30 October.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://www.strategy.bg/bg/pris/legal-information/postanovleniia/171372"
+    },
+    {
+      "url": "https://dv.parliament.bg/DVWeb/"
+    }
+  ]
+}

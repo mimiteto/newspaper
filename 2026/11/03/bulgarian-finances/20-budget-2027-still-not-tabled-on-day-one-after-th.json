@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "budget-2027-still-not-tabled-on-day-one-after-th",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Budget 2027 still not tabled on day one after the deadline",
+  "text": "The чл. 79, ал. 4 ЗПФ deadline expired on 31 October with nothing in the parliamentary register, and the 1 November presidential runoff then displaced the file entirely; МС keeps pointing at \"this week\", i.e. after the runoff, so the draft now arrives after the constitutionally-anchored date with the ЗПС repeal (below) already in force.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/economy"
+    },
+    {
+      "url": "https://www.parliament.bg/feed/bills"
+    }
+  ]
+}

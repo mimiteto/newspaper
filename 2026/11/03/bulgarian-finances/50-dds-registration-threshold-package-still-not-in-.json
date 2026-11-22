@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "dds-registration-threshold-package-still-not-in-",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "ДДС registration-threshold package still not in parliament (€51,130 → €60,000 plan unfiled)",
+  "text": "БСК's finance-bill tracker (discussion opened 26.10, run until 12.11) lists as tabled only the ЗПС and Фискален съвет amendments from МС and the Валутен закон amendment; the only ЗДДС bills remain opposition ones from 23 September, so the finance ministry's phased €51,130 → €60,000 (2027) → €70,000 (2028) → €75,000 (2029) threshold path is not on the register at all.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://www.bia-bg.com/dialog/view/arc/22462/"
+    },
+    {
+      "url": "https://www.parliament.bg/feed/bills"
+    }
+  ]
+}

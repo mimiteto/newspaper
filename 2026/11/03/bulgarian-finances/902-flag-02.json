@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-02",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "Terminology / translation: \"u0417u0427u0420u0411\" does not name an operative statute — third-country access runs through ЗТМТМ and ЗНРА, so the bucket is labelled by the act that would actually be amended; \"МРЗ\" is the statutory monthly minimum, not \"минимално работно възнаграждане\"; \"максимален осигурителен доход / осигурителен праг\" is the social-insurance ceiling; \"ЗПС\" is the Fiscal General Republic Act (Закон за публичните финанси). All Bulgarian paraphrases and titles above are my translations, and outlets mix лв and € for the same amount.",
+  "order": 902
+}

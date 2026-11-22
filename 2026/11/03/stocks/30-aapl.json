@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "aapl",
+  "section": "stocks",
+  "kind": "item",
+  "label": "aapl",
+  "text": "$349.90, +1.43 (+0.41%) as of 30 Oct 2026 4:00 p.m. ET (close), stabilising after the 28–29 October slide into the Q1 print, with 4 November flagged as the next big catalyst and supply-chain commentary still on iPhone wait times; previous close $348.47.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/AAPL/"
+    }
+  ]
+}

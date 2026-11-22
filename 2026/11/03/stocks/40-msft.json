@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "msft",
+  "section": "stocks",
+  "kind": "item",
+  "label": "msft",
+  "text": "$525.60, +3.43 (+0.66%) as of 30 Oct 2026 4:00 p.m. ET (close) — continuing to give back only part of the post-earnings 28 October cloud-driven +4% pop, as Azure guidance remains the bull case and the AI-capex debate cooled into the weekend; previous close $522.17.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/MSFT/"
+    }
+  ]
+}

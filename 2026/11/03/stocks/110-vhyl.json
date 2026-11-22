@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "vhyl",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Samsung Electronics",
+      "weight_pct": 2.14,
+      "as_of": "30 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "JPMorgan Chase",
+      "weight_pct": 2.07,
+      "as_of": "30 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "Exxon Mobil",
+      "weight_pct": 1.56,
+      "as_of": "30 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Johnson & Johnson",
+      "weight_pct": 1.47,
+      "as_of": "30 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "AbbVie",
+      "weight_pct": 1.09,
+      "as_of": "30 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "vhyL",
+  "text": "69.72, +0.37 (+0.53%) as of 30 Oct 2026 16:30 GMT (LSE close) — the global high-dividend sleeve, quoted in GBP on the London line of the USD-distributing share class, and again the greenest line on the list as energy and financials absorbed the rotation; 2,443 holdings, top 10 12.61%, TER 0.29%.",
+  "order": 110,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/lon/VHYL/holdings/"
+    }
+  ]
+}
