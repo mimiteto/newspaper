@@ -280,13 +280,18 @@ def render_section(day: Day, section: str, items: list[Item]) -> str:
     """Full Markdown body of one section file."""
     visible = [item for item in items if not item.dropped]
     contexts = [item for item in visible if item.kind == "context"]
-    body_items = [item for item in visible if item.kind == "item"]
+    body_items = [item for item in visible if item.kind in ("item", "heading")]
     flags = [item for item in visible if item.kind == "flag"]
 
     blocks: list[str] = [section_title(day, section)]
     for item in contexts:
         blocks.append(item.text or item.label)
     for item in body_items:
+        if item.kind == "heading":
+            # A legacy sub-heading, printed where the day had it. Nothing in the
+            # live pipeline authors one: only a backfilled day carries grouping.
+            blocks.append(f"## {item.text or item.label}")
+            continue
         blocks.append("\n".join(render_item(item)))
 
     flag_lines = [item.text or item.label for item in flags if (item.text or item.label)]
