@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "sxr8",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "NVIDIA Corporation",
+      "weight_pct": 7.77,
+      "as_of": "23 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "Apple Inc.",
+      "weight_pct": 7.72,
+      "as_of": "23 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "Microsoft Corporation",
+      "weight_pct": 5.92,
+      "as_of": "23 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Amazon.com, Inc.",
+      "weight_pct": 3.7,
+      "as_of": "23 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "Alphabet Inc. (Class A)",
+      "weight_pct": 2.86,
+      "as_of": "23 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "SXR8 — iShares Core S&P 500 UCITS ETF Acc (Xetra)",
+  "text": "€742.50, +0.21 % at 09:06 CET on a very thin opening print (day range €742.48–742.62) against an index that closed +0.70 %; stockanalysis.com carries €742.54, +0.22 % at 09:05 CET.",
+  "order": 100,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SXR8/holdings/"
+    }
+  ]
+}

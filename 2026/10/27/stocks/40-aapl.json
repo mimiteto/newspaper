@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "aapl",
+  "section": "stocks",
+  "kind": "item",
+  "label": "AAPL",
+  "text": "$343.91, −1.10 % at the 26 Oct close (16:00 ET) — stepping back from the $351.73 all-time high set days earlier under bearish analyst commentary, even with supply-chain reports of a 30 % acceleration in iPhone Duo orders.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/AAPL/"
+    },
+    {
+      "url": "https://www.investing.com/news/stock-market-news/why-is-apple-stock-sliding-today-93CH-4972942"
+    }
+  ]
+}

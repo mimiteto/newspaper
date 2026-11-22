@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "market",
+  "section": "stocks",
+  "kind": "context",
+  "text": "Market context: the S&P 500 closed Monday 26 Oct at 7,676.77, +0.70 % (Yahoo close stamped 16:00 New York); the European reads below are Tuesday 09:04–09:12 CET / 10:04–10:12 local (Sofia), with STOXX Europe 600 at 639.46, −0.19 % and E-mini S&P 500 Dec-26 at 7,710.25, −0.06 %; EUR/USD is 1.1159, −0.18 %, so the EUR-listed ETF lines carry a mild FX headwind versus the USD quotes, and no BGN conversion is applied anywhere on this page.",
+  "order": 10
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-03",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Caveat: the air-quality block is a model field for the 42.7 / 23.6 grid cell rather than a street-level station, and the 1.9 °C minimum is a screen-height value — frost at ground level in the valley is possible even with the official minimum above zero.",
+  "order": 903
+}

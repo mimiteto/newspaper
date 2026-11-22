@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-02",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Rain-signal disagreement: open-meteo holds today at 0.0 mm and a 5 % maximum probability while wttr.in shows 16–20 % \"patchy rain nearby\" around midday and 23–30 % tomorrow — treat the open-meteo dry case as the optimistic branch, and note wttr.in credits only 3.0 sun hours for today against open-meteo's partly-cloudy codes.",
+  "order": 902
+}

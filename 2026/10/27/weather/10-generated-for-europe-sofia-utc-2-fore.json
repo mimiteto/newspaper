@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "generated-for-europe-sofia-utc-2-fore",
+  "section": "weather",
+  "kind": "context",
+  "text": "Generated for Europe/Sofia (UTC+2), forecast read as of 10:15 local from open-meteo and cross-checked against wttr.in at 10:20 local.",
+  "order": 10
+}

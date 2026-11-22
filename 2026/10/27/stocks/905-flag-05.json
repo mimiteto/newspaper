@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-05",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Yahoo's chart endpoint anchors its previous close five sessions back, so only the provider-reported day-change percentages are quoted, not implied absolute changes.",
+  "order": 905
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "direct-stocks",
+  "section": "stocks",
+  "kind": "heading",
+  "text": "Direct stocks",
+  "order": 20
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "sap",
+  "section": "stocks",
+  "kind": "item",
+  "label": "SAP",
+  "text": "€213.10 on Xetra, +0.40 % as of 09:06 CET on 27 Oct — still digesting the 21 Oct Q3 beat, where SAP guided FY26 cloud revenue to the upper end of €25.8–26.2 bn at constant currency.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/SAP.DE/"
+    },
+    {
+      "url": "https://www.sap.com/docs/download/investors/2026/sap-2026-q3-statement.pdf"
+    }
+  ]
+}

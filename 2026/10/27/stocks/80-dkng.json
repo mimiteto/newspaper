@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "dkng",
+  "section": "stocks",
+  "kind": "item",
+  "label": "DKNG",
+  "text": "$21.22, +1.48 % at the 26 Oct close (16:00 ET) — the best mover of the six on Monday, though still framed defensively with shares down roughly 41 % this year as prediction-market spending eats into EBITDA.",
+  "order": 80,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/DKNG/"
+    },
+    {
+      "url": "https://finance.yahoo.com/markets/stocks/articles/draftkings-slides-41-prediction-market-094129122.html"
+    }
+  ]
+}

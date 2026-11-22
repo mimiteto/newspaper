@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "air-daylight",
+  "section": "weather",
+  "kind": "item",
+  "label": "Air & daylight",
+  "text": "European AQI 29 (US AQI 58) with PM2.5 at 9.7 µg/m³ and ozone 48.0 µg/m³ at 10:00 local; sunrise 06:53 and sunset 17:25 give about 10 h 32 min of daylight against a maximum UV index of 2.75.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=42.7382&longitude=23.5975&current=european_aqi,us_aqi,pm2_5,pm10,ozone&timezone=Europe%2FSofia"
+    }
+  ]
+}

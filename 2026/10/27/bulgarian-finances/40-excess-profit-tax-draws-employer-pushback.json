@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "excess-profit-tax-draws-employer-pushback",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Excess-profit tax draws employer pushback",
+  "text": "The finance ministry's ZKPO package introduces a 33 % one-off levy on excess profit for banks, fast-loan firms, insurers, telecoms, exchange bureaux and food-retail chains with 5+ outlets; БТПП backed the tax package in principle on 26 Oct but abstained on the ZKPO chapter and rejects offsetting the levy against investments.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://bntnews.bg/news/33-danak-svrahpechalba-po-visok-tavan-na-dds-i-oblekcheniya-za-roditeli-prez-2027-g-predlagat-ot-finansovoto-ministerstvo-1413777news.html"
+    },
+    {
+      "url": "https://www.infobusiness.bcci.bg/btpp-printsipno-podkrepya-paketa-danuchni-zakoni-s-belejki-no-se-vuzdurja-ot-podkrepa-otnosno-promenite-v-zkpo-svurzani-s-danuk-svruhpechalba.html"
+    }
+  ]
+}

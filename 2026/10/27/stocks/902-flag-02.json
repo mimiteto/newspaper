@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-02",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "DFND is the real data problem: no Yahoo quote, stockanalysis price frozen at 12 Dec 2025. Treat the −1.32 % as historical, not as this morning's move.",
+  "order": 902
+}

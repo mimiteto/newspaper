@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "dfnd",
+  "section": "stocks",
+  "kind": "item",
+  "label": "DFND — SireN DIVCON Dividend Defender ETF (Cboe BZX)",
+  "text": "Fund level only: $43.22, −1.32 %, but flagged \"Inactive — last trade price\" on 12 Dec 2025 by stockanalysis.com, and Yahoo has no quote for the symbol at all, so this is a $9.08 m, 61-holding long/short fund (about 75 % long / 25 % short at rebalance) being reported on a ten-and-a-half-month-old print.",
+  "order": 140,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/etf/dfnd/holdings/"
+    }
+  ]
+}

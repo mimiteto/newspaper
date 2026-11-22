@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "third-country-labour-work-permits",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Third-country labour / work permits",
+  "text": "КНСБ held a national conference in Sofia on 27 Oct, \"An Inclusive Labour Market — the Bulgarian Perspective\", on integrating beneficiaries of protection and other non-EU nationals into the labour market under the EC-funded Labour-INT3 project — the practical enforcement end of the ЗЧРБ/labour-migration rules.",
+  "order": 90,
+  "sources": [
+    {
+      "url": "https://www.bgnes.bg/knsb-organizira-nacionalna-konferenciq-za-integraciqta-na-bejanci-i-migranti-na-pazara-na-truda"
+    },
+    {
+      "url": "https://presscenter.bg/naczionalna-konferencziya-na-knsb-za-trudovata-integracziya-na-bezhanczi-i-migranti/"
+    }
+  ]
+}

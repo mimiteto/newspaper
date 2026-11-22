@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-03",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Small cross-source price gaps: SXR8 €742.50 vs €742.54 and LYP6 €315.80 vs €315.70 between Yahoo and stockanalysis.com; both are delayed Xetra prints, so intraday deltas of ±0.05 % are noise.",
+  "order": 903
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Weight as-of dates are not aligned: SXR8 23 Oct 2026, UBU7 and LYP6 20 Oct 2026, VHYL 30 Sep 2026, DFND 12 Dec 2025 — the ranking is only comparable within each block, not across them.",
+  "order": 901
+}

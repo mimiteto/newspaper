@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "ko",
+  "section": "stocks",
+  "kind": "item",
+  "label": "KO",
+  "text": "$92.70, −0.01 % at the 26 Oct close (16:00 ET) — effectively flat into Q3 results, with RBC pointing to North America momentum ahead of the print.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/KO/"
+    },
+    {
+      "url": "https://finance.yahoo.com/markets/stocks/articles/coca-cola-poised-strong-q3-145259330.html"
+    }
+  ]
+}

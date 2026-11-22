@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "lyp6",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "ASML Holding N.V.",
+      "weight_pct": 4.26,
+      "as_of": "20 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "Roche Holding AG",
+      "weight_pct": 2.22,
+      "as_of": "20 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "HSBC Holdings plc",
+      "weight_pct": 2.13,
+      "as_of": "20 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Novartis AG",
+      "weight_pct": 1.95,
+      "as_of": "20 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "Shell plc",
+      "weight_pct": 1.95,
+      "as_of": "20 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "LYP6 — Amundi Core STOXX Europe 600 UCITS ETF Acc (Xetra, LU0908500753)",
+  "text": "€315.80, −0.13 % at 09:07 CET with the STOXX Europe 600 index itself at 639.46, −0.19 % (Yahoo, 09:07 CET); stockanalysis.com quotes €315.70, −0.16 % at 09:04 CET.",
+  "order": 120,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/LYP6/holdings/"
+    }
+  ]
+}

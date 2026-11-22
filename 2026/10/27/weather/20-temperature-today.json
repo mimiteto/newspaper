@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "temperature-today",
+  "section": "weather",
+  "kind": "item",
+  "label": "Temperature today",
+  "text": "Cool autumn day with a high of 10.2 °C and a low of 1.9 °C; 5.6 °C on the board at 10:15 local, feeling like 2.6 °C.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=3&timezone=Europe%2FSofia"
+    },
+    {
+      "url": "https://wttr.in/Novi+Iskar?format=%l|%c|%t|%f"
+    }
+  ]
+}

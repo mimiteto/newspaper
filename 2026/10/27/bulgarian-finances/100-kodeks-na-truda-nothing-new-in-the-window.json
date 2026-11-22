@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "kodeks-na-truda-nothing-new-in-the-window",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Кодекс на труда — nothing new in the window",
+  "text": "No КТ amendment was tabled or promulgated on 26–27 Oct: the last change was adopted on 25 Sep 2026 and published in Държавен вестник, while the next bill (signature 52-654-01-97, filed 16 Jul 2026) is still with the labour committee, last scheduled 15 Oct 2026 — so this bucket is status, not news.",
+  "order": 100,
+  "sources": [
+    {
+      "url": "https://dv.parliament.bg/DVWeb/showMaterialDV.jsp?idMat=246111"
+    },
+    {
+      "url": "https://parliament.bg/bg/bills/ID/167201"
+    }
+  ]
+}

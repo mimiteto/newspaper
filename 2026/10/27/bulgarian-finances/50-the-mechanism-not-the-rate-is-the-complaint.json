@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "the-mechanism-not-the-rate-is-the-complaint",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "The mechanism, not the rate, is the complaint",
+  "text": "Economists heard in the 26–27 Oct cycle argue the way the excess-profit base is computed is inflationary, and the EY reading of the ZKPO draft adds the second-order items: a one-off super-profit levy, changed global-minimum-tax rules, loss carry-forward extended to 10 years (capped at 70 % of annual profit), and higher taxation of food vouchers and private use of company assets.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://www.economic.bg/bg/a/view/danyk-svryhpechalba-novi-akcizi-po-visok-dds-prag-danychnite-promeni-prez-2027-g"
+    },
+    {
+      "url": "https://www.ey.com/bg_bg/insights/tax/tax-newsletter-bill-to-amend-the-corporate-income-tax-act"
+    }
+  ]
+}

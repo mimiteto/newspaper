@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "budget-2027-misses-the-statutory-date",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Budget 2027 misses the statutory date",
+  "text": "The draft budget will be tabled \"next week\" according to PM Rumen Radev at the Sofia Economic Forum on 26 Oct — after the presidential runoff and past the 31 October deadline set by the Public Finance Act, with more money for defence signalled as the headline change.",
+  "order": 20,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/bulgaria/1232813--byudzhet-2027-shte-bade-predstaven-drugata-sedmitsa-obyavi-premierat-rumen-ra"
+    },
+    {
+      "url": "https://banker.bg/2026-10-26/byudzhet-2027-rumen-radev/"
+    }
+  ]
+}

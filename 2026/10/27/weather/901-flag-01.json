@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Peak-temperature disagreement between providers: open-meteo has today's high at 10.2 °C, wttr.in at 8 °C; the current reads also differ (5.6 °C / feels 2.6 °C at 10:15 vs 6 °C / feels 4 °C at 10:20).",
+  "order": 901
+}

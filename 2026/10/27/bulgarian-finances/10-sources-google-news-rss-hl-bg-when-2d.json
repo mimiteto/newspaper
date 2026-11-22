@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "sources-google-news-rss-hl-bg-when-2d",
+  "section": "bulgarian-finances",
+  "kind": "context",
+  "text": "Sources: Google News RSS (hl=bg, when:2d/3d) cross-checked against BTA, БНР / Радио България, Investor.bg, Dnes.bg, banker.bg, Bloomberg TV-bg, Mediapool, БНТ, БСК/БТПП (bcci.bg), КНСБ (БГНЕС), minfin.bg, mlsp.government.bg, strategy.bg, parliament.bg and dv.parliament.bg.",
+  "order": 10
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "vat-registration-threshold-60-000-not-75-000",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "VAT registration threshold: 60 000 €, not 75 000 €",
+  "text": "The finance ministry circulated a corrected VAT directive (ZDDS amendment published for consultation on minfin.bg) that lifts the mandatory-registration threshold from the current ~51 300 € to 60 000 € from 1 Jan 2027, walking back the 75 000 € figure in the original draft after IMF criticism — the number that keeps being quoted in the 26–27 Oct budget coverage.",
+  "order": 60,
+  "sources": [
+    {
+      "url": "https://www.mediapool.bg/biznes/pragat-po-dds-dogodina-shte-se-vdigne-na-60-000-evro-a-ne-na-75-000-evro/"
+    },
+    {
+      "url": "https://www.minfin.bg/bg/news/13551"
+    }
+  ]
+}

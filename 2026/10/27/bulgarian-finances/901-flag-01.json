@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-01",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "Terminology: \"данък върху свръхпечалбата\" is rendered here as excess/super-profit tax and \"осигурителен праг/таван\" as the social-insurance ceiling; both are being used loosely across outlets, and none of the tax bills had been adopted as of 27 Oct — every figure above is a draft or a stated intention.",
+  "order": 901
+}

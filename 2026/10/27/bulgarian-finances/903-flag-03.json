@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-03",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "Date drift: the VAT and ZKPO chapters were published on 23 Oct, not in the last two days — they are included because the 26–27 Oct reporting is reaction to them; the two-day window is strictly respected for the budget, МРЗ and КНСБ items.",
+  "order": 903
+}

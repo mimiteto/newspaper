@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-04",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Headline conflict on KO: one 26 Oct item describes a fresh all-time high, while Yahoo's 52-week high for KO is $95.37 against a $92.70 close — the \"record\" framing is not supported by the quote feed used here.",
+  "order": 904
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "msft",
+  "section": "stocks",
+  "kind": "item",
+  "label": "MSFT",
+  "text": "$532.60, +1.54 % at the 26 Oct close (16:00 ET) — a pre-earnings upgrade cluster (Oppenheimer to $625 from $570, JPMorgan maintaining $625) reported the same day as news of a voluntary-buyout offer covering roughly 60,000 employees.",
+  "order": 50,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/MSFT/"
+    },
+    {
+      "url": "https://www.cnbc.com/2026-10-26/microsoft-msft-voluntary-buyouts.html"
+    }
+  ]
+}

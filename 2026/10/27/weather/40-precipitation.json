@@ -1,0 +1,14 @@
+{
+  "schema": "mb/item@1",
+  "id": "precipitation",
+  "section": "weather",
+  "kind": "item",
+  "label": "Precipitation",
+  "text": "Dry today: 0.0 mm with a 5 % peak probability; tomorrow stays at 0.0 mm but the probability doubles to 15 % under fog/low cloud (WMO code 45) and rises again to 18 % on 29 Oct — the direction of travel is wetter, but not a rainy day in the window.",
+  "order": 40,
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max,weather_code&forecast_days=3&timezone=Europe%2FSofia"
+    }
+  ]
+}

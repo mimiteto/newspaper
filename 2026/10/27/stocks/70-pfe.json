@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "pfe",
+  "section": "stocks",
+  "kind": "item",
+  "label": "PFE",
+  "text": "$29.79, −0.80 % at the 26 Oct close (16:02 ET) — the FDA approved TALZENNA plus XTANDI in an earlier metastatic prostate-cancer setting on 26 Oct, with the Q3 print set for 3 Nov.",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/PFE/"
+    },
+    {
+      "url": "https://finance.yahoo.com/healthcare/articles/pfizer-talzenna-plus-xtandi-fda-174100422.html"
+    }
+  ]
+}

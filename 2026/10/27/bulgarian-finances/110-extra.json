@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "extra",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Extra",
+  "text": "Boyan Mitrakev, executive director of KRIB, said on 26 Oct that Bulgaria needs spending-side reforms to exit the excessive-deficit procedure, pointing out that Budget 2027 is heavy on revenue measures; the Commission's own projection quoted in the same cycle puts the deficit at 3.5 % of GDP in 2025 and about 4.1 % in 2026.",
+  "order": 110,
+  "sources": [
+    {
+      "url": "https://www.bloombergtv.bg/a/17-v-razvitie/165975-nuzhni-sa-razhodni-reformi-za-kray-na-protsedurata-po-svrahdefitsit-sreshtu-balgariya"
+    },
+    {
+      "url": "https://www.mirogled.com/news-view/razxodi-s-kompensatorni-merki-i-siekrashheniia-v-administraciiata-kak-bielgariia-moze-da-izleze-ot-nadzora-za-svriexdeficit-na-ek"
+    }
+  ]
+}

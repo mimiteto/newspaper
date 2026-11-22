@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "ubu7",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Meta Platforms, Inc.",
+      "weight_pct": 1.67,
+      "as_of": "20 Oct 2026",
+      "rank": 1
+    },
+    {
+      "name": "Broadcom Inc.",
+      "weight_pct": 1.66,
+      "as_of": "20 Oct 2026",
+      "rank": 2
+    },
+    {
+      "name": "Tesla, Inc.",
+      "weight_pct": 1.17,
+      "as_of": "20 Oct 2026",
+      "rank": 3
+    },
+    {
+      "name": "Eli Lilly and Company",
+      "weight_pct": 1.13,
+      "as_of": "20 Oct 2026",
+      "rank": 4
+    },
+    {
+      "name": "Micron Technology, Inc.",
+      "weight_pct": 1.11,
+      "as_of": "20 Oct 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "UBU7 — UBS Core MSCI World UCITS ETF dis (Xetra)",
+  "text": "€110.125, +0.14 % at 09:04 CET, a global large-cap beta line trading well below the +0.70 % S&P 500 close because of the EUR quote and a mid-morning auction; weights are the stalest-but-one in this file.",
+  "order": 110,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/UBU7/holdings/"
+    }
+  ]
+}

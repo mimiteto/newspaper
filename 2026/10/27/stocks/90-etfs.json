@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "etfs",
+  "section": "stocks",
+  "kind": "heading",
+  "text": "ETFs",
+  "order": 90
+}

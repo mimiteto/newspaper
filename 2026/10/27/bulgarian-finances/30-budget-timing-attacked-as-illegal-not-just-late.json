@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "budget-timing-attacked-as-illegal-not-just-late",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Budget timing attacked as illegal, not just late",
+  "text": "Same-day coverage framed the delay as a breach of the fiscal-procedure law rather than a scheduling choice, and the budget's redistributive side effects (voucher taxation, a higher social-insurance ceiling) started leading the story on 26 Oct.",
+  "order": 30,
+  "sources": [
+    {
+      "url": "https://bnrnews.bg/radiobulgaria/post/548451/byudzhet-2027-shte-bade-predstaven-sled-balotazha"
+    },
+    {
+      "url": "https://www.dnes.bg/a/1-bulgaria/739918-radev-predstavya-byudzheta-za-2027-g-sledvashtata-sedmitsa-poveche-pari-za-otbrana"
+    }
+  ]
+}

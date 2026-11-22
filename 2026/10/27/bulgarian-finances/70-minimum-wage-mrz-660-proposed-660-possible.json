@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "minimum-wage-mrz-660-proposed-660-possible",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Minimum wage (МРЗ): 660 € proposed, 660 €+ possible",
+  "text": "Social affairs minister Nataliya Efremova said on 26 Oct that a figure above the drafted €660 is \"most likely possible\" if budget revenues allow; the Council for Tripartite Partnership discussed the €660-from-1-Jan-2027 ordinance on 23 Oct without unanimity, and the public consultation on the ordinance (ID 12802) closes on 28 Oct 2026.",
+  "order": 70,
+  "sources": [
+    {
+      "url": "https://www.dnes.bg/a/1-bulgaria/739119-ima-li-shans-za-po-visoka-minimalna-zaplata-nataliya-efremova-za-pregovorite-i-byudzhet-2027"
+    },
+    {
+      "url": "https://www.strategy.bg/bg/public-consultations/12802"
+    }
+  ]
+}

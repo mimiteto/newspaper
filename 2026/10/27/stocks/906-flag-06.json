@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-06",
+  "section": "stocks",
+  "kind": "flag",
+  "text": "Symbol ambiguity resolved this morning (new, not on the standing list): `VHYA.DE` and `VHYL.DE` both return 404 on Yahoo, so the Amsterdam line `VHYL.AS` was used; `UBU7.DE` resolves but `UBS7.DE` does not; the Yahoo European index series `^STOXX` is labelled \"STXE 600 I\" (Zurich) rather than the STOXX 600 total-return index the fund tracks.",
+  "order": 906
+}

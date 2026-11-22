@@ -1,0 +1,17 @@
+{
+  "schema": "mb/item@1",
+  "id": "tripartite-file-stays-open-into-the-budget",
+  "section": "bulgarian-finances",
+  "kind": "item",
+  "label": "Tripartite file stays open into the budget",
+  "text": "The labour side is arguing both ends at once — employers and syndicates publicly split over the 2027 budget package on 27 Oct, the same week the confederations are lobbying on both the МРЗ level and the tax bills.",
+  "order": 80,
+  "sources": [
+    {
+      "url": "https://www.mlsp.government.bg/nsts-obsdi-minimalnata-zaplata-da-se-uvelichi-na-660-evro-ot-1-yanuari-2027-g"
+    },
+    {
+      "url": "https://www.dnes.bg/a/1-bulgaria/739999-kak-bezhantsite-i-migrantite-namirat-rabota-v-balgariya"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "flag-02",
+  "section": "bulgarian-finances",
+  "kind": "flag",
+  "text": "Conflicting numbers: the VAT threshold appears as 75 000 € (original minfin draft), 60 000 € (Mediapool's 23 Oct correction) and the current threshold as both 51 130 € and 51 300 € depending on outlet; the МРЗ is quoted as a fixed €660 by МТСП while the same minister left room above it on 26 Oct.",
+  "order": 902
+}

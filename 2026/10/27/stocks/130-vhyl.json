@@ -1,0 +1,46 @@
+{
+  "schema": "mb/item@1",
+  "id": "vhyl",
+  "section": "stocks",
+  "holdings": [
+    {
+      "name": "Samsung Electronics Co., Ltd.",
+      "weight_pct": 2.12,
+      "as_of": "30 Sep 2026",
+      "rank": 1
+    },
+    {
+      "name": "JPMorgan Chase & Co.",
+      "weight_pct": 2.05,
+      "as_of": "30 Sep 2026",
+      "rank": 2
+    },
+    {
+      "name": "ExxonMobil Holdings Corporation",
+      "weight_pct": 1.55,
+      "as_of": "30 Sep 2026",
+      "rank": 3
+    },
+    {
+      "name": "Johnson & Johnson",
+      "weight_pct": 1.48,
+      "as_of": "30 Sep 2026",
+      "rank": 4
+    },
+    {
+      "name": "AbbVie Inc.",
+      "weight_pct": 1.07,
+      "as_of": "30 Sep 2026",
+      "rank": 5
+    }
+  ],
+  "kind": "item",
+  "label": "VHYL — Vanguard FTSE All-World High Dividend Yield UCITS ETF USD dist (Euronext Amsterdam, IE00B8GKDB10)",
+  "text": "€82.65, +0.18 % at 09:04 CET — a yield-tilted global basket whose top-5 disclosure is a month behind the other funds, and whose biggest single name is not a US tech stock at all.",
+  "order": 130,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/ams/VHYL/holdings/"
+    }
+  ]
+}
