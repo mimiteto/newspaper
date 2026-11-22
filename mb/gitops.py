@@ -44,6 +44,10 @@ class Push(enum.Enum):
     PUSHED_AFTER_REBASE = "pushed-after-rebase"
     NOOP = "noop"
     FAILED = "failed"
+    #: The push was rejected and the rebase could not clean up after it. Not the
+    #: same as FAILED: this one means two writers produced genuinely
+    #: incompatible content, and retrying cannot help.
+    CONFLICT = "conflict"
 
 
 @dataclass(frozen=True)
@@ -195,8 +199,8 @@ def commit_and_push(
     author = ["-c", f"user.name={settings.author_name}", "-c", f"user.email={settings.author_email}"]
 
     if run_git(["diff", "--cached", "--quiet", "--", *paths], cwd=repo).returncode == 0 and not allow_empty:
-        # Nothing staged relative to HEAD; also confirm there is no untracked
-        # new file hiding from `git diff --cached` before calling it a no-op.
+        # Callers stage first, and `git add` folds new files into the index, so
+        # an empty staged diff really does mean there is nothing to publish.
         return Push.NOOP
 
     commit = run_git([*author, "commit", "-m", message], cwd=repo)
@@ -212,7 +216,13 @@ def commit_and_push(
             return Push.PUSHED if attempt == 1 else Push.PUSHED_AFTER_REBASE
         with _network_lock(settings.lock_path):
             run_git(["fetch", "--quiet", "origin", settings.branch], cwd=repo)
-            run_git(["rebase", "--quiet", "-X", "ours", f"origin/{settings.branch}"], cwd=repo)
+            rebase = run_git(["rebase", "--quiet", "-X", "ours", f"origin/{settings.branch}"], cwd=repo)
+        if rebase.returncode != 0:
+            # A half-replayed tree has a detached HEAD, and pushing it would
+            # publish history nobody intended. Clean up and report instead of
+            # spending the remaining attempts on a broken working tree.
+            run_git(["rebase", "--abort"], cwd=repo)
+            return Push.CONFLICT
         if attempt < settings.tries:
             time.sleep(settings.delay)
 

@@ -219,6 +219,11 @@ def cmd_publish(args: argparse.Namespace) -> int:
     return rc
 
 
+#: Both mean the commit is safe locally and never reached origin; only the
+#: recovery advice differs, so the reason string says which.
+_PUSH_FAILURES = (gitops.Push.FAILED, gitops.Push.CONFLICT)
+
+
 def _publish_into(
     repo: Path,
     date: DayPath,
@@ -265,8 +270,9 @@ def _publish_into(
     )
     sha = gitops.head_sha(repo, short=8)
     print(f"section={pushed.value} file={section} items={len(written)} sha={sha} path={date.nested}/{section}")
-    if pushed is gitops.Push.FAILED:
-        print(f"mb=failed reason=push section={section}")
+    if pushed in _PUSH_FAILURES:
+        reason = "push-conflict" if pushed is gitops.Push.CONFLICT else "push"
+        print(f"mb=failed reason={reason} section={section}")
         return 1, len(written)
     return 0, len(written)
 
@@ -415,8 +421,8 @@ def cmd_finalize(args: argparse.Namespace) -> int:
     gitops.stage(repo, [f"{date.nested}/meta.json"])
     pushed = gitops.commit_and_push(repo, [f"{date.nested}/meta.json"], f"chore(brief): close {date.flat}", settings)
     print(f"meta={pushed.value} finished={day.finished}")
-    if pushed is gitops.Push.FAILED:
-        print("finalize=failed reason=push")
+    if pushed in _PUSH_FAILURES:
+        print(f"finalize=failed reason={'push-conflict' if pushed is gitops.Push.CONFLICT else 'push'}")
         return 1
     print("finalize=ok render=github-actions")
     return 0

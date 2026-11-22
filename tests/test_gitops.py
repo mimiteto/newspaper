@@ -93,6 +93,114 @@ class CloneTests(unittest.TestCase):
         self.assertEqual(recorder.calls[0], ["clone", settings.ssh_url, str(self.dest / "repo")])
 
 
+class ScriptedGit:
+    """Answers git calls from a script, recording the order they came in.
+
+    Keys are matched as the longest prefix of the argv (``"rebase --abort"``
+    beats ``"rebase"``), and a value is either one code reused for every call or
+    a list consumed in order — which is how "the first push is rejected, the
+    second lands" is written down.
+    """
+
+    def __init__(self, results: dict[str, int | list[int]], default: int = 0):
+        self._results = {key: (value if isinstance(value, list) else [value]) for key, value in results.items()}
+        self._default = default
+        self.calls: list[list[str]] = []
+
+    @staticmethod
+    def _argv(args: list[str]) -> list[str]:
+        rest = list(args)
+        while rest and rest[0] == "-c":  # `-c key=value` pairs precede the subcommand
+            rest = rest[2:]
+        return rest
+
+    def _code(self, argv: list[str]) -> int:
+        joined = " ".join(argv)
+        for length in range(len(argv), 0, -1):
+            key = " ".join(argv[:length])
+            if key in self._results:
+                queue = self._results[key]
+                return queue.pop(0) if len(queue) > 1 else queue[0]
+        return self._default if joined != "" else self._default
+
+    def __call__(self, args, cwd=None, *, env=None, check=False):  # noqa: ANN001 - test double
+        argv = self._argv(list(args))
+        self.calls.append(list(args))
+        code = self._code(argv)
+        return subprocess.CompletedProcess(["git", *args], code, stdout="", stderr="boom" if code else "")
+
+    def text(self) -> str:
+        return " | ".join(" ".join(call) for call in self.calls)
+
+
+class CommitAndPushTests(unittest.TestCase):
+    """A rejected push may only be resolved by rebase — never by force."""
+
+    def setUp(self):
+        self.real_run = gitops.run_git
+        self.repo = pathlib.Path(tempfile.mkdtemp(prefix="mb-gitops-push-"))
+        self.lock = self.repo / "mb-git.lock"
+        self.addCleanup(lambda: setattr(gitops, "run_git", self.real_run))
+
+    def _push(self, results: dict[str, int | list[int]], *, branch: str = "master"):
+        scripted = ScriptedGit(results)
+        gitops.run_git = scripted  # type: ignore[assignment]
+        settings = GitSettings(
+            ssh_url="git@example.com:o/r.git", branch=branch, tries=3, delay=0, lock_path=str(self.lock)
+        )
+        return gitops.commit_and_push(self.repo, ["2026/11/22/"], "feat(brief): items", settings), scripted
+
+    def test_staged_nothing_never_touches_the_remote(self):
+        outcome, scripted = self._push({"diff": 0})
+        self.assertIs(outcome, gitops.Push.NOOP)
+        self.assertEqual(len(scripted.calls), 1)
+
+    def test_rejected_push_rebases_then_pushes_the_same_branch(self):
+        outcome, scripted = self._push({"diff": 1, "commit": 0, "push": [1, 0], "fetch": 0, "rebase": 0})
+        self.assertIs(outcome, gitops.Push.PUSHED_AFTER_REBASE)
+        self.assertIn("push --quiet origin HEAD:master", scripted.text())
+        self.assertNotIn("force", scripted.text(), "a lane that force-pushes deletes whoever else landed first")
+        self.assertIn("rebase --quiet -X ours origin/master", scripted.text())
+
+    def test_conflicted_rebase_aborts_instead_of_pushing_a_broken_tree(self):
+        """Mid-replay, HEAD is detached; pushing it publishes unintended history."""
+        outcome, scripted = self._push({"diff": 1, "commit": 0, "push": 1, "fetch": 0, "rebase": 128, "rebase --abort": 0})
+        self.assertIs(outcome, gitops.Push.CONFLICT)
+        pushes = [call for call in scripted.calls if call[:3] == ["push", "--quiet", "origin"]]
+        self.assertEqual(len(pushes), 1, "retrying from a conflicted tree is how broken history gets published")
+        self.assertEqual(scripted.calls[-1], ["rebase", "--abort"])
+
+
+class LockTests(unittest.TestCase):
+    """The lock is what keeps three lanes from stampeding one remote."""
+
+    PROBE = (
+        "import fcntl,os,sys\n"
+        "fd = os.open(sys.argv[1], os.O_RDWR)\n"
+        "try:\n"
+        "    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)\n"
+        "    print('free')\n"
+        "except OSError:\n"
+        "    print('blocked')\n"
+    )
+
+    def test_created_private_and_actually_held(self):
+        import stat
+
+        path = pathlib.Path(tempfile.mkdtemp(prefix="mb-lock-")) / "mb-git.lock"
+
+        def probe() -> str:
+            return subprocess.run(["python3", "-c", self.PROBE, str(path)], capture_output=True, text=True).stdout.strip()
+
+        with gitops._network_lock(str(path)):
+            self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600, "the lock must not be world-writable from birth")
+            self.assertEqual(probe(), "blocked", "an unlocked second writer means lanes clobber each other")
+        self.assertEqual(probe(), "free", "a lock nobody releases wedges every later publish")
+
+    def test_default_lock_path(self):
+        self.assertTrue(GitSettings().lock_path.endswith("mb-git.lock"))
+
+
 class RunGitTests(unittest.TestCase):
     def test_command_is_git_plus_args_in_order(self):
         seen: list[list[str]] = []
@@ -127,8 +235,21 @@ class SettingsTests(unittest.TestCase):
                     os.environ[key] = value
         self.assertEqual((settings.ssh_url, settings.branch, settings.tries, settings.delay), ("git@x:y/z.git", "preview", 7, 0.0))
 
-    def test_lock_path_is_not_world_writable_by_default(self):
-        self.assertTrue(GitSettings().lock_path.endswith("mb-git.lock"))
+    def test_c_style_config_args_survive_in_order(self):
+        """`-c` pairs stay attached to their subcommand, in argv order."""
+        seen: list[list[str]] = []
+
+        def fake_run(cmd, **kwargs):  # noqa: ANN001 - test double
+            seen.append(list(cmd))
+            return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
+
+        real = gitops.subprocess.run
+        gitops.subprocess.run = fake_run  # type: ignore[assignment]
+        try:
+            gitops.run_git(["-c", "user.name=x", "commit", "-m", "msg"])
+        finally:
+            gitops.subprocess.run = real  # type: ignore[assignment]
+        self.assertEqual(seen, [["git", "-c", "user.name=x", "commit", "-m", "msg"]])
 
 
 if __name__ == "__main__":
