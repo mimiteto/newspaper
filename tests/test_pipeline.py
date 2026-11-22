@@ -461,12 +461,40 @@ class VerifyCliTests(RepoTestCase):
         (self.repo / "2026/11/22/stocks.md").write_text("# I wrote this by hand\n", encoding="utf-8")
         self.assertEqual(run_mb("--repo", str(self.repo), "generated-check", "2026/11/22/stocks.md"), 1)
 
+    def _generated_check(self, *paths: str) -> str:
+        import contextlib
+        import io
+
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            run_mb("--repo", str(self.repo), "generated-check", *paths)
+        return buffer.getvalue()
+
     def test_generated_check_leaves_legacy_markdown_alone(self):
-        """Nothing renders a Markdown-only day, so nothing erases editing it."""
+        """Nothing renders a Markdown-only day, so nothing erases editing it.
+
+        But "allowed" must not be read as "verified": the guard has no opinion
+        about those bytes, and saying which of the two it means is the
+        difference between a line an operator can act on and one they cannot.
+        """
         legacy = self.repo / "2026/11/17"
         legacy.mkdir(parents=True, exist_ok=True)
         (legacy / "weather.md").write_text("# Weather — Novi Iskar, 17 Nov 2026\n", encoding="utf-8")
-        self.assertEqual(run_mb("--repo", str(self.repo), "generated-check", "2026/11/17/weather.md"), 0)
+        out = self._generated_check("2026/11/17/weather.md")
+        self.assertIn("not rendered by the pipeline", out)
+        self.assertIn("unverified=1", out)
+        self.assertNotIn("matches the pipeline", out)
+        self.assertIn("generated-check=clean", out)
+
+    def test_generated_check_says_which_files_it_actually_checked(self):
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE, "--file", self.write_draft(STOCK_DRAFT))
+        run_mb("--repo", str(self.repo), "render", "--write")
+        (self.repo / "2026/11/17").mkdir(parents=True, exist_ok=True)
+        (self.repo / "2026/11/17/weather.md").write_text("legacy\n", encoding="utf-8")
+        out = self._generated_check("2026/11/22/stocks.md", "2026/11/17/weather.md")
+        self.assertIn("matches the pipeline byte for byte: 2026/11/22/stocks.md", out)
+        self.assertIn("not rendered by the pipeline, so not verified either: 2026/11/17/weather.md", out)
+        self.assertIn("owned=2 offenders=0 unverified=1", out)
 
 
 class SubprocessTests(RepoTestCase):
