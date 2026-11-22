@@ -219,6 +219,156 @@ class ApplyTests(BackfillRepoTestCase):
         self.assertEqual(self.ids("stocks"), {"sapse"}, "stored verdicts must not be overwritten")
 
 
+class RestyleTests(BackfillRepoTestCase):
+    """``--allow-restyle`` may change layout that is named in advance, and nothing else."""
+
+    #: The older dialect: a weekday in the headline, items running together with
+    #: their sources, several links on one line, holdings in ``5. **Name**`` form.
+    LEGACY_WEATHER = """# Weather — Novi Iskar, Fri 30 Oct 2026
+
+Generated 2026-10-30 11:42 Europe/Sofia.
+
+**Temperature.** A mild, saturated Friday: high 9.0 °C.
+https://api.open-meteo.com/v1/forecast?a=1
+**Conditions.** Light rain under 100 % cloud cover.
+https://wttr.in/Novi+Iskar?format=j1
+Flags: the two providers disagree on the high.
+"""
+
+    LEGACY_STOCKS = """# Holdings — Fri 13 Nov 2026
+
+**SAPSE.** €183.68 on Xetra (SAP.DE), −1.79% Friday.
+https://finance.yahoo.com/quote/SAP.DE/ · https://stockanalysis.com/quote/etr/SAP/
+**LYP6.** £31.10 on the London line. Top weights:
+5. **Meta Platforms Class A** — 2.1% as of 2026-10-29
+1. **Apple** — 8.14% as of 2026-10-29
+"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        for section, text in (("weather", self.LEGACY_WEATHER), ("stocks", self.LEGACY_STOCKS)):
+            (self.directory / f"{section}.md").write_text(text, encoding="utf-8")
+            self.originals[section] = text
+
+    def test_the_declared_layout_difference_refuses_without_the_flag(self):
+        from mb.backfill import parse_day, round_trip
+
+        problems = round_trip(parse_day(self.repo, self.date))
+        self.assertIn("weather", problems)
+        self.assertIn("--allow-restyle converts this", problems["weather"])
+        self.assertIn("holdings-format", problems["stocks"])
+
+    def test_the_restyled_render_is_exactly_the_declared_normalisation(self):
+        """Not 'close': the page that goes out must equal the file plus the named
+        rules and nothing else, and the counts must be printed."""
+        from mb.backfill import parse_day, restyle, round_trip
+
+        parsed = parse_day(self.repo, self.date)
+        self.assertEqual(round_trip(parsed, allow_restyle=True), {})
+
+        rc, out = self.backfill("--apply", "--allow-restyle")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("restyle=", out)
+        self.assertIn("flags-inline", out)
+        self.assertIn("holdings-format", out)
+
+        self.assertEqual(main(["--repo", str(self.repo), "render", "--write"]), 0)
+        from mb.backfill import load_day_from
+        from mb.render import section_title
+
+        # The expected page is the old file plus the declared rules, with the
+        # title the pipeline derives — not one this test guessed.
+        day = load_day_from(parse_day(self.repo, self.date))
+        for section in ("weather", "stocks"):
+            expected, counts = restyle(self.originals[section], section_title(day, section))
+            self.assertTrue(counts, f"{section}: the fixture stopped exercising the rules")
+            self.assertEqual(
+                (self.directory / f"{section}.md").read_text(encoding="utf-8"),
+                expected,
+                f"{section}.md is not the original plus the declared normalisations",
+            )
+
+    def test_every_word_and_link_survives_the_restyle(self):
+        """Layout may move; content may not. Every non-empty content line of the
+        old file must still be in the paper, character for character."""
+        from mb.backfill import parse_day, round_trip
+
+        parsed = parse_day(self.repo, self.date)
+        self.assertEqual(round_trip(parsed, allow_restyle=True), {})
+        self.backfill("--apply", "--allow-restyle")
+        self.assertEqual(main(["--repo", str(self.repo), "render", "--write"]), 0)
+
+        rendered = "\n".join(
+            (self.directory / f"{section}.md").read_text(encoding="utf-8")
+            for section in ("weather", "stocks")
+        )
+        from mb.backfill import _HOLDING_ALT_RE
+
+        for section in ("weather", "stocks"):
+            for line in self.originals[section].splitlines():
+                content = line.strip()
+                # Skip the headline and the lines a declared rule rewrites — their
+                # exact form is what the byte-equality test above asserts.
+                if not content or content.startswith(("# ", "Flags:")) or " · " in content:
+                    continue
+                if _HOLDING_ALT_RE.match(content.removeprefix("- ").strip()):
+                    continue
+                self.assertIn(content.removeprefix("- "), rendered, content)
+
+    def test_a_flag_written_mid_file_is_not_restylable(self):
+        """Moving a flag past the prose it qualifies is an edit, so no flag does it."""
+        text = self.LEGACY_WEATHER.replace(
+            "Flags: the two providers disagree on the high.\n",
+            "Flags: the two providers disagree on the high.\n\n**Precipitation.** 7.2 mm booked.\n",
+        )
+        (self.directory / "weather.md").write_text(text, encoding="utf-8")
+        rc, out = self.backfill("--apply", "--allow-restyle")
+        self.assertEqual(rc, 1)
+        self.assertIn("mid-file", out)
+        self.assertFalse((self.directory / "meta.json").exists())
+
+    def test_a_moved_paragraph_is_reported_as_a_move(self):
+        """Identical text on both sides of a diff reads like a bug in the tool,
+        so the refusal says the line moved rather than changed."""
+        text = self.LEGACY_WEATHER.replace(
+            "Generated 2026-10-30 11:42 Europe/Sofia.\n\n", ""
+        ).replace(
+            "Flags: the two providers disagree on the high.\n",
+            "Generated 2026-10-30 11:42 Europe/Sofia.\n\nFlags: the two providers disagree on the high.\n",
+        )
+        (self.directory / "weather.md").write_text(text, encoding="utf-8")
+        rc, out = self.backfill("--apply", "--allow-restyle")
+        self.assertEqual(rc, 1)
+        self.assertIn("moved", out)
+        self.assertIn("lead paragraphs first", out)
+
+
+class SourceLineTests(unittest.TestCase):
+    def test_source_lines_are_read_as_urls_whatever_shape_they_come_in(self):
+        from mb.backfill import _source_urls
+
+        self.assertEqual(_source_urls("https://a.example/x"), ["https://a.example/x"])
+        self.assertEqual(_source_urls("- https://a.example/x"), ["https://a.example/x"])
+        self.assertEqual(
+            _source_urls("https://a.example/x · https://b.example/y"),
+            ["https://a.example/x", "https://b.example/y"],
+        )
+        self.assertEqual(_source_urls("**Conditions.** Overcast."), [])
+        self.assertEqual(_source_urls("https://a.example/x (10 °C, feels 9 °C)"), [])
+
+    def test_alternate_holdings_keep_their_authored_precision(self):
+        from mb.backfill import _HOLDING_ALT_RE, _parse_holding_alt
+        from mb.render import format_holding
+
+        match = _HOLDING_ALT_RE.match("5. **Meta Platforms Class A** — 2.1% as of 2026-10-29")
+        assert match
+        entry = _parse_holding_alt(match)
+        self.assertEqual(entry["rank"], 5)
+        self.assertEqual(entry["weight_pct"], 2.1)
+        self.assertEqual(entry["weight_display"], "2.1%")
+        self.assertEqual(format_holding(entry), "**5.** Meta Platforms Class A — 2.1% as of 2026-10-29")
+
+
 class IdAndPrecisionTests(unittest.TestCase):
     def test_cyrillic_labels_get_readable_stable_ids(self):
         from mb.backfill import parse_section

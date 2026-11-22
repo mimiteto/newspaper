@@ -157,11 +157,36 @@ blocked it, because a diff fragment at 07:00 is not a diagnosis:
   stocks:  the headline is authored ('# Holdings — Sat 14 Nov 2026') while the pipeline derives '# Holdings — 14 Nov 2026'
 ```
 
-Older papers predate this layout on purpose — items separated by a single newline,
-flags as one inline sentence, per-day headlines carrying the weekday, `## ETFs`
-grouping — so most legacy days refuse, and they should: converting them would
-restyle or retitle published pages. The homepage still lists them and
+Anything the renderer cannot reproduce stays a refusal, with the construct named:
+a mid-file lead paragraph, a `Flags:` sentence in the middle of a section, a day
+that printed only some of its sections. The homepage lists those days anyway and
 `generated-check` reports them as unverified rather than pretending otherwise.
+
+### `--allow-restyle`
+
+Five layout differences lose nothing, so `--allow-restyle` accepts exactly those:
+
+| rule | what it changes |
+| --- | --- |
+| `headline-derived` | an authored `# Holdings — Sat 14 Nov 2026` becomes the headline derived from the date |
+| `items-split` | items that ran together get the blank line the renderer puts between blocks |
+| `sources-bare` | `- https://…` prints bare; several links on one line become one per line |
+| `holdings-format` | `5. **Name** — 2.1%` becomes `**5.** Name — 2.1%` |
+| `flags-inline` | a closing `Flags: …` sentence becomes the trailing `Flags:` list |
+
+With the flag, the gate compares the render against **the original file with
+those five rules applied** — so a sixth difference still fails — and the counts
+are printed and written into the commit message of the commit that changes a page:
+
+```text
+backfill=applied date=2026-11-03 items=33 restyle=items-split=8,flags-inline=2
+```
+
+What no flag buys is movement. Reordering a lead paragraph below the items it
+introduces, or a caveat away from the sentence it qualifies, is an edit to the
+paper, and the refusal says so: `44 line(s) moved: … Moving prose is an edit, not
+a migration`. A `## ETFs` grouping, by contrast, needed no concession — it is a
+`kind: "heading"` item now, printed where the day put it.
 
 What comes across: lead paragraphs as `context` items, `**Label.**` items with
 their source URLs (bulleted in the old papers, bare in the pipeline's own
@@ -177,5 +202,7 @@ bullets that are neither source URLs nor the pipeline's own `Flags:` list. Those
 were rendered from `news[]` verdicts the paper deliberately does not print, so
 rebuilding them would mean inventing decisions — the backfill refuses instead.
 
-The day's own `index.md` is the one file that changes, because it becomes a
-generated page: item counts, generated footer, no `Created by` line.
+Without `--allow-restyle` the day's own `index.md` is the only file that changes,
+because it becomes a generated page: item counts, generated footer, no
+`Created by` line. The Markdown is not written by the migration itself — the
+render job regenerates it from the JSON, which is the whole point.

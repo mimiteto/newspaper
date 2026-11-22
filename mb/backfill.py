@@ -22,7 +22,7 @@ from typing import Any
 
 from mb.model import ITEM_SCHEMA, Day, Item, SectionError, slugify
 from mb.paths import SECTIONS, DayPath
-from mb.render import render_section, section_title
+from mb.render import format_holding, render_section, section_title
 from mb.store import day_dir, write_day
 
 #: Bulgarian labels have no ASCII slug, and a hash for every id makes the corpus
@@ -50,10 +50,19 @@ _INLINE_FLAGS_RE = re.compile(r"^Flags:\s+(?P<body>\S.*)$")
 # An item's first line. A holding line (``**1.** Apple …``) belongs to the item
 # above it, so it is excluded and never opens a block of its own.
 _ITEM_LEAD_RE = re.compile(r"^\*\*(?!\d+\.\*\*).+?\.\*\*\s")
+# Holdings in the older house style: ``5. **Meta Platforms Class A** — 2.1% as of …``.
+_HOLDING_ALT_RE = re.compile(r"^(?P<rank>\d+)\.\s+\*\*(?P<name>.+?)\*\*\s+—\s+(?P<rest>.+)$")
+_WEIGHT_ONLY_RE = re.compile(r"^(?P<weight>\d+(?:\.\d+)?)%(?:\s+as of\s+(?P<as_of>.+))?$")
 
 #: The only layout changes a backfill may make, each by this name. Anything
 #: outside the list has to come back byte for byte.
-RESTYLE_RULES: tuple[str, ...] = ("headline-derived", "items-split", "sources-bare", "flags-inline")
+RESTYLE_RULES: tuple[str, ...] = (
+    "headline-derived",
+    "items-split",
+    "sources-bare",
+    "holdings-format",
+    "flags-inline",
+)
 
 
 @dataclass
@@ -94,8 +103,18 @@ def _blocks(text: str) -> list[list[str]]:
 
 
 def _starts_block(line: str) -> bool:
-    """Would the renderer print a blank line before this line?"""
-    return bool(_SUBHEAD_RE.match(line) or (_ITEM_LEAD_RE.match(line) and not _HOLDING_RE.match(line)))
+    """Would the renderer print a blank line before this line?
+
+    Item lead-ins and sub-headings, and an inline ``Flags: …`` paragraph: the
+    renderer always emits flags as their own trailing block, so a flag written
+    directly under the last item is a block of its own even when the old paper
+    left out the blank line.
+    """
+    return bool(
+        _SUBHEAD_RE.match(line)
+        or _INLINE_FLAGS_RE.match(line)
+        or (_ITEM_LEAD_RE.match(line) and not _HOLDING_RE.match(line))
+    )
 
 
 def _split_blocks(block: list[str]) -> list[list[str]]:
@@ -149,15 +168,49 @@ def _parse_holding(rest: str) -> dict[str, Any]:
     if not match:
         return {"name": rest}
     entry: dict[str, Any] = {"name": match.group("name")}
-    authored = match.group("weight")
-    entry["weight_pct"] = float(authored)
-    # Only record the authored figure when the pipeline's own formatting would
-    # print it differently, so most backfilled holdings stay plain numbers.
-    if f"{entry['weight_pct']:.2f}" != authored:
-        entry["weight_display"] = f"{authored}%"
+    entry.update(_weight_fields(match.group("weight")))
     if match.group("as_of"):
         entry["as_of"] = match.group("as_of")
     return entry
+
+
+def _weight_fields(authored: str) -> dict[str, Any]:
+    """A weight as a number, plus the authored figure when the pipeline's own
+    two-decimal formatting would print it differently — etftrace's `2.4%` must
+    not come back as `2.40%`.
+    """
+    value = float(authored)
+    fields: dict[str, Any] = {"weight_pct": value}
+    if f"{value:.2f}" != authored:
+        fields["weight_display"] = f"{authored}%"
+    return fields
+
+
+def _parse_holding_alt(match: re.Match[str]) -> dict[str, Any]:
+    """``5. **Meta Platforms Class A** — 2.1% as of 2026-10-29``."""
+    entry: dict[str, Any] = {"rank": int(match.group("rank")), "name": match.group("name").strip()}
+    weight = _WEIGHT_ONLY_RE.match(match.group("rest").strip())
+    if weight:
+        entry.update(_weight_fields(weight.group("weight")))
+        if weight.group("as_of"):
+            entry["as_of"] = weight.group("as_of").strip()
+    return entry
+
+
+def _source_urls(line: str) -> list[str]:
+    """The URLs on a source line, one per link.
+
+    Older papers bulleted the line and sometimes ran several links on it
+    separated by ``·``; the pipeline prints one bare URL per line. Nothing but
+    the separator and the bullet move.
+    """
+    content = line.strip()
+    if content.startswith("- "):
+        content = content[2:].strip()
+    parts = [part.strip() for part in content.split(" · ")]
+    if len(parts) > 1 and all(_URL_RE.match(part) for part in parts):
+        return parts
+    return [content] if _URL_RE.match(content) else []
 
 
 def _parse_item(block: list[str], section: str, taken: set[str], order: int) -> dict[str, Any] | None:
@@ -176,11 +229,14 @@ def _parse_item(block: list[str], section: str, taken: set[str], order: int) -> 
             entry = _parse_holding(holding.group("rest"))
             entry.setdefault("rank", int(holding.group("rank")))
             holdings.append(entry)
-        elif bullet_url := _BULLETED_URL_RE.match(line.strip()):
-            # Older papers bulleted their source lines. The URL is the data, so
-            # read it as one; the bullet is layout, and it is the round-trip gate
-            # below that decides whether the printed page survives the conversion.
-            sources.append(bullet_url.group("url"))
+        elif alternate := _HOLDING_ALT_RE.match(line.strip()):
+            # The same fact in the older house style. The pipeline's own form is
+            # what it becomes, and `restyle` counts the rewrite.
+            holdings.append(_parse_holding_alt(alternate))
+        elif (urls := _source_urls(line)) and urls != [line.strip()]:
+            # A bulleted line, or several links on one: the URL is the data, the
+            # bullet and the separator are layout.
+            sources.extend(urls)
         elif _URL_RE.match(line.strip()):
             sources.append(line.strip())
         elif line.lstrip().startswith("- "):
@@ -345,11 +401,13 @@ def parse_day(repo: Path, date: DayPath) -> ParsedDay:
 def restyle(text: str, title: str) -> tuple[str, dict[str, int]]:
     """The original file with only the declared layout normalisations applied.
 
-    Four changes, none of which loses a word, a figure or a link: a headline
+    Five changes, none of which loses a word, a figure or a link: a headline
     re-derived from the date (the old ones carried a weekday nobody needs when
     the path says ``2026/11/14``), items that ran together given the blank line
-    the renderer puts between blocks, bulleted source lines printed bare, and a
-    closing ``Flags: …`` sentence moved into the trailing list.
+    the renderer puts between blocks, source lines de-bulleted and split one URL
+    per line, holdings written ``5. **Name** — 2.1%`` given the pipeline's
+    ``**5.** Name — 2.1%``, and a closing ``Flags: …`` sentence moved into the
+    trailing list.
 
     The counts come back with the text because the caller has to print what it is
     about to change. A migration that restyles a published page in silence is
@@ -379,10 +437,15 @@ def restyle(text: str, title: str) -> tuple[str, dict[str, int]]:
             continue
         piece: list[str] = []
         for line in piece_block:
-            bullet = _BULLETED_URL_RE.match(line.strip())
-            if bullet:
+            alternate = _HOLDING_ALT_RE.match(line.strip())
+            if alternate:
+                piece.append(format_holding(_parse_holding_alt(alternate)))
+                counts["holdings-format"] = counts.get("holdings-format", 0) + 1
+                continue
+            urls = _source_urls(line)
+            if urls and urls != [line.strip()]:
+                piece.extend(urls)
                 counts["sources-bare"] = counts.get("sources-bare", 0) + 1
-                piece.append(bullet.group("url"))
                 continue
             piece.append(line.rstrip())
         blocks.append("\n".join(piece))
@@ -483,25 +546,70 @@ def _diagnose(
         ))
     if any(_BULLETED_URL_RE.match(line.strip()) for line in lines):
         causes.append(("sources-bare", 'source URLs are list items ("- https://…"); the pipeline prints them bare'))
+    if any(len(_source_urls(line)) > 1 for line in lines):
+        causes.append(("sources-bare", "several source URLs share one line; the pipeline prints one per line"))
+    if any(_HOLDING_ALT_RE.match(line.strip()) for line in lines):
+        causes.append((
+            "holdings-format",
+            'holdings are written "5. **Name** — 2.1%"; the pipeline prints "**5.** Name — 2.1%"',
+        ))
+
+    if allow_restyle:
+        # Those rules already fired, so blaming them again would send the operator
+        # hunting for a flag they already passed. What is left is the real blocker.
+        causes = [(rule, text) for rule, text in causes if not rule]
+    elif causes and all(rule for rule, _ in causes):
+        return "; ".join(text for _, text in causes[:3]) + " — --allow-restyle converts this (" + ", ".join(sorted({rule for rule, _ in causes})) + ")"
 
     if not causes:
-        return _first_difference(original, rendered)
-    report = "; ".join(text for _, text in causes[:3])
-    fixable = sorted({rule for rule, _ in causes if rule})
-    if fixable and len(fixable) == len(causes) and not allow_restyle:
-        report += f" — --allow-restyle converts this ({', '.join(fixable)})"
-    return report
+        # Nothing recognisable: show the first line that still differs, against
+        # the text the gate actually compared with.
+        expected, _ = restyle(original, title) if allow_restyle else (original, {})
+        return _first_difference(expected, rendered)
+    return "; ".join(text for _, text in causes[:3])
 
 
 def _first_difference(before: str, after: str) -> str:
-    """A diff that names the line, because 'it differs' is useless at 07:00."""
+    """A refusal an operator can act on, because ``+`` alone tells them nothing.
+
+    Blank lines dominate these diffs — the pipeline separates blocks, the old
+    papers did not — so the count is reported and the first line with characters
+    in it is quoted from each side.
+    """
     from difflib import unified_diff
 
-    lines = list(unified_diff(before.splitlines(), after.splitlines(), "original", "rendered", lineterm="", n=1))
-    for line in lines:
-        if line.startswith(("-", "+")) and not line.startswith(("---", "+++")):
-            return f"{line[:160]}…" if len(line) > 160 else line
-    return f"{len(lines)} line(s) differ"
+    changed = [
+        line
+        for line in unified_diff(before.splitlines(), after.splitlines(), lineterm="", n=0)
+        if line[:1] in "+-" and line[:3] not in ("+++", "---")
+    ]
+    if not changed:
+        return "the files differ by whitespace alone"
+
+    def quote(line: str) -> str:
+        body = line[1:].strip()
+        return f"{line[0]} {body[:110]}…" if len(body) > 110 else f"{line[0]} {body}"
+
+    removed = sorted(line[1:].strip() for line in changed if line[0] == "-" and line[1:].strip())
+    added = sorted(line[1:].strip() for line in changed if line[0] == "+" and line[1:].strip())
+    if removed and removed == added:
+        # Every line that vanished reappears: nothing was changed, only shuffled.
+        # That is the pipeline's fixed layout — lead paragraphs first, flags last
+        # — and relocating a sentence relative to the prose it qualifies is an
+        # editorial decision, so no restyle flag will talk its way past this.
+        return (
+            f"{len(removed)} line(s) moved: the pipeline fixes the order (lead paragraphs first, "
+            f"flags last) and this day placed “{removed[0][:70]}” elsewhere. "
+            f"Moving prose is an edit, not a migration"
+        )
+    removed_line = next((line for line in changed if line[1:].strip()), "")
+    added_line = next((line for line in changed if line[0] == "+" and line[1:].strip()), "")
+    parts = [f"{len(changed)} line(s) differ"]
+    if removed_line:
+        parts.append(f"on disk: {quote(removed_line)}")
+    if added_line:
+        parts.append(f"rendered: {quote(added_line)}")
+    return " │ ".join(parts)
 
 
 def write_backfill(repo: Path, parsed: ParsedDay) -> list[Path]:
