@@ -87,8 +87,12 @@ def inherit_relevance(repo: Path, date: DayPath, items: list[Item]) -> int:
     for section, section_items in by_section.items():
         try:
             previous = load_section_items(repo, date, section)
-        except (FileNotFoundError, SectionError):
-            continue
+        except FileNotFoundError:
+            continue  # a section's first publish has nothing to inherit from
+        # Anything else is corrupt or non-conforming JSON already on master.
+        # Swallowing it here would drop the day's verdicts in silence — the exact
+        # failure this function exists to prevent, so it has to be loud.
+        old = {prior.id: prior for prior in previous}
         old = {prior.id: prior for prior in previous}
         for item in section_items:
             origin = old.get(item.id)
@@ -125,12 +129,17 @@ def ingest(
     for item in items:
         by_section.setdefault(item.section, []).append(item)
 
-    written: list[Path] = []
+    # Every section is checked before anything is written: with `--dir` batch
+    # mode a bad id in the last section must not leave the first two already
+    # rewritten, or a direct `mb ingest --repo` call ends up half-updated.
     for section, section_items in by_section.items():
         ids = [item.id for item in section_items]
         duplicates = sorted({name for name in ids if ids.count(name) > 1})
         if duplicates:
             raise SectionError(f"{date.nested}/{section}: duplicate item ids: {', '.join(duplicates)}")
+
+    written: list[Path] = []
+    for section, section_items in by_section.items():
         keep = {item.filename() for item in section_items}
         directory = section_dir(repo, date, section)
         directory.mkdir(parents=True, exist_ok=True)
