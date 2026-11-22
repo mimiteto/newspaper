@@ -95,6 +95,12 @@ The rendered section always says what was filtered — e.g. `News triaged by the
 decisions API: 2 of 3 kept, model: …` — so a quiet day is visibly a decision,
 not an accident.
 
+A verdict also carries `ambiguous`: the tool sets it when the classifier's answer
+came back near a coin flip (`mb verify` then reports `uncertain=N`, the footer
+reads `2 of 3 kept, 1 judged uncertain`). A dropped item is a decision; an
+uncertain one is a question, and printing the second as the first is the failure
+mode this record exists to prevent.
+
 ## Working with it
 
 Python 3.11+, standard library only, no install step:
