@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import datetime as dt
 from collections.abc import Iterable
+from typing import Any
 
 from mb.model import CURRENCY_CODES, Day, Item, NewsEntry
 from mb.paths import MONTHS, DayPath
@@ -134,6 +135,25 @@ def _item_label(item: Item) -> str:
     return ticker or name or item.id
 
 
+def format_holding(entry: dict[str, Any]) -> str:
+    """One holdings line. This is the only place that layout is defined: the
+    backfill re-uses it, so a restyled legacy line and a freshly rendered one
+    cannot drift apart and start arguing with the round-trip gate.
+    """
+    rank = entry.get("rank", "")
+    name = str(entry.get("name", "")).strip()
+    weight = _num(entry.get("weight_pct"))
+    as_of = str(entry.get("as_of", "")).strip()
+    # Sources disagree on precision — stockanalysis gives 2.00%, etftrace
+    # 2.4% — and a float cannot tell those apart, so an authored figure wins
+    # over the formatted one when both are present.
+    display = str(entry.get("weight_display", "")).strip()
+    tail = display or (f"{weight:.2f}%" if weight is not None else "")
+    if as_of:
+        tail = f"{tail} as of {as_of}" if tail else f"as of {as_of}"
+    return f"**{rank}.** {name}" + (f" — {tail}" if tail else "")
+
+
 def _holdings_lines(item: Item) -> list[str]:
     holdings = item.data.get("holdings") or []
     if not isinstance(holdings, list):
@@ -143,22 +163,7 @@ def _holdings_lines(item: Item) -> list[str]:
         if isinstance(entry, str):
             lines.append(entry)
             continue
-        rank = entry.get("rank", index)
-        name = str(entry.get("name", "")).strip()
-        weight = _num(entry.get("weight_pct"))
-        as_of = str(entry.get("as_of", "")).strip()
-        tail = ""
-        # Sources disagree on precision — stockanalysis gives 2.00%, etftrace
-        # 2.4% — and a float cannot tell those apart, so an authored figure wins
-        # over the formatted one when both are present.
-        display = str(entry.get("weight_display", "")).strip()
-        if display:
-            tail = display
-        elif weight is not None:
-            tail = f"{weight:.2f}%"
-        if as_of:
-            tail = f"{tail} as of {as_of}" if tail else f"as of {as_of}"
-        lines.append(f"**{rank}.** {name}" + (f" — {tail}" if tail else ""))
+        lines.append(format_holding({**entry, "rank": entry.get("rank", index)}))
     return lines
 
 
