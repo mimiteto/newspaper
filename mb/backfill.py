@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from mb.model import ITEM_SCHEMA, Item, SectionError, slugify
+from mb.model import ITEM_SCHEMA, Day, Item, SectionError, slugify
 from mb.paths import SECTIONS, DayPath
 from mb.render import render_section
 from mb.store import day_dir, write_day
@@ -279,10 +279,8 @@ def round_trip(parsed: ParsedDay) -> dict[str, str]:
     return problems
 
 
-def load_day_from(parsed: ParsedDay):  # -> Day
+def load_day_from(parsed: ParsedDay) -> Day:
     """The day record implied by the parsed Markdown (not yet on disk)."""
-    from mb.model import Day
-
     return Day(
         date=parsed.date,
         location=parsed.location,
