@@ -141,6 +141,28 @@ class PublishFlowTests(unittest.TestCase):
         self.assertEqual(again.stdout.count("section=noop"), 3, "an identical re-run must not pollute history")
         self.assertEqual(git(["rev-list", "--count", "master"], self._bare()), before)
 
+    def test_finalize_refuses_to_close_a_day_with_unjudged_news(self):
+        """Triage is a step, not a suggestion.
+
+        Published without `--verdicts`, every news line would print tagged
+        `[news]` and the day would look normal. `verify` reports the count
+        either way; only `finalize` treats it as a reason not to close.
+        """
+        published = run_mb("publish", "--date", DATE, "--dir", str(self.fixture), env=self.env)
+        self.assertEqual(published.returncode, 0, published.stdout + published.stderr)
+
+        closed = run_mb("finalize", "--date", DATE, "--finished", "2026-11-22T09:43:26+02:00", env=self.env)
+        self.assertEqual(closed.returncode, 1, closed.stdout + closed.stderr)
+        self.assertIn("UNJUDGED=3", closed.stdout)
+        self.assertIn("finalize=failed reason=verify", closed.stdout)
+
+        degraded = run_mb(
+            "finalize", "--date", DATE, "--finished", "2026-11-22T09:43:26+02:00",
+            "--no-require-decisions", env=self.env,
+        )
+        self.assertEqual(degraded.returncode, 0, degraded.stdout + degraded.stderr)
+        self.assertIn("finalize=ok", degraded.stdout)
+
     def test_only_filter_publishes_a_single_section(self):
         result = run_mb("publish", "--date", DATE, "--dir", str(self.fixture), "--only", "stocks", env=self.env)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
