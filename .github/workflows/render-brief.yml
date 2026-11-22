@@ -57,18 +57,22 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          # Full history, and deliberately: the default depth-1 checkout has no
+          # merge base, so `git diff base...HEAD` dies with "no merge base" and
+          # the job fails for the wrong reason — it looked like the pipeline
+          # rejecting a generated file, when the CI script itself was broken.
+          fetch-depth: 0
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.12"
       - name: Refuse a JSON push whose Markdown is stale
         run: python3 -m mb render --check
-      - name: Refuse hand-edits to pipeline-owned files
+      - name: Refuse hand-edits to files the next render would overwrite
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           set -eu
-          git fetch --no-tags origin "$BASE"
-          changed=$(git diff --name-only "FETCH_HEAD"...HEAD)
+          changed=$(git diff --name-only "${BASE}...HEAD")
           echo "$changed"
           # shellcheck disable=SC2086
           python3 -m mb generated-check $changed
