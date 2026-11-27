@@ -401,18 +401,27 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 
 def cmd_finalize(args: argparse.Namespace) -> int:
-    """Verify a published day, stamp ``finished``, and push if meta changed."""
+    """Verify a published day, stamp ``finished``, and push if meta changed.
+
+    ``--repo`` keeps the contract the other write commands use: work in this
+    checkout, change nothing on origin. Without it a rehearsal close would clone
+    GitHub and push a stamp into the real day, which is the opposite of a test.
+    """
     date = day_path(args.date)
     settings = gitops.GitSettings.from_env()
-    scratch = tempfile.TemporaryDirectory(prefix="mb-finalize-")
-    repo = Path(scratch.name)
-    ok, via, attempt, error = gitops.clone(repo, settings)
-    print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}"
-          + (f" error={error}" if not ok and error else ""))
-    if not ok:
-        print("finalize=failed reason=clone")
-        return 1
-    repo = repo / "repo"
+    scratch: tempfile.TemporaryDirectory[str] | None = None
+    if args.repo:
+        repo = Path(args.repo).resolve()
+    else:
+        scratch = tempfile.TemporaryDirectory(prefix="mb-finalize-")
+        repo = Path(scratch.name)
+        ok, via, attempt, error = gitops.clone(repo, settings)
+        print(f"clone={'ok' if ok else 'failed'} via={via} attempt={attempt}"
+              + (f" error={error}" if not ok and error else ""))
+        if not ok:
+            print("finalize=failed reason=clone")
+            return 1
+        repo = repo / "repo"
 
     rc = cmd_verify(argparse.Namespace(repo=str(repo), date=args.date, allow_empty=args.allow_empty, require_decisions=args.require_decisions))
     if rc != 0:
@@ -422,6 +431,11 @@ def cmd_finalize(args: argparse.Namespace) -> int:
     day = load_day(repo, date)
     day.finished = args.finished or today_iso()
     write_day(repo, day)
+    if scratch is None:
+        # Local checkout: no stage, no commit, no push — not even a touched index.
+        print(f"meta=written finished={day.finished} repo=local")
+        print("finalize=ok push=skipped reason=local-repo")
+        return 0
     gitops.stage(repo, [f"{date.nested}/meta.json"])
     pushed = gitops.commit_and_push(repo, [f"{date.nested}/meta.json"], f"chore(brief): close {date.flat}", settings)
     print(f"meta={pushed.value} finished={day.finished}")

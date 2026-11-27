@@ -11,6 +11,8 @@ These are the guarantees the pipeline is built on:
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import subprocess
 import sys
@@ -165,6 +167,47 @@ class DecideTests(RepoTestCase):
         judged = next(entry for entry in item.news if entry.id == "old-buyback")
         self.assertIsNotNone(judged.relevance)
         self.assertEqual(judged.relevance.verdict if judged.relevance else None, "drop")
+
+
+    def test_a_stocks_verdict_must_name_a_news_entry(self):
+        """A stocks item is a line on the watch list, not a story. A classifier
+        asked about news and finding none must not get to delete the line —
+        ``drop`` hides items, and that is a decision about the portfolio."""
+        verdicts = {"schema": "mb/verdicts@1", "verdicts": [
+            {"section": "stocks", "id": "sapse", "news_id": "ms-conference",
+             "brief": True, "price_move": False},
+            {"section": "stocks", "id": "ubu7", "brief": False, "price_move": False},
+        ]}
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = run_mb("--repo", str(self.repo), "decide", "--date", DATE,
+                        "--verdicts", self.write_draft(verdicts, "line.verdicts.json"))
+        self.assertNotEqual(rc, 0)
+        self.assertIn("must name a news_id", buf.getvalue())
+        # The row that was legitimate does not land either: a batch that was
+        # rejected half-applied would leave the day quietly mis-triaged.
+        items = load_section_items(self.repo, day_path(DATE), "stocks")
+        self.assertTrue(all(item.relevance is None for item in items),
+                        "a refused batch writes nothing")
+
+    def test_a_bulgarian_story_is_still_triaged_as_a_whole_item(self):
+        """In a section of standalone stories the item IS the unit, so the very
+        same verdict shape has to keep working there."""
+        bulgaria = {"section": "bulgarian-finances", "items": [
+            {"id": "vat-steps", "topic": "ДДС", "label": "ДДС-прагът 60 000 евро",
+             "text": "Регистрационният праг се вдига на три стъпки."}]}
+        run_mb("--repo", str(self.repo), "ingest", "--date", DATE,
+               "--file", self.write_draft(bulgaria, "bg.json"))
+        verdicts = {"schema": "mb/verdicts@1", "verdicts": [
+            {"section": "bulgarian-finances", "id": "vat-steps", "brief": True, "price_move": False}]}
+        self.assertEqual(
+            run_mb("--repo", str(self.repo), "decide", "--date", DATE,
+                   "--section", "bulgarian-finances",
+                   "--verdicts", self.write_draft(verdicts, "bg.verdicts.json")),
+            0,
+        )
+        item = load_section_items(self.repo, day_path(DATE), "bulgarian-finances")[0]
+        self.assertIsNotNone(item.relevance)
 
 
 class RenderTests(RepoTestCase):

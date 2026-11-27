@@ -101,6 +101,12 @@ reads `2 of 3 kept, 1 judged uncertain`). A dropped item is a decision; an
 uncertain one is a question, and printing the second as the first is the failure
 mode this record exists to prevent.
 
+A verdict with no `news_id` judges the whole item. That is right for Bulgaria,
+where an item *is* a story, and refused for `stocks`: there an item is a line on
+the watch list, `drop` hides items, so a classifier asked about news and finding
+none would delete a holding from the paper. Triage in `stocks` is done against
+`news[]`, never against the line.
+
 ## Working with it
 
 Python 3.11+, standard library only, no install step:
@@ -115,6 +121,7 @@ python3 -m mb render  --write                         # regenerate every day + h
 python3 -m mb render  --check                         # CI: fail if generated files are stale
 python3 -m mb verify  --date 2026-11-22 --require-decisions
 python3 -m mb finalize --date 2026-11-22              # verify + stamp finished + push
+python3 -m mb --repo ./clone finalize --date 2026-11-22   # same, locally: no clone, no push
 python3 -m mb backfill --date 2026-11-22              # legacy Markdown day -> JSON, byte-gated
 python3 -m unittest discover -s tests
 ```
@@ -128,10 +135,14 @@ The pi side calls the same commands through
 `~/.pi/agent/scripts/morning-brief/mb-cli`, so the box and CI never run two
 dialects of the same logic.
 
-`publish` and `finalize` clone a fresh copy themselves (a publish decision is
-only worth what a current `origin/master` makes it): SSH first through the gcr
-ssh-agent, HTTPS fallback, advisory lock and retries — because a re-run from the
-box can still land while Actions is pushing generated Markdown. See `mb/gitops.py`.
+`publish`, `finalize` and `backfill` clone a fresh copy themselves when you do
+not name a checkout (a publish decision is only worth what a current
+`origin/master` makes it): SSH first through the gcr ssh-agent, HTTPS fallback,
+advisory lock and retries — because a re-run from the box can still land while
+Actions is pushing generated Markdown. See `mb/gitops.py`. Naming `--repo` flips
+all three to "this checkout, origin untouched", which is what makes a rehearsal
+of the real commands possible at all; a write command that ignored it would turn
+a dry run into a publication.
 
 ## Legacy days
 
