@@ -1,0 +1,23 @@
+{
+  "schema": "mb/item@1",
+  "id": "vat-steps",
+  "section": "bulgarian-finances",
+  "topic": "ДДС",
+  "amount": 60000,
+  "effective_date": "2027-01-01",
+  "kind": "item",
+  "label": "ДДС-прагът 60 000 евро от 1 януари 2027 г.",
+  "text": "Народното събрание прие окончателно на второ четене промените в ЗДДС с поетапно вдигане на прага за задължителна регистрация — от сегашните 51 130 евро на 60 000 евро от 2027 г., 70 000 евро от 2028 г. и 75 000 евро от 2029 г.; предложенията на Асен Василев и Мартин Димитров прагът да е 85 000 евро (максимумът по правилата на ЕС) отпаднаха.",
+  "order": 10,
+  "sources": [
+    {
+      "url": "https://www.bta.bg/bg/news/bulgaria/1256071-narodnoto-sabranie-prie-okonchatelno-promenite-v-zakona-za-danak-varhu-dobavenat"
+    },
+    {
+      "url": "https://business.dir.bg/ikonomika/okonchatelno-pragat-za-registratsiya-po-dds-shte-se-vdiga-v-tri-stapki"
+    },
+    {
+      "url": "https://dv.parliament.bg/DVWeb/materiali.faces?idObj=11101"
+    }
+  ]
+}
