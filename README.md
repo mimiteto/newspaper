@@ -107,6 +107,21 @@ the watch list, `drop` hides items, so a classifier asked about news and finding
 none would delete a holding from the paper. Triage in `stocks` is done against
 `news[]`, never against the line.
 
+A verdict may also carry `digest`: a fingerprint of the `headline`+`summary` the
+classifier was actually shown. Verdicts bind by `id`, and an id survives an edit
+that changes meaning — rewrite a summary after triage and the paper prints words
+no classifier judged, wearing the earlier verdict. `mb decide` refuses that pair:
+
+```text
+verdicts[0] stocks/sapse: this verdict was made about different prose. The draft now reads
+'SAP says it remains on track with its 2026 plan' (digest 34142064), the verdict is for b199da6b.
+Ids survive an edit, meaning does not — re-run mb_decide on the draft, or drop this row.
+```
+
+So the order is fixed: finish the draft, then triage, then publish. A row with no
+`digest` — hand-written, or from before this existed — is accepted; absence is
+not a mismatch.
+
 ## Working with it
 
 Python 3.11+, standard library only, no install step:
@@ -139,10 +154,21 @@ dialects of the same logic.
 not name a checkout (a publish decision is only worth what a current
 `origin/master` makes it): SSH first through the gcr ssh-agent, HTTPS fallback,
 advisory lock and retries — because a re-run from the box can still land while
-Actions is pushing generated Markdown. See `mb/gitops.py`. Naming `--repo` flips
-all three to "this checkout, origin untouched", which is what makes a rehearsal
-of the real commands possible at all; a write command that ignored it would turn
-a dry run into a publication.
+Actions is pushing generated Markdown. See `mb/gitops.py`.
+
+Naming `--repo` means "work in this checkout", and it is worth being exact about
+what each command then does, because a rehearsal should not be able to publish:
+
+| with `--repo` | writes | pushes |
+|---|---|---|
+| `publish` | items into the checkout | **yes — to that clone's remote** |
+| `backfill` | items + `meta.json` | no |
+| `finalize` | `meta.json` | no (`push=skipped reason=local-repo`) |
+
+So `publish --repo` is a rehearsal only if the named clone points at a scratch
+remote; that is exactly how the dress run above is safe. `finalize` used to
+ignore `--repo` and clone origin regardless, which made a local rehearsal of the
+close a publication — that is why the contract is written down here.
 
 ## Legacy days
 
