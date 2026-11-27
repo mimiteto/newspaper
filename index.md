@@ -35,7 +35,7 @@ Published briefs, newest first.
 
 ## [2026-11-01](2026/11/01/index.md)
 
-[Weather](2026/11/01/weather.md) · [Holdings](2026/11/01/stocks.md) · [Bulgaria](2026/11/01/bulgarian-finances.md)
+[Bulgaria](2026/11/01/bulgarian-finances.md)
 
 ## [2026-10-30](2026/10/30/index.md)
 
