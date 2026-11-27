@@ -1,0 +1,63 @@
+{
+  "schema": "mb/item@1",
+  "id": "dkng",
+  "section": "stocks",
+  "ticker": "DKNG",
+  "name": "DraftKings",
+  "listing": "NASDAQ",
+  "price": 17.83,
+  "currency": "USD",
+  "change_abs": 0.18,
+  "change_pct_1d": 1.02,
+  "news": [
+    {
+      "id": "florida-front",
+      "headline": "Florida's attorney general joins the Seminole suit against DraftKings",
+      "summary": "The AG moved to intervene in the Tribe's action seeking to shut down DraftKings' prediction-market, 21 Rivals and Pick6 products in Florida, arguing it operates illegal sportsbooks under the guise of an approved financial product — a second regulatory front in the state that matters most to the prediction-markets thesis.",
+      "published": "2026-11-27",
+      "url": "https://sbcamericas.com/2026-11-27/prediction-markets-weekly-november-27/",
+      "source": "SBC Americas",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "other",
+        "confidence": 0.63,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=1.00 price_move=0.19",
+        "ambiguous": false
+      }
+    },
+    {
+      "id": "insider-buying",
+      "headline": "Three insiders spent $1.45m after the post-earnings slump",
+      "summary": "Ellingson, Wendt and Kalish bought 78,908 Class A shares between $18.22 and $19.76 in the days after the 21.3% cut-on-guidance drop; the stock touched a one-year $15.43 on Tuesday and remains 48% below its 1 December 2025 close of $33.87.",
+      "published": "2026-11-27",
+      "url": "https://gamingamerica.com/news/1111685/draftkings-stock-insider-buying-prediction-markets-kalshi",
+      "source": "Gaming America",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "other",
+        "confidence": 0.74,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.89 price_move=0.13",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "order": 70,
+  "as_of": "27 Nov 13:00 ET, half-day close",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/DKNG/"
+    }
+  ],
+  "flags": [
+    "A Deadspin report that CEO Jason Robins and the CFO bought ~$2m and ~$1m is not supported by the Form 4 filings; Robins has reported no trade since 15 September."
+  ]
+}

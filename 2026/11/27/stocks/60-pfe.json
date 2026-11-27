@@ -1,0 +1,41 @@
+{
+  "schema": "mb/item@1",
+  "id": "pfe",
+  "section": "stocks",
+  "ticker": "PFE",
+  "name": "Pfizer",
+  "listing": "NYSE",
+  "price": 28.52,
+  "currency": "USD",
+  "change_abs": 0.06,
+  "change_pct_1d": 0.21,
+  "news": [
+    {
+      "id": "dividend-test",
+      "headline": "Pfizer's 6% yield faces its 2027 patent cliff",
+      "summary": "Dividends took roughly 83% of nine-month operating cash flow ($7.3bn of $8.8bn) and exclusivity on Ibrance and Xtandi plus generic Eliquis abroad arrives in 2027, so the 6.03% yield is a function of a 2.76x-levered balance sheet rather than growth.",
+      "published": "2026-11-27",
+      "url": "https://247wallst.com/investing/2026-11-27/pfizer-and-bristol-myers-are-up-about-20-this-year-but-their-dividends-face-a-major-test/",
+      "source": "24/7 Wall St.",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "other",
+        "confidence": 0.85,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.92 price_move=0.04",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "order": 60,
+  "as_of": "27 Nov 13:00 ET, half-day close",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/PFE/"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "mb/item@1",
+  "id": "ko",
+  "section": "stocks",
+  "ticker": "KO",
+  "name": "Coca-Cola",
+  "listing": "NYSE",
+  "price": 97.4,
+  "currency": "USD",
+  "change_abs": -0.19,
+  "change_pct_1d": -0.19,
+  "news": [
+    {
+      "id": "king-at-a-premium",
+      "headline": "Coca-Cola's 64th straight raise, priced at a premium",
+      "summary": "Margins widened in Q3, guidance was raised for a third consecutive report and the raise run hit 64 years, but the piece is blunt that a 40% run has left the shares expensive against the index — an income holding, not a re-rating at this price.",
+      "published": "2026-11-26",
+      "url": "https://www.fool.com/investing/2026-11-26/coca-cola-is-the-most-boring-stock-i-own-after-64-years-of-dividend-raises-ill-never-sell/",
+      "source": "The Motley Fool",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "guidance",
+        "confidence": 0.66,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.93 price_move=0.17",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "order": 50,
+  "as_of": "27 Nov 13:00 ET, half-day close",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/KO/"
+    }
+  ],
+  "flags": [
+    "KO goes ex-dividend on 1 December 2026 with a $2.12 annual payout (2.18% at today's close) — the next cash event on this line, from the quote page rather than the news."
+  ]
+}

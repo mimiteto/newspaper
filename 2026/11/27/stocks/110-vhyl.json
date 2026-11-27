@@ -1,0 +1,65 @@
+{
+  "schema": "mb/item@1",
+  "id": "vhyl",
+  "section": "stocks",
+  "ticker": "VHYL",
+  "name": "Vanguard FTSE All-World High Div Yield UCITS ETF USD dist",
+  "listing": "Euronext Amsterdam",
+  "price": 81.93,
+  "currency": "EUR",
+  "change_abs": 1.49,
+  "change_pct_1d": 1.85,
+  "holdings": [
+    {
+      "rank": 1,
+      "name": "Samsung Electronics",
+      "weight_pct": 2.4,
+      "weight_display": "2.4%",
+      "as_of": "30 Sep 2026"
+    },
+    {
+      "rank": 2,
+      "name": "JPMorgan Chase",
+      "weight_pct": 2.0,
+      "weight_display": "2.0%",
+      "as_of": "30 Sep 2026"
+    },
+    {
+      "rank": 3,
+      "name": "ExxonMobil Holdings",
+      "weight_pct": 1.5,
+      "weight_display": "1.5%",
+      "as_of": "30 Sep 2026"
+    },
+    {
+      "rank": 4,
+      "name": "Johnson & Johnson",
+      "weight_pct": 1.5,
+      "weight_display": "1.5%",
+      "as_of": "30 Sep 2026"
+    },
+    {
+      "rank": 5,
+      "name": "AbbVie",
+      "weight_pct": 1.1,
+      "weight_display": "1.1%",
+      "as_of": "30 Sep 2026"
+    }
+  ],
+  "kind": "item",
+  "text": "The flattest of the four sleeves: nothing above 2.4%, and the fifth-largest holding at 1.1%. Fund-level market price return per ETF Trace, as of 26 Nov 2026: −2.7% over one month, +9.6% year to date, +12.6% over one year. Top five weights per ETF Trace, as of 30 Sep 2026:",
+  "order": 110,
+  "as_of": "26 Nov 17:35 CET, Euronext Amsterdam close — one session stale",
+  "sources": [
+    {
+      "url": "https://finance.yahoo.com/quote/VHYL.AS/history/"
+    },
+    {
+      "url": "https://etftrace.com/fund/VHYL"
+    }
+  ],
+  "flags": [
+    "No 27 November print was found for VHYL: stockanalysis.com does not carry the ticker, the Xetra line for this ISIN is listed as VGWD, and the Milan quotes available were dated 13 November. A one-session-old Amsterdam close is printed instead of a fresh-looking stale number.",
+    "ETF Trace's weights are the 30 September 2026 quarter-end portfolio of its 50 largest holdings, not live positions, and are printed to one decimal as the source gives them."
+  ]
+}

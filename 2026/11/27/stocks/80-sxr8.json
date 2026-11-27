@@ -1,0 +1,77 @@
+{
+  "schema": "mb/item@1",
+  "id": "sxr8",
+  "section": "stocks",
+  "ticker": "SXR8",
+  "name": "iShares Core S&P 500 UCITS ETF Acc",
+  "listing": "Xetra",
+  "price": 719.18,
+  "currency": "EUR",
+  "change_abs": 7.04,
+  "change_pct_1d": 0.99,
+  "holdings": [
+    {
+      "rank": 1,
+      "name": "Apple",
+      "weight_pct": 8.32,
+      "as_of": "24 Nov 2026"
+    },
+    {
+      "rank": 2,
+      "name": "NVIDIA",
+      "weight_pct": 6.05,
+      "as_of": "24 Nov 2026"
+    },
+    {
+      "rank": 3,
+      "name": "Microsoft",
+      "weight_pct": 5.93,
+      "as_of": "24 Nov 2026"
+    },
+    {
+      "rank": 4,
+      "name": "Alphabet",
+      "weight_pct": 4.75,
+      "as_of": "24 Nov 2026"
+    },
+    {
+      "rank": 5,
+      "name": "Amazon.com",
+      "weight_pct": 3.99,
+      "as_of": "24 Nov 2026"
+    }
+  ],
+  "news": [
+    {
+      "id": "worst-november",
+      "headline": "Best week since April 2025, still the worst November since 2008",
+      "summary": "The index bounced 5.6% this week yet sits on track for its worst November since 2008 with one session left and 6.7% still to recover from the 6 October record, while a December rate increase is nearly priced in — the year on this fund is being set by rates, not by its top five.",
+      "published": "2026-11-27",
+      "url": "https://stockanalysis.com/news/sp-500-caps-best-week-in-over-a-year/",
+      "source": "StockAnalysis",
+      "relevance": {
+        "brief": true,
+        "price_move": true,
+        "category": "macro",
+        "confidence": 0.67,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.84 price_move=0.89",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "text": "29.04% of the fund in five names, 36.99% in ten. Top five weights per stockanalysis.com, as of 24 Nov 2026:",
+  "order": 80,
+  "as_of": "27 Nov 17:36 CET, delayed",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SXR8/holdings/"
+    }
+  ],
+  "flags": [
+    "The fund's +0.99% is a euro price stamped 17:36 CET against the index's +1.60% at the 13:00 ET half-day close — currency and four and a half hours separate the two prints, so they are not a tracking comparison."
+  ]
+}

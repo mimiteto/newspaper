@@ -1,0 +1,41 @@
+{
+  "schema": "mb/item@1",
+  "id": "msft",
+  "section": "stocks",
+  "ticker": "MSFT",
+  "name": "Microsoft",
+  "listing": "NASDAQ",
+  "price": 492.85,
+  "currency": "USD",
+  "change_abs": 2.92,
+  "change_pct_1d": 0.6,
+  "news": [
+    {
+      "id": "code-red",
+      "headline": "Code Red targets one-hour recovery for Microsoft 365",
+      "summary": "Memos reviewed by Reuters show Microsoft wants global incidents resolved within an hour after the 24-hour outage of 12–13 November left more than 80% of servers unresponsive — the commercial risk is the Copilot-on-M365 upsell, not this quarter.",
+      "published": "2026-11-27",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/microsoft-stocks-rise-0-26-182320294.html",
+      "source": "GuruFocus via Yahoo Finance",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "strategic",
+        "confidence": 0.75,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.88 price_move=0.09",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "order": 40,
+  "as_of": "27 Nov 13:00 ET, half-day close",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/MSFT/"
+    }
+  ]
+}

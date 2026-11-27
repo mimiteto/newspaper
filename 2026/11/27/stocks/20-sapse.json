@@ -1,0 +1,67 @@
+{
+  "schema": "mb/item@1",
+  "id": "sapse",
+  "section": "stocks",
+  "ticker": "SAP.DE",
+  "name": "SAP SE",
+  "listing": "Xetra",
+  "price": 195.64,
+  "currency": "EUR",
+  "change_abs": 1.5,
+  "change_pct_1d": 0.77,
+  "news": [
+    {
+      "id": "job-cuts",
+      "headline": "SAP weighs cutting at least 10,000 jobs in its AI reshuffle",
+      "summary": "Bloomberg reports every department was asked to identify cuts — at least 9% of 113,000 staff, weighted to product development and sales — which is the cost lever behind the margin story, but the number is unconfirmed and still has to survive the unions.",
+      "published": "2026-11-27",
+      "url": "https://www.euronews.com/2026-11-27/german-sofware-giant-sap-weighs-at-least-10000-job-cuts-amid-ai-shift-reports-say",
+      "source": "Euronews",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "strategic",
+        "confidence": 0.21,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.99 price_move=0.39",
+        "ambiguous": true
+      }
+    },
+    {
+      "id": "github-activity",
+      "headline": "SAP confirms suspicious activity, no customer data access found",
+      "summary": "SAP said it detected suspicious activity involving its GitHub developer platform and found no evidence to date of unauthorised access to customer business data — contained so far, and reported alongside the job-cut story rather than on its own.",
+      "published": "2026-11-27",
+      "url": "https://de.investing.com/news/stock-market-news/borse-heute-dax--sapjobabbau-und-itvorfall-im-fokus-3788261",
+      "source": "Investing.com",
+      "relevance": {
+        "brief": true,
+        "price_move": false,
+        "category": "other",
+        "confidence": 0.55,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.86 price_move=0.23",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "label": "SAPSE",
+  "order": 20,
+  "as_of": "27 Nov 17:39 CET, delayed",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/SAP/"
+    },
+    {
+      "url": "https://www.euronews.com/2026-11-27/german-sofware-giant-sap-weighs-at-least-10000-job-cuts-amid-ai-shift-reports-say"
+    }
+  ],
+  "flags": [
+    "The 10,000 figure is a press report SAP will not confirm — \"we do not comment on speculation\"; JPMorgan's estimate of ~€750m of extra operating profit from 2028 is an analyst's model of a rumour."
+  ]
+}

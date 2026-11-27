@@ -1,0 +1,56 @@
+{
+  "schema": "mb/item@1",
+  "id": "ubu7",
+  "section": "stocks",
+  "ticker": "UBU7",
+  "name": "UBS Core MSCI World UCITS ETF dis",
+  "listing": "Xetra",
+  "price": 107.33,
+  "currency": "EUR",
+  "change_abs": 1.25,
+  "change_pct_1d": 1.18,
+  "holdings": [
+    {
+      "rank": 1,
+      "name": "Apple",
+      "weight_pct": 6.0,
+      "as_of": "20 Nov 2026"
+    },
+    {
+      "rank": 2,
+      "name": "Microsoft",
+      "weight_pct": 4.12,
+      "as_of": "20 Nov 2026"
+    },
+    {
+      "rank": 3,
+      "name": "NVIDIA",
+      "weight_pct": 3.93,
+      "as_of": "20 Nov 2026"
+    },
+    {
+      "rank": 4,
+      "name": "Alphabet",
+      "weight_pct": 3.35,
+      "as_of": "20 Nov 2026"
+    },
+    {
+      "rank": 5,
+      "name": "Amazon.com",
+      "weight_pct": 2.91,
+      "as_of": "20 Nov 2026"
+    }
+  ],
+  "kind": "item",
+  "text": "The same five names as the S&P sleeve in a different order, at roughly two-thirds the weight: 20.31% in five, 26.20% in ten. Top five weights per stockanalysis.com, as of 20 Nov 2026:",
+  "order": 90,
+  "as_of": "27 Nov 17:35 CET, delayed",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/UBU7/holdings/"
+    }
+  ],
+  "flags": [
+    "Holdings here are dated 20 Nov 2026, a week behind the S&P sleeve's 24 Nov refresh; the ranking is identical, the weights are not."
+  ]
+}

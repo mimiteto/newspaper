@@ -1,0 +1,77 @@
+{
+  "schema": "mb/item@1",
+  "id": "lyp6",
+  "section": "stocks",
+  "ticker": "LYP6",
+  "name": "Amundi Core STOXX Europe 600 UCITS ETF Acc",
+  "listing": "Xetra",
+  "price": 318.8,
+  "currency": "EUR",
+  "change_abs": 3.4,
+  "change_pct_1d": 1.08,
+  "holdings": [
+    {
+      "rank": 1,
+      "name": "ASML Holding",
+      "weight_pct": 3.73,
+      "as_of": "23 Nov 2026"
+    },
+    {
+      "rank": 2,
+      "name": "Roche Holding",
+      "weight_pct": 2.31,
+      "as_of": "23 Nov 2026"
+    },
+    {
+      "rank": 3,
+      "name": "Novartis",
+      "weight_pct": 2.0,
+      "as_of": "23 Nov 2026"
+    },
+    {
+      "rank": 4,
+      "name": "HSBC Holdings",
+      "weight_pct": 1.98,
+      "as_of": "23 Nov 2026"
+    },
+    {
+      "rank": 5,
+      "name": "AstraZeneca",
+      "weight_pct": 1.9,
+      "as_of": "23 Nov 2026"
+    }
+  ],
+  "news": [
+    {
+      "id": "dax-week",
+      "headline": "DAX heads for a 2.5% week with SAP and Rheinmetall driving the tape",
+      "summary": "Frankfurt added 0.8% Friday to about 25,430 for a weekly gain near 2.5%, with Rheinmetall trimming medium-term targets and still rising — a broad European risk-on session, and the reason the SAP job-cut report did not sink the region's largest software name.",
+      "published": "2026-11-27",
+      "url": "https://de.investing.com/news/stock-market-news/borse-heute-dax--sapjobabbau-und-itvorfall-im-fokus-3788261",
+      "source": "Investing.com",
+      "relevance": {
+        "brief": true,
+        "price_move": true,
+        "category": "macro",
+        "confidence": 0.05,
+        "verdict": "keep",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.52 price_move=0.96",
+        "ambiguous": true
+      }
+    }
+  ],
+  "kind": "item",
+  "text": "ASML, Roche, Novartis, HSBC and AstraZeneca carry 11.92% between them, and the top ten reach only 19.73% — what a 611-holding index looks like from the top. Top five weights per stockanalysis.com, as of 23 Nov 2026:",
+  "order": 100,
+  "as_of": "27 Nov 17:35 CET, delayed",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/quote/etr/LYP6/holdings/"
+    }
+  ],
+  "flags": [
+    "The DAX is the tape being described, not the index held: LYP6 tracks the STOXX Europe 600, which is 611 holdings wide and top-weighted in ASML, SAP's home market notwithstanding."
+  ]
+}

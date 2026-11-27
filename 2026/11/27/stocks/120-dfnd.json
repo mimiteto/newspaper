@@ -1,0 +1,28 @@
+{
+  "schema": "mb/item@1",
+  "id": "dfnd",
+  "section": "stocks",
+  "ticker": "DFND",
+  "name": "SireN DIVCON Dividend Defender ETF",
+  "listing": "Cboe BZX",
+  "price": 43.22,
+  "currency": "USD",
+  "change_abs": -0.58,
+  "change_pct_1d": -1.32,
+  "kind": "item",
+  "text": "The long/short DIVCON dividend defender — 75% long and 25% short at rebalance, $9.08m in assets, 61 holdings — printed no fund-specific news in the last seven days.",
+  "order": 120,
+  "as_of": "27 Nov 13:00 ET, half-day close",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/etf/DFND/"
+    },
+    {
+      "url": "https://etfexplorer.com/etf/DFND"
+    }
+  ],
+  "flags": [
+    "DFND printed a single point today — open 43.22, day range 43.22–43.22 — so this close is one thin trade on a half day, not a market-clearing level.",
+    "The expense ratio is quoted 1.75% by stockanalysis.com and 1.61% net by ETF Explorer; both are printed here because neither source defers to the other."
+  ]
+}

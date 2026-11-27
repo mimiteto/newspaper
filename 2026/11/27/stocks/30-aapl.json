@@ -1,0 +1,41 @@
+{
+  "schema": "mb/item@1",
+  "id": "aapl",
+  "section": "stocks",
+  "ticker": "AAPL",
+  "name": "Apple",
+  "listing": "NASDAQ",
+  "price": 358.54,
+  "currency": "USD",
+  "change_abs": 2.96,
+  "change_pct_1d": 0.83,
+  "news": [
+    {
+      "id": "november-gap",
+      "headline": "Apple outpaces Nvidia by 30.2 points in November",
+      "summary": "Apple is up 3.2% this month against Nvidia's −27% — its widest monthly lead since 2008 — and holds near a record with +31.3% year to date, which is the rotation keeping this holding up while the AI complex de-rates.",
+      "published": "2026-11-27",
+      "url": "https://economictimes.indiatimes.com/world/us/apple-stock-outperforms-nvidia-by-30-2-percentage-points-in-november-as-ai-selloff-puts-iphone-maker-on-track-for-its-biggest-monthly-lead-since-the-2008-financial-crisis/articleshow/136229068.cms",
+      "source": "The Economic Times",
+      "relevance": {
+        "brief": false,
+        "price_move": false,
+        "category": "other",
+        "confidence": 0.95,
+        "verdict": "drop",
+        "decided_by": "llama.cpp/unsloth/Qwen3.8-Flash-Next-GGUF:IQ4_XS",
+        "decided_at": "2026-11-27T21:00:54.668Z",
+        "why": "brief=0.03 price_move=0.02",
+        "ambiguous": false
+      }
+    }
+  ],
+  "kind": "item",
+  "order": 30,
+  "as_of": "27 Nov 13:00 ET, half-day close",
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/stocks/AAPL/"
+    }
+  ]
+}

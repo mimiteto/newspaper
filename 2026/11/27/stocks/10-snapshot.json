@@ -1,0 +1,19 @@
+{
+  "schema": "mb/item@1",
+  "id": "snapshot",
+  "section": "stocks",
+  "kind": "context",
+  "text": "S&P 500 7,297.49, +114.71 (+1.60%) on the day and +5.6% for the week — its best since April 2025 — in a half-day session that closed at 13:00 ET after Thanksgiving; the Nasdaq 100 gained 2.6% (6.8% on the week) and the Dow 1.2% (5.5%). The benchmark is still on track for its worst November since 2008 with one session left, and traders had nearly fully priced a Federal Reserve rate increase at the 8–9 December meeting. EUR/USD 1.0957 and EUR/GBP 0.8350 on the European Central Bank's 27 November reference fixings; Xetra printed its close, US names the half-day close, each stamped per item.",
+  "order": 10,
+  "sources": [
+    {
+      "url": "https://stockanalysis.com/news/sp-500-caps-best-week-in-over-a-year/"
+    },
+    {
+      "url": "https://apnews.com/article/stock-markets-tariffs-ai-profits-energy-c7ef10c1dbc5fa09668bd4fe0729c613"
+    },
+    {
+      "url": "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP"
+    }
+  ]
+}
