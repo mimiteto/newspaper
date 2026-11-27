@@ -22,6 +22,7 @@ from pathlib import Path
 from conftest_fixtures import REPO_ROOT, STOCK_DRAFT, VERDICTS, RepoTestCase
 
 from mb.cli import main
+from mb.decide import news_digest
 from mb.paths import day_path
 from mb.render import render_section
 from mb.store import load_day, load_section_items
@@ -127,6 +128,50 @@ class DecideTests(RepoTestCase):
             run_mb("--repo", str(self.repo), "decide", "--date", DATE, "--verdicts", self.write_draft(bogus, "b.json")),
             1,
         )
+
+    def test_a_verdict_about_rewritten_prose_is_refused(self):
+        """An id survives an edit; the classifier never saw the new words."""
+        row = dict(VERDICTS["verdicts"][0])
+        row["digest"] = news_digest(
+            "SAP says it remains on track with its 2026 plan",
+            "a sentence that has since been rewritten",
+        )
+        code = run_mb(
+            "--repo", str(self.repo), "decide", "--date", DATE,
+            "--verdicts", self.write_draft({"schema": "mb/verdicts@1", "verdicts": [row]}, "d.json"),
+        )
+        self.assertEqual(code, 1)
+        sapse = next(item for item in load_section_items(self.repo, day_path(DATE), "stocks") if item.id == "sapse")
+        self.assertTrue(
+            all(entry.relevance is None for entry in sapse.news),
+            "a refused batch must not leave some entries judged and others not",
+        )
+
+    def test_a_verdict_applies_when_the_digest_matches(self):
+        row = dict(VERDICTS["verdicts"][0])
+        row["digest"] = news_digest(
+            "SAP says it remains on track with its 2026 plan",
+            "CFO repeated the 2026 outlook at the Morgan Stanley TMT conference.",
+        )
+        self.assertEqual(
+            run_mb(
+                "--repo", str(self.repo), "decide", "--date", DATE,
+                "--verdicts", self.write_draft({"schema": "mb/verdicts@1", "verdicts": [row]}, "d.json"),
+            ),
+            0,
+        )
+        sapse = next(item for item in load_section_items(self.repo, day_path(DATE), "stocks") if item.id == "sapse")
+        judged = next(entry for entry in sapse.news if entry.id == row["news_id"])
+        self.assertEqual(judged.relevance.verdict if judged.relevance else "<none>", "keep")
+
+    def test_a_misspelt_news_id_is_refused_not_ignored(self):
+        """`newsId` would silently judge the whole item instead of one entry."""
+        row = {"section": "bulgarian-finances", "id": "ddc-prag", "newsId": "x", "brief": True, "price_move": False}
+        code = run_mb(
+            "--repo", str(self.repo), "decide", "--date", DATE,
+            "--verdicts", self.write_draft({"schema": "mb/verdicts@1", "verdicts": [row]}, "t.json"),
+        )
+        self.assertEqual(code, 1)
 
     def test_a_lane_only_applies_its_own_sections_verdicts(self):
         """Three lanes race on one day: a shared verdict file must not reach

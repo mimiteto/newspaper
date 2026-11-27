@@ -19,15 +19,48 @@ is the only place the rule is applied.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
 
-from mb.model import Item, Relevance
+from mb.model import Item, NewsEntry, Relevance
 from mb.paths import SECTIONS, DayPath
 from mb.store import load_section_items, write_item
 
 VERDICTS_SCHEMA = "mb/verdicts@1"
+
+#: Every key a verdict row may carry. A misspelt ``news_id`` is the difference
+#: between judging one news entry and judging the whole item, so an unknown key
+#: is refused rather than quietly ignored.
+VERDICT_FIELDS = frozenset(
+    {
+        "section",
+        "id",
+        "news_id",
+        "verdict",
+        "category",
+        "confidence",
+        "brief",
+        "price_move",
+        "ambiguous",
+        "why",
+        "digest",
+        "decided_by",
+        "decided_at",
+    }
+)
+
+
+def news_digest(headline: str, summary: str) -> str:
+    """Fingerprint of the prose a verdict was made about.
+
+    Verdicts bind by ``id``, and an id survives an edit that changes meaning:
+    rewrite a ``summary`` after triage and the paper prints words no classifier
+    ever judged, wearing someone else's verdict. The producer (``mb_decide``)
+    records this; the consumer refuses the pair when they no longer match.
+    """
+    return hashlib.sha256(f"{headline}\n{summary}".encode()).hexdigest()[:16]
 
 
 class VerdictError(ValueError):
@@ -99,9 +132,25 @@ def _apply_to_item(
         return relevance
     for entry in item.news:
         if entry.id == news_id:
+            _check_prose(verdict, entry, where)
             entry.relevance = relevance
             return relevance
     raise VerdictError(f"{where}: no news entry {news_id!r} in item {item.id}")
+
+
+def _check_prose(verdict: dict[str, Any], entry: NewsEntry, where: str) -> None:
+    """Refuse a verdict whose ``digest`` no longer matches the news it names."""
+    expected = verdict.get("digest")
+    if not expected:
+        return  # A verdict file written before digests existed, or a hand-written one.
+    got = news_digest(entry.headline, entry.summary)
+    if str(expected) != got:
+        raise VerdictError(
+            f"{where}: this verdict was made about different prose. The draft now reads "
+            f"{(entry.headline or entry.summary)[:70]!r} (digest {got[:8]}), the verdict is for "
+            f"{str(expected)[:8]}. Ids survive an edit, meaning does not — re-run mb_decide on the "
+            f"draft, or drop this row."
+        )
 
 
 def _check_target(section: str, item_id: str, verdict: dict[str, Any], where: str) -> None:
@@ -154,6 +203,12 @@ def apply_verdicts(
     for index, verdict in enumerate(verdicts["verdicts"]):
         if not isinstance(verdict, dict):
             raise VerdictError(f"verdicts[{index}]: expected an object")
+        unknown = sorted(set(verdict) - VERDICT_FIELDS)
+        if unknown:
+            raise VerdictError(
+                f"verdicts[{index}]: unknown key(s) {', '.join(unknown)} — a misspelt news_id would "
+                f"judge the whole item instead, so nothing here is ignored"
+            )
         section = verdict.get("section")
         item_id = verdict.get("id")
         if section not in SECTIONS or not isinstance(item_id, str):
