@@ -465,11 +465,23 @@ def cmd_status(args: argparse.Namespace) -> int:
     return 0
 
 
-def _root_entries(repo: Path) -> list[tuple[DayPath, bool]]:
-    """Every brief on the site, newest first: JSON-managed and legacy alike."""
-    entries: list[tuple[DayPath, bool]] = [(date, True) for date in managed_days(repo)]
-    entries += [(date, False) for date in legacy_days(repo)]
-    entries.sort(key=lambda entry: entry[0].flat, reverse=True)
+def _root_entries(repo: Path) -> list[render_mod.BriefEntry]:
+    """Every brief on the site, newest first: JSON-managed and legacy alike.
+
+    Each entry carries the sections that exist as rendered pages. The homepage
+    links only those: a legacy day that printed no stocks section must not offer
+    a link to a page that was never published.
+    """
+
+    def rendered(date: DayPath) -> list[str]:
+        directory = day_dir(repo, date)
+        return [section for section in SECTIONS if (directory / f"{section}.md").is_file()]
+
+    entries: list[render_mod.BriefEntry] = [
+        render_mod.BriefEntry(date, True, rendered(date)) for date in managed_days(repo)
+    ]
+    entries += [render_mod.BriefEntry(date, False, rendered(date)) for date in legacy_days(repo)]
+    entries.sort(key=lambda entry: entry.date.flat, reverse=True)
     return entries
 
 
