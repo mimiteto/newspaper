@@ -104,6 +104,23 @@ def _apply_to_item(
     raise VerdictError(f"{where}: no news entry {news_id!r} in item {item.id}")
 
 
+def _check_target(section: str, item_id: str, verdict: dict[str, Any], where: str) -> None:
+    """Reject a verdict that would judge a whole watch-list line.
+
+    A verdict with no ``news_id`` judges the item, which is right for a section
+    of standalone stories and wrong for ``stocks``: there an item is a line on
+    the list, ``drop`` hides items, so a classifier asked about news and finding
+    none would silently delete a holding. That is a decision about the portfolio,
+    and no classifier was asked to make it.
+    """
+    if section == "stocks" and not verdict.get("news_id"):
+        raise VerdictError(
+            f"{where}: a stocks verdict must name a news_id. Here an item is a watch-list line, not a "
+            f"news entry, and drop would remove {item_id} from the paper — a decision about the "
+            f"portfolio, not about the news. Judge its news[] entries, or leave the line alone."
+        )
+
+
 def apply_verdicts(
     repo: Path,
     date: DayPath,
@@ -122,6 +139,11 @@ def apply_verdicts(
     An unmatched ``(id[,news_id])`` inside the scope is an error rather than a
     warning: a silently ignored verdict means the pipeline and the classifier
     disagree about what exists, which is how a stale item ends up printed.
+
+    A verdict with no ``news_id`` judges the whole item, which is what a section
+    of standalone stories (Bulgaria) wants. It is refused for ``stocks``, where
+    an item is a watch-list line: ``drop`` hides an item, so a classifier asked
+    about news that found none would delete a holding from the paper.
     """
     scope = section
     decided_by = str(verdicts.get("decided_by", ""))
@@ -140,6 +162,7 @@ def apply_verdicts(
             summary["skipped"] += 1
             continue
         where = f"verdicts[{index}] {section}/{item_id}"
+        _check_target(section, item_id, verdict, where)
         if section not in items_by_section:
             items_by_section[section] = load_section_items(repo, date, section)
         for item in items_by_section[section]:

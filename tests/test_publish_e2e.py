@@ -131,6 +131,37 @@ class PublishFlowTests(unittest.TestCase):
         check = run_mb("--repo", str(clone), "render", "--check", env=self.env)
         self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
 
+    def test_finalize_with_repo_closes_locally_and_never_pushes(self):
+        """``--repo`` means "this checkout, origin untouched" — including for the
+        one command whose whole job is to push. A rehearsal close that cloned the
+        remote instead would stamp the real day, which is the opposite of a test.
+        """
+        published = run_mb(
+            "publish", "--date", DATE, "--dir", str(self.fixture),
+            "--verdicts", str(self.fixture / "verdicts.json"),
+            "--location", "Novi Iskar", "--started", "2026-11-22T09:18:37+02:00",
+            env=self.env,
+        )
+        self.assertEqual(published.returncode, 0, published.stdout + published.stderr)
+
+        local = self.tmp / "local"
+        git(["clone", "-q", str(self.remote), str(local)], self.tmp)
+        closed = run_mb("--repo", str(local), "finalize", "--date", DATE,
+                        "--finished", "2026-11-22T09:43:26+02:00", env=self.env)
+        self.assertEqual(closed.returncode, 0, closed.stdout + closed.stderr)
+        self.assertNotIn("clone=", closed.stdout, "a local close must not reach for a remote")
+        self.assertIn("push=skipped reason=local-repo", closed.stdout)
+        self.assertEqual(json.loads((local / NESTED / "meta.json").read_text(encoding="utf-8"))["finished"],
+                         "2026-11-22T09:43:26+02:00")
+
+        # Origin never saw it, and the checkout's index was not touched either.
+        elsewhere = self.tmp / "elsewhere"
+        git(["clone", "-q", str(self.remote), str(elsewhere)], self.tmp)
+        self.assertEqual(json.loads((elsewhere / NESTED / "meta.json").read_text(encoding="utf-8")).get("finished", ""), "")
+        status = subprocess.run(["git", "status", "--porcelain"], cwd=local, capture_output=True, text=True)
+        # Leading column means "unstaged": the file changed, the index did not.
+        self.assertEqual(status.stdout, f" M {NESTED}/meta.json\n")
+
     def test_re_publishing_a_section_changes_nothing(self):
         first = run_mb("publish", "--date", DATE, "--dir", str(self.fixture), env=self.env)
         self.assertEqual(first.returncode, 0, first.stdout + first.stderr)
