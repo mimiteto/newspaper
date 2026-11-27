@@ -1,0 +1,14 @@
+{
+  "schema": "mb/day@1",
+  "date": "2026-11-27",
+  "location": "Novi Iskar",
+  "timezone": "Europe/Sofia",
+  "started": "2026-11-27T22:32:23+02:00",
+  "finished": "",
+  "sections": [
+    "weather",
+    "stocks",
+    "bulgarian-finances"
+  ],
+  "source": "pi morning-brief"
+}

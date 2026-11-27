@@ -1,0 +1,22 @@
+{
+  "schema": "mb/item@1",
+  "id": "air-daylight",
+  "section": "weather",
+  "provider": "open-meteo air-quality",
+  "kind": "item",
+  "label": "Air & daylight",
+  "text": "US AQI 55 (moderate) at 22:00 with PM2.5 15.8 µg/m³, PM10 16.2 µg/m³, ozone 18.0 µg/m³ and NO₂ 22.3 µg/m³; the sun rose 07:31 and set 16:54 — about 9 h 23 m of daylight — on a maximum UV of 1.60 today and 0.25 tomorrow.",
+  "order": 60,
+  "as_of": "22:00 local",
+  "sources": [
+    {
+      "url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=42.7382&longitude=23.5975&current=pm2_5,pm10,ozone,nitrogen_dioxide,us_aqi&daily=uv_index_max&timezone=Europe%2FSofia&forecast_days=2"
+    },
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=sunrise,sunset,uv_index_max&timezone=Europe%2FSofia&forecast_days=2"
+    }
+  ],
+  "flags": [
+    "The air-quality block is stamped 22:00, half an hour behind the 22:30 forecast block beside it, and the two are separate model products, so read the hour as approximate."
+  ]
+}

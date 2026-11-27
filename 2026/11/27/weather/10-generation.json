@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "generation",
+  "section": "weather",
+  "kind": "context",
+  "text": "Generated 2026-11-27 22:35 Europe/Sofia from an open-meteo run stamped 22:30 local, cross-checked against wttr.in's reading of the same air; a late run, so today is already spent and the forecast that matters is tomorrow's.",
+  "order": 10
+}

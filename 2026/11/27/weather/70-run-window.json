@@ -1,0 +1,8 @@
+{
+  "schema": "mb/item@1",
+  "id": "run-window",
+  "section": "weather",
+  "kind": "flag",
+  "text": "Every weather number here comes from a single 27 November 22:30 local run; a Saturday-morning run will move the snow line and the totals, and tomorrow's brief will disagree with today's in good faith.",
+  "order": 70
+}

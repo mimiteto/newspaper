@@ -1,0 +1,24 @@
+{
+  "schema": "mb/item@1",
+  "id": "precipitation",
+  "section": "weather",
+  "kind": "item",
+  "label": "Precipitation",
+  "text": "4.30 mm fell today across 11 hours, none of it before 13:00 and most of it between 18:00 and 21:00 at 0.7–0.8 mm/h, easing to 0.20 mm/h at the reference hour; tomorrow is the wet one — 21.60 mm spread over all 24 hours at 98–100 % hourly probability, heaviest from 05:00 to 13:00 at 1.1–1.8 mm/h — with 7.90 mm still to come on Sunday.",
+  "order": 40,
+  "as_of": "22:30 local model run",
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&daily=precipitation_sum,precipitation_probability_max,weather_code,precipitation_hours&timezone=Europe%2FSofia&forecast_days=3"
+    },
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&hourly=temperature_2m,precipitation,precipitation_probability,weather_code&timezone=Europe%2FSofia&forecast_days=2"
+    },
+    {
+      "url": "https://wttr.in/Novi+Iskar?2nqT"
+    }
+  ],
+  "flags": [
+    "The 21.60 mm is one open-meteo model run; wttr.in gives 1.4 mm in tomorrow's midday slot and 0.9 mm overnight, an order of magnitude apart on totals rather than a rounding difference."
+  ]
+}

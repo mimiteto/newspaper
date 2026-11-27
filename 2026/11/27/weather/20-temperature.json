@@ -1,0 +1,23 @@
+{
+  "schema": "mb/item@1",
+  "id": "temperature",
+  "section": "weather",
+  "metric": "air_temperature",
+  "provider": "open-meteo",
+  "kind": "item",
+  "label": "Temperature today",
+  "text": "High 10.3 °C / low 4.0 °C, with 7.1 °C (feels like 5.8 °C) at the 22:30 reference and the peak in the 13:00–14:00 hours; tomorrow tops out at 6.7 °C before the air collapses to a −0.4 °C high on Sunday and a −3.6 °C low.",
+  "order": 20,
+  "as_of": "22:30 local",
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code,sunrise,sunset,precipitation_hours,uv_index_max&timezone=Europe%2FSofia&forecast_days=3"
+    },
+    {
+      "url": "https://wttr.in/Novi+Iskar?2nqT"
+    }
+  ],
+  "flags": [
+    "Today's high is 10.3 °C on open-meteo against 9 °C on wttr.in, whose midday slot reads 9 °C with patchy rain — the same air, two numbers."
+  ]
+}

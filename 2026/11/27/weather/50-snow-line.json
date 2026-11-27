@@ -1,0 +1,23 @@
+{
+  "schema": "mb/item@1",
+  "id": "snow-line",
+  "section": "weather",
+  "metric": "weather_code",
+  "provider": "open-meteo + wttr.in",
+  "kind": "item",
+  "label": "The snow line",
+  "text": "The hourly model code flips tomorrow from 61 (rain) to 71 (slight snow) at 18:00, as the hourly temperature crosses 1.2 °C, and makes Sunday code 73 — moderate snow — with a −3.6 °C low; wttr.in has light sleet at tomorrow's midday (+3 °C, feels 0 °C) turning to heavy snow overnight at −1 °C (feels −6 °C) with 17–36 km/h wind and 2 km visibility.",
+  "order": 50,
+  "as_of": "22:30 local model run",
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&hourly=temperature_2m,precipitation,precipitation_probability,weather_code&timezone=Europe%2FSofia&forecast_days=2"
+    },
+    {
+      "url": "https://wttr.in/Novi+Iskar?2nqT"
+    }
+  ],
+  "flags": [
+    "Tomorrow's wind and visibility are wttr.in's alone; this run's open-meteo request carried no hourly wind, so the blowing-snow picture has one provider behind it."
+  ]
+}

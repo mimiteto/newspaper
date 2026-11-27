@@ -1,0 +1,22 @@
+{
+  "schema": "mb/item@1",
+  "id": "conditions",
+  "section": "weather",
+  "provider": "open-meteo + wttr.in",
+  "kind": "item",
+  "label": "Conditions",
+  "text": "100 % cloud cover and WMO code 61 — light rain — at 22:30 with 94 % humidity, a 1.8 km/h wind and 0.10 mm in the 15-minute interval ending there; wttr.in calls the same minute light rain, 7 °C (feels 5 °C), 96 % humidity, 9 km visibility, a 4 km/h ENE wind and 1018 hPa, and credits the day with 0.0 hours of sunshine.",
+  "order": 30,
+  "as_of": "22:30 local",
+  "sources": [
+    {
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=42.7382&longitude=23.5975&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,cloud_cover&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code,sunrise,sunset,precipitation_hours,uv_index_max&timezone=Europe%2FSofia&forecast_days=3"
+    },
+    {
+      "url": "https://wttr.in/Novi+Iskar?format=j1"
+    }
+  ],
+  "flags": [
+    "wttr.in's 1018 hPa is a sea-level reduction and open-meteo's grid for Novi Iskar sits at 670 m with no station pressure in the block used here — the two are not the same measurement and are not compared."
+  ]
+}
